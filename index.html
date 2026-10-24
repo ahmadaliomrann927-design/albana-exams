@@ -120,7 +120,8 @@
     <script src="animal_care.js"></script>
     <script src="management_accounting.js"></script>
     <script src="plant_pathology.js"></script>
-    <script src="forestry.js"></script> <!-- تم ربط ملف علم الحراج هنا بنجاح -->
+    <script src="forestry.js"></script>
+    <script src="all-sessions.js"></script> <!-- ✨ أداة الربط المضافة لملف نباتات الزينة -->
 
     <script>
         let timeLeft = 7;
@@ -221,6 +222,13 @@
                 activeQuestions = plantPathologyData.sessions[sessionNum] || [];
             } else if(subject === "علم الحراج" && typeof forestryData !== 'undefined') {
                 activeQuestions = forestryData.sessions[sessionNum] || [];
+            } else if(subject === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
+                // تكييف مصفوفة الأسئلة لتتوافق مع هيكلة الكود (إعادة تسمية question إلى q و answer إلى a)
+                let rawData = allOrnamentalPlantsSessions[`session${sessionNum}`] || [];
+                activeQuestions = rawData.map(item => ({
+                    q: item.question,
+                    a: item.answer
+                }));
             } else {
                 activeQuestions = [{ q: "قريباً سيتم توفير أسئلة هذه المادة", a: "ترقبوا التحديث القادم!" }];
             }
@@ -237,6 +245,19 @@
                 activeQuestions = plantPathologyData.getComprehensiveExam();
             } else if(subject === "علم الحراج" && typeof forestryData !== 'undefined') {
                 activeQuestions = forestryData.getComprehensiveExam();
+            } else if(subject === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
+                // دمج كل أسئلة الجلسات الخمسة لنباتات الزينة وتحويلها للشكل المطلوب
+                let allRaw = [
+                    ...(allOrnamentalPlantsSessions.session1 || []),
+                    ...(allOrnamentalPlantsSessions.session2 || []),
+                    ...(allOrnamentalPlantsSessions.session3 || []),
+                    ...(allOrnamentalPlantsSessions.session4 || []),
+                    ...(allOrnamentalPlantsSessions.session5 || [])
+                ];
+                activeQuestions = allRaw.map(item => ({
+                    q: item.question,
+                    a: item.answer
+                }));
             } else {
                 activeQuestions = [];
             }
