@@ -116,7 +116,9 @@
         صمم من قبل المهندس أحمد علي عمران / المهندس محمد كامل محمد جميع الحقوق محفوظه© 2026
     </footer>
 
+    <!-- ربط ملفات بنك الأسئلة للمادتين -->
     <script src="animal_care.js"></script>
+    <script src="management_accounting.js"></script>
 
     <script>
         let timeLeft = 7;
@@ -211,6 +213,8 @@
             
             if(subject === "رعاية الحيوان" && typeof animalCareData !== 'undefined') {
                 activeQuestions = animalCareData.sessions[sessionNum] || [];
+            } else if(subject === "أسس الإدارة والمحاسبة" && typeof managementAccountingData !== 'undefined') {
+                activeQuestions = managementAccountingData.sessions[sessionNum] || [];
             } else {
                 activeQuestions = [{ q: "قريباً سيتم توفير أسئلة هذه المادة", a: "ترقبوا التحديث القادم!" }];
             }
@@ -221,6 +225,8 @@
             showScreen('quizScreen');
             if(subject === "رعاية الحيوان" && typeof animalCareData !== 'undefined') {
                 activeQuestions = animalCareData.getComprehensiveExam();
+            } else if(subject === "أسس الإدارة والمحاسبة" && typeof managementAccountingData !== 'undefined') {
+                activeQuestions = managementAccountingData.getComprehensiveExam();
             } else {
                 activeQuestions = [];
             }
