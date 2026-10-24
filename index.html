@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبارات AL BANA</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0b0f19; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        /* شاشة الانطلاق وسقوط الحروف */
+        #intro-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; color: #ffffff; transition: opacity 0.8s ease; }
+        .goat-title { font-size: 5rem; font-weight: bold; letter-spacing: 12px; display: flex; gap: 15px; direction: ltr; margin-bottom: 20px; }
+        .goat-title span { opacity: 0; transform: translateY(-80px); animation: dropLetter 0.5s forwards; }
+        .goat-title span:nth-child(1) { animation-delay: 0.2s; }
+        .goat-title span:nth-child(2) { animation-delay: 0.4s; }
+        .goat-title span:nth-child(3) { animation-delay: 0.6s; }
+        .goat-title span:nth-child(4) { animation-delay: 0.8s; }
+        @keyframes dropLetter { to { opacity: 1; transform: translateY(0); } }
+        .blood-countdown { font-size: 4rem; color: #ef4444; font-weight: bold; }
+
+        /* شاشة تسجيل البيانات */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0b0f19, #1f2937); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9980; padding: 20px; }
+        .login-box { background: rgba(17, 24, 39, 0.95); padding: 40px; border-radius: 16px; border: 1px solid #374151; box-shadow: 0 15px 35px rgba(0,0,0,0.6); width: 100%; max-width: 450px; text-align: center; }
+        .login-box h2 { color: #60a5fa; margin-bottom: 25px; font-size: 1.8rem; }
+        .login-box input, .login-box select { width: 100%; padding: 14px; margin: 12px 0; background: #1f2937; border: 1px solid #4b5563; border-radius: 10px; color: #fff; font-size: 1.1rem; text-align: center; }
+        .login-box button { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 1.2rem; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold; }
+
+        /* اللوحة الرئيسية */
+        .main-container { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; }
+        .dashboard-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 20px; }
+        .dashboard-box { padding: 22px; border-radius: 14px; text-align: center; font-size: 1.3rem; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .box-1 { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .box-2 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; }
+        .box-3 { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .dashboard-box:hover { transform: scale(1.02); }
+
+        /* شاشات الأقسام والمواد والجلسات */
+        .dynamic-screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 600px; margin: auto; padding: 20px; flex: 1; }
+        .sub-box { background: #1f2937; border: 1px solid #374151; padding: 18px; margin: 10px 0; border-radius: 10px; width: 100%; text-align: center; font-size: 1.1rem; cursor: pointer; transition: background 0.3s; color: #fff; font-weight: bold; }
+        .sub-box:hover { background: #374151; }
+        .back-btn { background: #4b5563; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; align-self: flex-start; font-weight: bold; }
+
+        /* شريط الإشعارات المتحرك */
+        .marquee-bar { background: #1f2937; color: #f59e0b; padding: 10px; font-size: 0.95rem; font-weight: bold; border-bottom: 1px solid #374151; white-space: nowrap; overflow: hidden; }
+
+        /* تذييل الصفحة */
+        footer { background: #030712; padding: 20px; text-align: center; border-top: 1px solid #1f2937; font-size: 0.85rem; color: #9ca3af; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <div class="marquee-bar">
+        <marquee scrollamount="5">🔥⏳ تم تحديث بنك الأسئلة مع الحل 🔥___ الأسئلة الشاملة لكل الجلسات أصبحت متاحة الآن فقط في اختبارات AL BANA 🤩🔥</marquee>
+    </div>
+
+    <!-- 1. شاشة الانطلاق -->
+    <div id="intro-screen">
+        <div class="goat-title">
+            <span>G</span>
+            <span>O</span>
+            <span>A</span>
+            <span>T</span>
+        </div>
+        <div class="blood-countdown" id="countdownNum">7</div>
+    </div>
+
+    <!-- 2. شاشة تسجيل الدخول -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>مرحباً بك يا GOAT 🐐</h2>
+            <input type="text" id="fullName" placeholder="أدخل اسمك الثلاثي">
+            <select id="academicYear">
+                <option value="">حدد سنتك الدراسية</option>
+                <option value="السنة الأولى">السنة الأولى</option>
+                <option value="السنة الثانية">السنة الثانية</option>
+                <option value="السنة الثالثة">السنة الثالثة</option>
+            </select>
+            <button onclick="startPlatform()">دخول المنصة</button>
+        </div>
+    </div>
+
+    <!-- 3. الشاشة الرئيسية -->
+    <div class="main-container" id="mainDashboard">
+        <div class="dashboard-container">
+            <div class="dashboard-box box-1" onclick="showScreen('sectionsScreen')">اختبارات AL BANA</div>
+            <div class="dashboard-box box-2" onclick="alert('ميزة تحدي الأصدقاء قيد التفعيل...')">تحدى أصدقائك</div>
+            <div class="dashboard-box box-3" onclick="alert('رقم المصمم: 0983957561 🖤🌹')">اترك لنا ملاحظاتك 🖤🌹</div>
+        </div>
+    </div>
+
+    <!-- 4. شاشة اختيار القسم (عملي / نظري) -->
+    <div class="dynamic-screen" id="sectionsScreen">
+        <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للخلف</button>
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
+            <div class="sub-box" onclick="showSubjects('practical')">القسم العملي</div>
+            <div class="sub-box" onclick="showSubjects('theoretical')">القسم النظري</div>
+        </div>
+    </div>
+
+    <!-- 5. شاشة المواد الستة -->
+    <div class="dynamic-screen" id="subjectsScreen">
+        <button class="back-btn" onclick="showScreen('sectionsScreen')">الرجوع للخلف</button>
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 12px;" id="subjectsList"></div>
+    </div>
+
+    <!-- 6. شاشة الجلسات -->
+    <div class="dynamic-screen" id="sessionsScreen">
+        <button class="back-btn" onclick="showScreen('subjectsScreen')">الرجوع للمواد</button>
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 10px;" id="sessionsList"></div>
+    </div>
+
+    <footer>
+        صمم من قبل المهندس أحمد علي عمران / المهندس محمد كامل محمد جميع الحقوق محفوظه© 2026
+    </footer>
+
+    <script>
+        // عداد شاشة الانطلاق
+        let timeLeft = 7;
+        const countdownEl = document.getElementById('countdownNum');
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdownEl.innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById('intro-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('intro-screen').style.display = 'none';
+                    document.getElementById('login-screen').style.display = 'flex';
+                }, 800);
+            }
+        }, 1000);
+
+        function startPlatform() {
+            const name = document.getElementById('fullName').value;
+            const year = document.getElementById('academicYear').value;
+            if(!name || !year) {
+                alert('يرجى إدخال الاسم الثلاثي وتحديد السنة الدراسية يا GOAT!');
+                return;
+            }
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('mainDashboard').style.display = 'flex';
+        }
+
+        function showScreen(screenId) {
+            document.getElementById('mainDashboard').style.display = 'none';
+            document.getElementById('sectionsScreen').style.display = 'none';
+            document.getElementById('subjectsScreen').style.display = 'none';
+            document.getElementById('sessionsScreen').style.display = 'none';
+            document.getElementById(screenId).style.display = 'flex';
+        }
+
+        const subjects = [
+            "رعاية الحيوان",
+            "أمراض النبات",
+            "خصوبة التربة",
+            "علم الحراج",
+            "نباتات الزينة",
+            "أسس الإدارة والمحاسبة"
+        ];
+
+        let currentMode = '';
+
+        function showSubjects(mode) {
+            currentMode = mode;
+            showScreen('subjectsScreen');
+            const container = document.getElementById('subjectsList');
+            container.innerHTML = '';
+            
+            subjects.forEach(sub => {
+                const div = document.createElement('div');
+                div.className = 'sub-box';
+                div.innerText = sub;
+                div.onclick = () => showSessions(sub, mode);
+                container.appendChild(div);
+            });
+        }
+
+        function showSessions(subjectName, mode) {
+            if(mode === 'theoretical') {
+                alert('لم يحن الوقت للبدء بالمواد النظرية 🖤🌹');
+                return;
+            }
+            showScreen('sessionsScreen');
+            const container = document.getElementById('sessionsList');
+            container.innerHTML = `<h3 style="color:#60a5fa; margin-bottom:15px; text-align:center;">${subjectName} (القسم العملي)</h3>`;
+
+            // عرض الجلسات الـ 7 الأولى
+            for(let i = 1; i <= 7; i++) {
+                const div = document.createElement('div');
+                div.className = 'sub-box';
+                div.innerText = `الجلسة العملية الرابعة ${i}: ${subjectName}`.replace('الرابعة', getArabicNumber(i));
+                div.onclick = () => alert(`فتح الجلسة ${i} لمادة ${subjectName} (جاهزة لاستيعاب 100 سؤال وجواب)`);
+                container.appendChild(div);
+            }
+
+            // الجلسة الثامنة (اختبار شامل)
+            const finalDiv = document.createElement('div');
+            finalDiv.className = 'sub-box';
+            finalDiv.style.background = '#3b82f6';
+            finalDiv.innerText = `اختبار لجميع الجلسات السابقة (${subjectName})`;
+            finalDiv.onclick = () => alert(`فتح الاختبار الشامل لـ ${subjectName}`);
+            container.appendChild(finalDiv);
+        }
+
+        function getArabicNumber(num) {
+            const arr = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة", "السابعة"];
+            return arr[num-1];
+        }
+    </script>
+</body>
+</html>
