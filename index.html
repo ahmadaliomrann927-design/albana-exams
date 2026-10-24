@@ -42,7 +42,7 @@
         .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; color: #60a5fa; }
         .action-btns { display: flex; gap: 10px; }
         .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
-        .answer-box { background: #1f2937; padding: 10px; border-radius: 6px; margin-top: 8px; color: #e5e7eb; display: none; }
+        .answer-box { background: #1f2937; padding: 10px; border-radius: 6px; margin-top: 8px; color: #e5e7eb; display: none; white-space: pre-line; }
         .show-ans-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; font-size: 0.9rem; }
 
         .marquee-bar { background: #1f2937; color: #f59e0b; padding: 10px; font-size: 0.95rem; font-weight: bold; border-bottom: 1px solid #374151; white-space: nowrap; overflow: hidden; }
@@ -119,7 +119,8 @@
     <!-- ربط ملفات بنك الأسئلة للمواد -->
     <script src="animal_care.js"></script>
     <script src="management_accounting.js"></script>
-    <script src="plant_pathology.js"></script> <!-- تم ربط ملف أمراض النبات هنا بنجاح -->
+    <script src="plant_pathology.js"></script>
+    <script src="forestry.js"></script> <!-- تم ربط ملف علم الحراج هنا بنجاح -->
 
     <script>
         let timeLeft = 7;
@@ -218,6 +219,8 @@
                 activeQuestions = managementAccountingData.sessions[sessionNum] || [];
             } else if(subject === "أمراض النبات" && typeof plantPathologyData !== 'undefined') {
                 activeQuestions = plantPathologyData.sessions[sessionNum] || [];
+            } else if(subject === "علم الحراج" && typeof forestryData !== 'undefined') {
+                activeQuestions = forestryData.sessions[sessionNum] || [];
             } else {
                 activeQuestions = [{ q: "قريباً سيتم توفير أسئلة هذه المادة", a: "ترقبوا التحديث القادم!" }];
             }
@@ -232,6 +235,8 @@
                 activeQuestions = managementAccountingData.getComprehensiveExam();
             } else if(subject === "أمراض النبات" && typeof plantPathologyData !== 'undefined') {
                 activeQuestions = plantPathologyData.getComprehensiveExam();
+            } else if(subject === "علم الحراج" && typeof forestryData !== 'undefined') {
+                activeQuestions = forestryData.getComprehensiveExam();
             } else {
                 activeQuestions = [];
             }
