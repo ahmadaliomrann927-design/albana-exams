@@ -19,7 +19,7 @@
         @keyframes dropLetter { to { opacity: 1; transform: translateY(0); } }
         .blood-countdown { font-size: 4rem; color: #ef4444; font-weight: bold; }
 
-        /* شاشة تسجيل البيانات */
+        /* شاشة تسجيل الدخول */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0b0f19, #1f2937); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9980; padding: 20px; }
         .login-box { background: rgba(17, 24, 39, 0.95); padding: 40px; border-radius: 16px; border: 1px solid #374151; box-shadow: 0 15px 35px rgba(0,0,0,0.6); width: 100%; max-width: 450px; text-align: center; }
         .login-box h2 { color: #60a5fa; margin-bottom: 25px; font-size: 1.8rem; }
@@ -40,6 +40,15 @@
         .sub-box { background: #1f2937; border: 1px solid #374151; padding: 18px; margin: 10px 0; border-radius: 10px; width: 100%; text-align: center; font-size: 1.1rem; cursor: pointer; transition: background 0.3s; color: #fff; font-weight: bold; }
         .sub-box:hover { background: #374151; }
         .back-btn { background: #4b5563; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; align-self: flex-start; font-weight: bold; }
+
+        /* شاشة عرض الأسئلة والبحث */
+        .search-box { width: 100%; padding: 12px; margin-bottom: 15px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; font-size: 1rem; }
+        .question-card { background: #111827; border: 1px solid #374151; padding: 15px; border-radius: 10px; margin-bottom: 15px; width: 100%; position: relative; }
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; color: #60a5fa; }
+        .action-btns { display: flex; gap: 10px; }
+        .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
+        .answer-box { background: #1f2937; padding: 10px; border-radius: 6px; margin-top: 8px; color: #e5e7eb; display: none; }
+        .show-ans-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; font-size: 0.9rem; }
 
         /* شريط الإشعارات المتحرك */
         .marquee-bar { background: #1f2937; color: #f59e0b; padding: 10px; font-size: 0.95rem; font-weight: bold; border-bottom: 1px solid #374151; white-space: nowrap; overflow: hidden; }
@@ -89,7 +98,7 @@
         </div>
     </div>
 
-    <!-- 4. شاشة اختيار القسم (عملي / نظري) -->
+    <!-- 4. شاشة اختيار القسم -->
     <div class="dynamic-screen" id="sectionsScreen">
         <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للخلف</button>
         <div style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
@@ -98,7 +107,7 @@
         </div>
     </div>
 
-    <!-- 5. شاشة المواد الستة -->
+    <!-- 5. شاشة المواد -->
     <div class="dynamic-screen" id="subjectsScreen">
         <button class="back-btn" onclick="showScreen('sectionsScreen')">الرجوع للخلف</button>
         <div style="width: 100%; display: flex; flex-direction: column; gap: 12px;" id="subjectsList"></div>
@@ -106,16 +115,26 @@
 
     <!-- 6. شاشة الجلسات -->
     <div class="dynamic-screen" id="sessionsScreen">
-        <button class="back-btn" onclick="showScreen('subjectsScreen')">الرجوع للمواد</button>
+        <button class="back-btn" onclick="showSubjects(currentMode)">الرجوع للمواد</button>
         <div style="width: 100%; display: flex; flex-direction: column; gap: 10px;" id="sessionsList"></div>
+    </div>
+
+    <!-- 7. شاشة عرض الأسئلة والبنك -->
+    <div class="dynamic-screen" id="quizScreen">
+        <button class="back-btn" onclick="showSessions(currentSubject, currentMode)">الرجوع للجلسات</button>
+        <h3 id="quizTitle" style="color:#60a5fa; margin-bottom:15px; text-align:center;"></h3>
+        <input type="text" id="searchBar" class="search-box" placeholder="🔍 بحث سريع عن سؤال أو كلمة مفتاحية..." onkeyup="filterQuestions()">
+        <div id="questionsContainer" style="width: 100%;"></div>
     </div>
 
     <footer>
         صمم من قبل المهندس أحمد علي عمران / المهندس محمد كامل محمد جميع الحقوق محفوظه© 2026
     </footer>
 
+    <!-- ربط ملف بنك الأسئلة الخارجي -->
+    <script src="animal_care.js"></script>
+
     <script>
-        // عداد شاشة الانطلاق
         let timeLeft = 7;
         const countdownEl = document.getElementById('countdownNum');
         const timer = setInterval(() => {
@@ -147,19 +166,13 @@
             document.getElementById('sectionsScreen').style.display = 'none';
             document.getElementById('subjectsScreen').style.display = 'none';
             document.getElementById('sessionsScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'none';
             document.getElementById(screenId).style.display = 'flex';
         }
 
-        const subjects = [
-            "رعاية الحيوان",
-            "أمراض النبات",
-            "خصوبة التربة",
-            "علم الحراج",
-            "نباتات الزينة",
-            "أسس الإدارة والمحاسبة"
-        ];
-
+        const subjects = ["رعاية الحيوان", "أمراض النبات", "خصوبة التربة", "علم الحراج", "نباتات الزينة", "أسس الإدارة والمحاسبة"];
         let currentMode = '';
+        let currentSubject = '';
 
         function showSubjects(mode) {
             currentMode = mode;
@@ -177,6 +190,7 @@
         }
 
         function showSessions(subjectName, mode) {
+            currentSubject = subjectName;
             if(mode === 'theoretical') {
                 alert('لم يحن الوقت للبدء بالمواد النظرية 🖤🌹');
                 return;
@@ -185,27 +199,123 @@
             const container = document.getElementById('sessionsList');
             container.innerHTML = `<h3 style="color:#60a5fa; margin-bottom:15px; text-align:center;">${subjectName} (القسم العملي)</h3>`;
 
-            // عرض الجلسات الـ 7 الأولى
             for(let i = 1; i <= 7; i++) {
                 const div = document.createElement('div');
                 div.className = 'sub-box';
-                div.innerText = `الجلسة العملية الرابعة ${i}: ${subjectName}`.replace('الرابعة', getArabicNumber(i));
-                div.onclick = () => alert(`فتح الجلسة ${i} لمادة ${subjectName} (جاهزة لاستيعاب 100 سؤال وجواب)`);
+                div.innerText = `الجلسة العملية ${getArabicNumber(i)}: ${subjectName}`;
+                div.onclick = () => loadQuiz(subjectName, i);
                 container.appendChild(div);
             }
 
-            // الجلسة الثامنة (اختبار شامل)
             const finalDiv = document.createElement('div');
             finalDiv.className = 'sub-box';
             finalDiv.style.background = '#3b82f6';
-            finalDiv.innerText = `اختبار لجميع الجلسات السابقة (${subjectName})`;
-            finalDiv.onclick = () => alert(`فتح الاختبار الشامل لـ ${subjectName}`);
+            finalDiv.innerText = `اختبار لجميع الجلسات السابقة (${subjectName} - 200 سؤال عشوائي)`;
+            finalDiv.onclick = () => loadComprehensiveExam(subjectName);
             container.appendChild(finalDiv);
         }
 
         function getArabicNumber(num) {
             const arr = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة", "السابعة"];
             return arr[num-1];
+        }
+
+        let activeQuestions = [];
+
+        function loadQuiz(subject, sessionNum) {
+            showScreen('quizScreen');
+            document.getElementById('quizTitle.innerText').innerText = `${subject} - الجلسة ${sessionNum}`;
+            
+            if(subject === "رعاية الحيوان" && typeof animalCareData !== 'undefined') {
+                activeQuestions = animalCareData.sessions[sessionNum] || [];
+            } else {
+                activeQuestions = [{ q: "قريباً سيتم توفير أسئلة هذه المادة", a: "ترقبوا التحديث القادم!" }];
+            }
+            renderQuestions(activeQuestions, `الجلسة العملية ${sessionNum} (${subject})`);
+        }
+
+        function loadComprehensiveExam(subject) {
+            showScreen('quizScreen');
+            if(subject === "رعاية الحيوان" && typeof animalCareData !== 'undefined') {
+                activeQuestions = animalCareData.getComprehensiveExam();
+            } else {
+                activeQuestions = [];
+            }
+            renderQuestions(activeQuestions, `الاختبار الشامل العشوائي (${subject})`);
+        }
+
+        function renderQuestions(questions, titleText) {
+            document.getElementById('quizTitle').innerText = titleText;
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            if(questions.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#9ca3af;">لا توجد أسئلة متاحة حالياً لهذه الجلسة.</p>';
+                return;
+            }
+
+            questions.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span>🖤 ${index + 1} 🖤</span>
+                        <div class="action-btns">
+                            <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
+                            <button class="icon-btn" onclick="toggleFavorite(this)" title="المفضلة">🌟</button>
+                        </div>
+                    </div>
+                    <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
+                    <button class="show-ans-btn" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">إظهار الجواب الصحيح 🌹</button>
+                    <div class="answer-box"><strong>الجواب:</strong> ${item.a}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterQuestions() {
+            let query = document.getElementById('searchBar').value.toLowerCase();
+            let cards = document.querySelectorAll('.question-card');
+            cards.forEach(card => {
+                let text = card.innerText.toLowerCase();
+                card.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        function toggleFocus(btn) {
+            let card = btn.closest('.question-card');
+            let allCards = document.querySelectorAll('.question-card');
+            if(card.style.position === 'fixed') {
+                allCards.forEach(c => c.style.display = 'block');
+                card.style.position = 'relative';
+                card.style.top = 'auto';
+                card.style.left = 'auto';
+                card.style.width = '100%';
+                card.style.zIndex = '1';
+                card.style.background = '#111827';
+            } else {
+                allCards.forEach(c => c.style.display = 'none');
+                card.style.display = 'block';
+                card.style.position = 'fixed';
+                card.style.top = '50%';
+                card.style.left = '50%';
+                card.style.transform = 'translate(-50%, -50%)';
+                card.style.width = '90%';
+                card.style.maxWidth = '500px';
+                card.style.zIndex = '9999';
+                card.style.background = '#1f2937';
+                card.style.boxShadow = '0 0 25px rgba(0,0,0,0.9)';
+            }
+        }
+
+        function toggleFavorite(btn) {
+            if(btn.style.color === 'gold') {
+                btn.style.color = 'white';
+                alert('تمت الإزالة من المفضلة 🌟');
+            } else {
+                btn.style.color = 'gold';
+                alert('تم حفظ السؤال في المفضلة ليلة الامتحان 🌟⭐');
+            }
         }
     </script>
 </body>
