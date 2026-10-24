@@ -116,9 +116,10 @@
         صمم من قبل المهندس أحمد علي عمران / المهندس محمد كامل محمد جميع الحقوق محفوظه© 2026
     </footer>
 
-    <!-- ربط ملفات بنك الأسئلة للمادتين -->
+    <!-- ربط ملفات بنك الأسئلة للمواد -->
     <script src="animal_care.js"></script>
     <script src="management_accounting.js"></script>
+    <script src="plant_pathology.js"></script> <!-- تم ربط ملف أمراض النبات هنا بنجاح -->
 
     <script>
         let timeLeft = 7;
@@ -196,7 +197,7 @@
             const finalDiv = document.createElement('div');
             finalDiv.className = 'sub-box';
             finalDiv.style.background = '#3b82f6';
-            finalDiv.innerText = `اختبار لجميع الجلسات السابقة (${subjectName} - 200 سؤال عشوائي)`;
+            finalDiv.innerText = `اختبار لجميع الجلسات السابقة (${subjectName} - امتحان شامل)`;
             finalDiv.onclick = () => loadComprehensiveExam(subjectName);
             container.appendChild(finalDiv);
         }
@@ -215,6 +216,8 @@
                 activeQuestions = animalCareData.sessions[sessionNum] || [];
             } else if(subject === "أسس الإدارة والمحاسبة" && typeof managementAccountingData !== 'undefined') {
                 activeQuestions = managementAccountingData.sessions[sessionNum] || [];
+            } else if(subject === "أمراض النبات" && typeof plantPathologyData !== 'undefined') {
+                activeQuestions = plantPathologyData.sessions[sessionNum] || [];
             } else {
                 activeQuestions = [{ q: "قريباً سيتم توفير أسئلة هذه المادة", a: "ترقبوا التحديث القادم!" }];
             }
@@ -227,6 +230,8 @@
                 activeQuestions = animalCareData.getComprehensiveExam();
             } else if(subject === "أسس الإدارة والمحاسبة" && typeof managementAccountingData !== 'undefined') {
                 activeQuestions = managementAccountingData.getComprehensiveExam();
+            } else if(subject === "أمراض النبات" && typeof plantPathologyData !== 'undefined') {
+                activeQuestions = plantPathologyData.getComprehensiveExam();
             } else {
                 activeQuestions = [];
             }
