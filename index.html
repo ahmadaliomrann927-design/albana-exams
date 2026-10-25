@@ -56,6 +56,10 @@
         .timer-badge { background: #ef4444; color: white; padding: 8px 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-align: center; width: 100%; }
 
         .marquee-bar { background: #1f2937; color: #f59e0b; padding: 10px; font-size: 0.95rem; font-weight: bold; border-bottom: 1px solid #374151; white-space: nowrap; overflow: hidden; }
+        
+        /* طبقة حماية إضافية لمنع تحديد النص أو السحب العشوائي أثناء التصوير */
+        body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+
         footer { background: #030712; padding: 20px; text-align: center; border-top: 1px solid #1f2937; font-size: 0.85rem; color: #9ca3af; line-height: 1.6; }
     </style>
 </head>
@@ -144,6 +148,28 @@
     <script src="all-sessions.js"></script>
 
     <script>
+        /* --- 🛡️ نظام منع لقطات وتصوير الشاشة --- */
+        // منع النقر بزر الفأرة الأيمن لمنع خيارات الفحص أو الحفظ السريع
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            alert('🚫 عذراً يا GOAT، المحتوى محمي بالكامل منعاً لتصويره أو نسخه! 🔒');
+        });
+
+        // منع اختصارات لوحة المفاتيح الشهيرة الخاصة بالتصوير أو فحص العناصر (PrintScreen, F12, Ctrl+Shift+I, Ctrl+S)
+        document.addEventListener('keydown', function(e) {
+            if (
+                e.key === 'PrintScreen' || 
+                e.keyCode === 44 || 
+                e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'C' || e.key === 'c' || e.key === 'J' || e.key === 'j')) || 
+                (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))
+            ) {
+                e.preventDefault();
+                alert('🚫 عذراً، هذه العملية محظورة تماماً لحماية حقوق التطبيق! 🔒');
+                return false;
+            }
+        });
+
         let timeLeft = 7;
         const countdownEl = document.getElementById('countdownNum');
         const timer = setInterval(() => {
@@ -557,7 +583,6 @@
                 const card = document.createElement('div');
                 card.className = 'question-card';
                 
-                // تحقق هل السؤال مضاف مسبقاً للمفضلة
                 let isFav = favoriteQuestions.some(fav => fav.q === item.q);
                 let starColor = isFav ? 'gold' : 'white';
 
@@ -586,13 +611,11 @@
             });
         }
 
-        /* --- الإصلاح الجراحي الدقيق لوضع التركيز (العين) --- */
         function toggleFocus(btn) {
             let card = btn.closest('.question-card');
             let allCards = document.querySelectorAll('.question-card');
             
             if(card.classList.contains('focused-active')) {
-                // إلغاء وضع التركيز وإعادة كل شيء بدقة
                 allCards.forEach(c => {
                     c.style.display = 'block';
                 });
@@ -607,7 +630,6 @@
                 card.style.background = '#111827';
                 card.style.boxShadow = 'none';
             } else {
-                // تفعيل وضع التركيز وعزل السؤال الحالي
                 allCards.forEach(c => {
                     c.style.display = 'none';
                 });
@@ -625,7 +647,6 @@
             }
         }
 
-        /* --- إدارة المفضلة والخانة الخاصة بها --- */
         function toggleFavorite(btn, qEncoded, aEncoded) {
             let q = decodeURIComponent(qEncoded);
             let a = decodeURIComponent(aEncoded);
