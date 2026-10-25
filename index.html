@@ -31,6 +31,7 @@
         .box-2 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; }
         .box-3 { background: linear-gradient(135deg, #ec4899, #be185d); color: white; }
         .box-4 { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .box-5 { background: linear-gradient(135deg, #eab308, #ca8a04); color: white; }
         .dashboard-box:hover { transform: scale(1.02); }
 
         .dynamic-screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 600px; margin: auto; padding: 20px; flex: 1; }
@@ -46,7 +47,6 @@
         .answer-box { background: #1f2937; padding: 10px; border-radius: 6px; margin-top: 8px; color: #e5e7eb; display: none; white-space: pre-line; }
         .show-ans-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; font-size: 0.9rem; }
         
-        /* تصميم خيارات متعددة لهيكل الأوراكل */
         .mcq-options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
         .mcq-option { background: #1f2937; border: 1px solid #4b5563; padding: 12px; border-radius: 8px; cursor: pointer; color: #fff; text-align: right; transition: background 0.2s; font-size: 1rem; }
         .mcq-option:hover { background: #374151; }
@@ -94,6 +94,7 @@
             <div class="dashboard-box box-1" onclick="showScreen('sectionsScreen')">اختبارات AL BANA</div>
             <div class="dashboard-box box-2" onclick="startOracleMenu()">🏛️ هيكل الأوراكل (40 سؤالاً خارقاً)</div>
             <div class="dashboard-box box-3" onclick="startExamSimulatorMenu()">🎯 محاكي الامتحان (اختبر جاهزيتك)</div>
+            <div class="dashboard-box box-5" onclick="showFavoritesScreen()">🌟 الأسئلة المفضلة والمحظوظة</div>
             <div class="dashboard-box box-4" onclick="alert('رقم المصمم: 0983957561 🖤🌹')">اترك لنا ملاحظاتك 🖤🌹</div>
         </div>
     </div>
@@ -123,6 +124,12 @@
         <input type="text" id="searchBar" class="search-box" placeholder="🔍 بحث سريع عن سؤال أو كلمة مفتاحية..." onkeyup="filterQuestions()">
         <div id="questionsContainer" style="width: 100%;"></div>
         <button id="submitExamBtn" class="sub-box" style="background:#10b981; display:none; margin-top:20px;" onclick="submitExam()">إنهاء الامتحان وإظهار الأجوبة الصحيحة 📝</button>
+    </div>
+
+    <div class="dynamic-screen" id="favoritesScreen">
+        <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للرئيسية</button>
+        <h3 style="color:#eab308; margin-bottom:15px; text-align:center;">🌟 الأسئلة المفضلة والمحفوظة ليلة الامتحان</h3>
+        <div id="favoritesContainer" style="width: 100%;"></div>
     </div>
 
     <footer>
@@ -169,14 +176,16 @@
             document.getElementById('subjectsScreen').style.display = 'none';
             document.getElementById('sessionsScreen').style.display = 'none';
             document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('favoritesScreen').style.display = 'none';
             document.getElementById(screenId).style.display = 'flex';
         }
 
         const subjects = ["رعاية الحيوان", "أمراض النبات", "خصوبة التربة", "علم الحراج", "نباتات الزينة", "أسس الإدارة والمحاسبة"];
         let currentMode = '';
         let currentSubject = '';
-        let appMode = 'normal'; // 'normal', 'oracle', 'examSimulator'
+        let appMode = 'normal';
         let examInterval = null;
+        let favoriteQuestions = [];
 
         function showSubjects(mode) {
             currentMode = mode;
@@ -202,7 +211,6 @@
             }
 
             if (appMode === 'oracle') {
-                // إذا كنا في وضع هيكل الأوراكل، نعرض الجلسات لاختيار جلسة معينة أو امتحان شامل لـ 40 سؤال
                 showScreen('sessionsScreen');
                 const container = document.getElementById('sessionsList');
                 container.innerHTML = `<h3 style="color:#a855f7; margin-bottom:15px; text-align:center;">🏛️ هيكل الأوراكل: ${subjectName}</h3>`;
@@ -301,7 +309,6 @@
             renderQuestions(activeQuestions, `الاختبار الشامل العشوائي (${subject})`, false);
         }
 
-        /* --- 🏛️ هيكل الأوراكل: 40 سؤال اختياري متعدد + خيارات تفاعلية (أخضر/أحمر) + 45 دقيقة عداد --- */
         function startOracleMenu() {
             appMode = 'oracle';
             showScreen('subjectsScreen');
@@ -346,15 +353,11 @@
                 return;
             }
 
-            // سحب 40 سؤال عشوائي (أو أقل إذا لم يتوفر 40)
             let selected40 = [...sourceArray].sort(() => 0.5 - Math.random()).slice(0, 40);
-            
-            // توليد خيارات متعددة (4 خيارات) لكل سؤال بناءً على الأجوبة المتاحة في المنصة
             let allAnswersPool = sourceArray.map(item => item.a);
 
             activeQuestions = selected40.map(item => {
                 let correctAnswer = item.a;
-                // جلب 3 خيارات خاطئة عشوائية من الباقي
                 let wrongOptions = allAnswersPool.filter(ans => ans !== correctAnswer).sort(() => 0.5 - Math.random()).slice(0, 3);
                 let options = [...wrongOptions, correctAnswer].sort(() => 0.5 - Math.random());
                 return {
@@ -366,7 +369,7 @@
 
             showScreen('quizScreen');
             renderOracleQuestions(activeQuestions, titleText);
-            startOracleTimer(45 * 60); // 45 دقيقة عداد تنازلي
+            startOracleTimer(45 * 60);
         }
 
         function startOracleTimer(durationInSeconds) {
@@ -418,7 +421,6 @@
             let parentContainer = selectedCard.parentElement;
             let allOptions = parentContainer.querySelectorAll('.mcq-option');
 
-            // منع إعادة الضغط بعد الاختيار
             if(parentContainer.classList.contains('answered')) return;
             parentContainer.classList.add('answered');
 
@@ -429,7 +431,6 @@
                 selectedCard.classList.add('correct');
             } else {
                 selectedCard.classList.add('wrong');
-                // إظهار الجواب الصحيح بالأخضر لمقارنته
                 allOptions.forEach(opt => {
                     if(opt.innerText.trim() === correct.trim()) {
                         opt.classList.add('correct');
@@ -438,8 +439,6 @@
             }
         }
 
-
-        /* --- 🎯 محاكي الامتحان (النظام القديم) --- */
         function startExamSimulatorMenu() {
             appMode = 'examSimulator';
             showScreen('subjectsScreen');
@@ -544,7 +543,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-
         function renderQuestions(questions, titleText, isCompass = false) {
             document.getElementById('quizTitle').innerText = titleText;
             const container = document.getElementById('questionsContainer');
@@ -558,12 +556,17 @@
             questions.forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'question-card';
+                
+                // تحقق هل السؤال مضاف مسبقاً للمفضلة
+                let isFav = favoriteQuestions.some(fav => fav.q === item.q);
+                let starColor = isFav ? 'gold' : 'white';
+
                 card.innerHTML = `
                     <div class="question-header">
                         <span>🖤 ${index + 1} 🖤</span>
                         <div class="action-btns">
                             <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
-                            <button class="icon-btn" onclick="toggleFavorite(this)" title="المفضلة">🌟</button>
+                            <button class="icon-btn" style="color: ${starColor};" onclick="toggleFavorite(this, '${encodeURIComponent(item.q)}', '${encodeURIComponent(item.a)}')" title="المفضلة">🌟</button>
                         </div>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
@@ -583,19 +586,32 @@
             });
         }
 
+        /* --- الإصلاح الجراحي الدقيق لوضع التركيز (العين) --- */
         function toggleFocus(btn) {
             let card = btn.closest('.question-card');
             let allCards = document.querySelectorAll('.question-card');
-            if(card.style.position === 'fixed') {
-                allCards.forEach(c => c.style.display = 'block');
+            
+            if(card.classList.contains('focused-active')) {
+                // إلغاء وضع التركيز وإعادة كل شيء بدقة
+                allCards.forEach(c => {
+                    c.style.display = 'block';
+                });
+                card.classList.remove('focused-active');
                 card.style.position = 'relative';
                 card.style.top = 'auto';
                 card.style.left = 'auto';
+                card.style.transform = 'none';
                 card.style.width = '100%';
+                card.style.maxWidth = 'none';
                 card.style.zIndex = '1';
                 card.style.background = '#111827';
+                card.style.boxShadow = 'none';
             } else {
-                allCards.forEach(c => c.style.display = 'none');
+                // تفعيل وضع التركيز وعزل السؤال الحالي
+                allCards.forEach(c => {
+                    c.style.display = 'none';
+                });
+                card.classList.add('focused-active');
                 card.style.display = 'block';
                 card.style.position = 'fixed';
                 card.style.top = '50%';
@@ -609,14 +625,57 @@
             }
         }
 
-        function toggleFavorite(btn) {
-            if(btn.style.color === 'gold') {
+        /* --- إدارة المفضلة والخانة الخاصة بها --- */
+        function toggleFavorite(btn, qEncoded, aEncoded) {
+            let q = decodeURIComponent(qEncoded);
+            let a = decodeURIComponent(aEncoded);
+            
+            let existingIndex = favoriteQuestions.findIndex(fav => fav.q === q);
+
+            if(existingIndex > -1) {
+                favoriteQuestions.splice(existingIndex, 1);
                 btn.style.color = 'white';
                 alert('تمت الإزالة من المفضلة 🌟');
             } else {
+                favoriteQuestions.push({ q: q, a: a });
                 btn.style.color = 'gold';
                 alert('تم حفظ السؤال في المفضلة ليلة الامتحان 🌟⭐');
             }
+        }
+
+        function showFavoritesScreen() {
+            showScreen('favoritesScreen');
+            const container = document.getElementById('favoritesContainer');
+            container.innerHTML = '';
+
+            if(favoriteQuestions.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#9ca3af; margin-top:30px;">لم تقم بحفظ أي سؤال في المفضلة حتى الآن 🌟</p>';
+                return;
+            }
+
+            favoriteQuestions.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span>🌟 المفضلة ${index + 1} 🌟</span>
+                        <div class="action-btns">
+                            <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
+                            <button class="icon-btn" style="color: gold;" onclick="removeFavorite(this, '${encodeURIComponent(item.q)}')" title="إزالة من المفضلة">❌</button>
+                        </div>
+                    </div>
+                    <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
+                    <button class="show-ans-btn" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">إظهار الجواب الصحيح 🌹</button>
+                    <div class="answer-box"><strong>الجواب:</strong> ${item.a}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function removeFavorite(btn, qEncoded) {
+            let q = decodeURIComponent(qEncoded);
+            favoriteQuestions = favoriteQuestions.filter(fav => fav.q !== q);
+            showFavoritesScreen();
         }
     </script>
 </body>
