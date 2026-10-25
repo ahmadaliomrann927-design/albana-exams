@@ -46,7 +46,13 @@
         .answer-box { background: #1f2937; padding: 10px; border-radius: 6px; margin-top: 8px; color: #e5e7eb; display: none; white-space: pre-line; }
         .show-ans-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; font-size: 0.9rem; }
         
-        .exam-input { width: 100%; padding: 10px; margin-top: 10px; background: #1f2937; border: 1px solid #4b5563; border-radius: 6px; color: #fff; font-size: 0.95rem; }
+        /* تصميم خيارات متعددة لهيكل الأوراكل */
+        .mcq-options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
+        .mcq-option { background: #1f2937; border: 1px solid #4b5563; padding: 12px; border-radius: 8px; cursor: pointer; color: #fff; text-align: right; transition: background 0.2s; font-size: 1rem; }
+        .mcq-option:hover { background: #374151; }
+        .mcq-option.correct { background: #059669 !important; border-color: #10b981 !important; color: #fff !important; }
+        .mcq-option.wrong { background: #dc2626 !important; border-color: #ef4444 !important; color: #fff !important; }
+
         .timer-badge { background: #ef4444; color: white; padding: 8px 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-align: center; width: 100%; }
 
         .marquee-bar { background: #1f2937; color: #f59e0b; padding: 10px; font-size: 0.95rem; font-weight: bold; border-bottom: 1px solid #374151; white-space: nowrap; overflow: hidden; }
@@ -86,8 +92,8 @@
     <div class="main-container" id="mainDashboard">
         <div class="dashboard-container">
             <div class="dashboard-box box-1" onclick="showScreen('sectionsScreen')">اختبارات AL BANA</div>
-            <div class="dashboard-box box-2" onclick="startExamSimulatorMenu()">🎯 محاكي الامتحان (اختبر جاهزيتك)</div>
-            <div class="dashboard-box box-3" onclick="startCompassMenu()">📊 بوصلة المعدل (سحب عشوائي ذكي)</div>
+            <div class="dashboard-box box-2" onclick="startOracleMenu()">🏛️ هيكل الأوراكل (40 سؤالاً خارقاً)</div>
+            <div class="dashboard-box box-3" onclick="startExamSimulatorMenu()">🎯 محاكي الامتحان (اختبر جاهزيتك)</div>
             <div class="dashboard-box box-4" onclick="alert('رقم المصمم: 0983957561 🖤🌹')">اترك لنا ملاحظاتك 🖤🌹</div>
         </div>
     </div>
@@ -101,7 +107,7 @@
     </div>
 
     <div class="dynamic-screen" id="subjectsScreen">
-        <button class="back-btn" onclick="showScreen('sectionsScreen')">الرجوع للخلف</button>
+        <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للخلف</button>
         <div style="width: 100%; display: flex; flex-direction: column; gap: 12px;" id="subjectsList"></div>
     </div>
 
@@ -169,7 +175,7 @@
         const subjects = ["رعاية الحيوان", "أمراض النبات", "خصوبة التربة", "علم الحراج", "نباتات الزينة", "أسس الإدارة والمحاسبة"];
         let currentMode = '';
         let currentSubject = '';
-        let appMode = 'normal'; // 'normal', 'examSimulator', 'compass'
+        let appMode = 'normal'; // 'normal', 'oracle', 'examSimulator'
         let examInterval = null;
 
         function showSubjects(mode) {
@@ -194,6 +200,30 @@
                 alert('لم يحن الوقت للبدء بالمواد النظرية 🖤🌹');
                 return;
             }
+
+            if (appMode === 'oracle') {
+                // إذا كنا في وضع هيكل الأوراكل، نعرض الجلسات لاختيار جلسة معينة أو امتحان شامل لـ 40 سؤال
+                showScreen('sessionsScreen');
+                const container = document.getElementById('sessionsList');
+                container.innerHTML = `<h3 style="color:#a855f7; margin-bottom:15px; text-align:center;">🏛️ هيكل الأوراكل: ${subjectName}</h3>`;
+
+                for(let i = 1; i <= 7; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'sub-box';
+                    div.innerText = `الجلسة العملية ${getArabicNumber(i)} (40 سؤال اختياري)`;
+                    div.onclick = () => runOracleSession(subjectName, i);
+                    container.appendChild(div);
+                }
+
+                const finalDiv = document.createElement('div');
+                finalDiv.className = 'sub-box';
+                finalDiv.style.background = '#a855f7';
+                finalDiv.innerText = `🏛️ اختبار الأوراكل الشامل (${subjectName} - 40 سؤال عشوائي)`;
+                finalDiv.onclick = () => runOracleComprehensive(subjectName);
+                container.appendChild(finalDiv);
+                return;
+            }
+
             showScreen('sessionsScreen');
             const container = document.getElementById('sessionsList');
             container.innerHTML = `<h3 style="color:#60a5fa; margin-bottom:15px; text-align:center;">${subjectName} (القسم العملي)</h3>`;
@@ -271,7 +301,145 @@
             renderQuestions(activeQuestions, `الاختبار الشامل العشوائي (${subject})`, false);
         }
 
-        /* --- 1. محاكي الامتحان (30 سؤال، 45 دقيقة، خانة إجابة، إظهار الحل عند انتهاء الوقت) --- */
+        /* --- 🏛️ هيكل الأوراكل: 40 سؤال اختياري متعدد + خيارات تفاعلية (أخضر/أحمر) + 45 دقيقة عداد --- */
+        function startOracleMenu() {
+            appMode = 'oracle';
+            showScreen('subjectsScreen');
+            const container = document.getElementById('subjectsList');
+            container.innerHTML = '<h3 style="color:#a855f7; margin-bottom:15px; text-align:center;">🏛️ اختر مادة هيكل الأوراكل</h3>';
+            
+            subjects.forEach(sub => {
+                const div = document.createElement('div');
+                div.className = 'sub-box';
+                div.innerText = sub;
+                div.onclick = () => showSessions(sub, 'practical');
+                container.appendChild(div);
+            });
+        }
+
+        function runOracleSession(subjectName, sessionNum) {
+            let sessionQuestions = [];
+            if(subjectName === "رعاية الحيوان" && typeof animalCareData !== 'undefined') {
+                sessionQuestions = animalCareData.sessions[sessionNum] || [];
+            } else if(subjectName === "أسس الإدارة والمحاسبة" && typeof managementAccountingData !== 'undefined') {
+                sessionQuestions = managementAccountingData.sessions[sessionNum] || [];
+            } else if(subjectName === "أمراض النبات" && typeof plantPathologyData !== 'undefined') {
+                sessionQuestions = plantPathologyData.sessions[sessionNum] || [];
+            } else if(subjectName === "علم الحراج" && typeof forestryData !== 'undefined') {
+                sessionQuestions = forestryData.sessions[sessionNum] || [];
+            } else if(subjectName === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
+                let rawData = allOrnamentalPlantsSessions[`session${sessionNum}`] || [];
+                sessionQuestions = rawData.map(item => ({ q: item.question, a: item.answer }));
+            }
+
+            setupOracleQuiz(sessionQuestions, `🏛️ هيكل الأوراكل: (${subjectName} - الجلسة ${getArabicNumber(sessionNum)}) - 40 سؤال`);
+        }
+
+        function runOracleComprehensive(subjectName) {
+            let allSubQuestions = getAllSubjectQuestions(subjectName);
+            setupOracleQuiz(allSubQuestions, `🏛️ اختبار الأوراكل الشامل: (${subjectName}) - 40 سؤال`);
+        }
+
+        function setupOracleQuiz(sourceArray, titleText) {
+            if(sourceArray.length === 0) {
+                alert('لا توجد أسئلة كافية متاحة حالياً!');
+                return;
+            }
+
+            // سحب 40 سؤال عشوائي (أو أقل إذا لم يتوفر 40)
+            let selected40 = [...sourceArray].sort(() => 0.5 - Math.random()).slice(0, 40);
+            
+            // توليد خيارات متعددة (4 خيارات) لكل سؤال بناءً على الأجوبة المتاحة في المنصة
+            let allAnswersPool = sourceArray.map(item => item.a);
+
+            activeQuestions = selected40.map(item => {
+                let correctAnswer = item.a;
+                // جلب 3 خيارات خاطئة عشوائية من الباقي
+                let wrongOptions = allAnswersPool.filter(ans => ans !== correctAnswer).sort(() => 0.5 - Math.random()).slice(0, 3);
+                let options = [...wrongOptions, correctAnswer].sort(() => 0.5 - Math.random());
+                return {
+                    q: item.q,
+                    correct: correctAnswer,
+                    options: options
+                };
+            });
+
+            showScreen('quizScreen');
+            renderOracleQuestions(activeQuestions, titleText);
+            startOracleTimer(45 * 60); // 45 دقيقة عداد تنازلي
+        }
+
+        function startOracleTimer(durationInSeconds) {
+            if(examInterval) clearInterval(examInterval);
+            let timerContainer = document.getElementById('examTimerContainer');
+            let timeLeftSec = durationInSeconds;
+
+            examInterval = setInterval(() => {
+                let minutes = Math.floor(timeLeftSec / 60);
+                let seconds = timeLeftSec % 60;
+                timerContainer.innerHTML = `<div class="timer-badge" style="background:#a855f7;">🏛️ الوقت المتبقي لهيكل الأوراكل: ${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}</div>`;
+                
+                if(timeLeftSec <= 0) {
+                    clearInterval(examInterval);
+                    alert('انقضى وقت الأوراكل (45 دقيقة)! انتهى الاختبار ⏱️🔥');
+                }
+                timeLeftSec--;
+            }, 1000);
+        }
+
+        function renderOracleQuestions(questions, titleText) {
+            document.getElementById('quizTitle').innerText = titleText;
+            document.getElementById('submitExamBtn').style.display = 'none';
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                
+                let optionsHtml = '';
+                item.options.forEach(opt => {
+                    optionsHtml += `<div class="mcq-option" onclick="checkOracleAnswer(this, '${encodeURIComponent(opt)}', '${encodeURIComponent(item.correct)}')">${opt}</div>`;
+                });
+
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span>🏛️ السؤال ${index + 1} 🏛️</span>
+                    </div>
+                    <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
+                    <div class="mcq-options">${optionsHtml}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkOracleAnswer(element, selectedEncoded, correctEncoded) {
+            let selectedCard = element;
+            let parentContainer = selectedCard.parentElement;
+            let allOptions = parentContainer.querySelectorAll('.mcq-option');
+
+            // منع إعادة الضغط بعد الاختيار
+            if(parentContainer.classList.contains('answered')) return;
+            parentContainer.classList.add('answered');
+
+            let selected = decodeURIComponent(selectedEncoded);
+            let correct = decodeURIComponent(correctEncoded);
+
+            if(selected === correct) {
+                selectedCard.classList.add('correct');
+            } else {
+                selectedCard.classList.add('wrong');
+                // إظهار الجواب الصحيح بالأخضر لمقارنته
+                allOptions.forEach(opt => {
+                    if(opt.innerText.trim() === correct.trim()) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+        }
+
+
+        /* --- 🎯 محاكي الامتحان (النظام القديم) --- */
         function startExamSimulatorMenu() {
             appMode = 'examSimulator';
             showScreen('subjectsScreen');
@@ -294,12 +462,11 @@
                 return;
             }
 
-            // سحب 30 سؤال عشوائي (أو أقل إذا كان المجموع أقل من 30)
             activeQuestions = [...allSubQuestions].sort(() => 0.5 - Math.random()).slice(0, 30);
             
             showScreen('quizScreen');
             renderExamModeQuestions(activeQuestions, `🎯 محاكي الامتحان: (${subjectName}) - 30 سؤال`);
-            startExamTimer(45 * 60); // 45 دقيقة عداد تنازلي
+            startExamTimer(45 * 60);
         }
 
         function getAllSubjectQuestions(subjectName) {
@@ -370,48 +537,11 @@
             document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 انتهى الامتحان! تم كشف الأجوبة الصحيحة للمقارنة 🌹</div>';
             document.getElementById('submitExamBtn').style.display = 'none';
             
-            // إظهار صناديق الأجوبة الصحيحة تحت كل سؤال
             let answerBoxes = document.querySelectorAll('.exam-answer-box');
             answerBoxes.forEach(box => {
                 box.style.display = 'block';
             });
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-
-        /* --- 2. بوصلة المعدل (سحب عشوائي ذكي شامل لكل المواد) --- */
-        function startCompassMenu() {
-            appMode = 'compass';
-            let allExistingQuestions = [];
-            
-            // تجميع الأسئلة من كل المواد المتاحة
-            if(typeof animalCareData !== 'undefined') allExistingQuestions.push(...animalCareData.getComprehensiveExam());
-            if(typeof managementAccountingData !== 'undefined') allExistingQuestions.push(...managementAccountingData.getComprehensiveExam());
-            if(typeof plantPathologyData !== 'undefined') allExistingQuestions.push(...plantPathologyData.getComprehensiveExam());
-            if(typeof forestryData !== 'undefined') allExistingQuestions.push(...forestryData.getComprehensiveExam());
-            if(typeof allOrnamentalPlantsSessions !== 'undefined') {
-                let zina = [
-                    ...(allOrnamentalPlantsSessions.session1 || []),
-                    ...(allOrnamentalPlantsSessions.session2 || []),
-                    ...(allOrnamentalPlantsSessions.session3 || []),
-                    ...(allOrnamentalPlantsSessions.session4 || []),
-                    ...(allOrnamentalPlantsSessions.session5 || [])
-                ];
-                allExistingQuestions.push(...zina.map(item => ({ q: item.question, a: item.answer })));
-            }
-
-            if(allExistingQuestions.length === 0) {
-                alert('لا توجد بيانات كافية حالياً في المنصة!');
-                return;
-            }
-
-            // سحب عشوائي ذكي (25 سؤال مكس من كل المنصة)
-            activeQuestions = [...allExistingQuestions].sort(() => 0.5 - Math.random()).slice(0, 25);
-            
-            showScreen('quizScreen');
-            document.getElementById('examTimerContainer').innerHTML = '';
-            document.getElementById('submitExamBtn').style.display = 'none';
-            renderQuestions(activeQuestions, `📊 بوصلة المعدل: سحب عشوائي ذكي لجميع المواد (25 سؤال)`, true);
         }
 
 
@@ -430,7 +560,7 @@
                 card.className = 'question-card';
                 card.innerHTML = `
                     <div class="question-header">
-                        <span>🖤 ${index + 1} 🖤 ${isCompass ? '🔥 (بوصلة معدل)' : ''}</span>
+                        <span>🖤 ${index + 1} 🖤</span>
                         <div class="action-btns">
                             <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
                             <button class="icon-btn" onclick="toggleFavorite(this)" title="المفضلة">🌟</button>
