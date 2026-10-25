@@ -137,11 +137,12 @@
         صمم من قبل المهندس أحمد علي عمران / المهندس محمد كامل محمد جميع الحقوق محفوظه© 2026
     </footer>
 
-    <!-- ربط ملفات بنك الأسئلة للمواد -->
+    <!-- ربط ملفات بنك الأسئلة للمواد (بما فيها خصوبة التربة) -->
     <script src="animal_care.js"></script>
     <script src="management_accounting.js"></script>
     <script src="plant_pathology.js"></script>
     <script src="forestry.js"></script>
+    <script src="soil-fertility.js"></script>
     <script src="all-sessions.js"></script>
 
     <script>
@@ -163,11 +164,9 @@
                     const savedYear = localStorage.getItem('albana_user_year');
 
                     if (savedName && savedYear) {
-                        // إذا كان مسجلاً، نتخطى شاشة إدخال الاسم وننتقل للرئيسية مباشرة
                         document.getElementById('login-screen').style.display = 'none';
                         document.getElementById('mainDashboard').style.display = 'flex';
                     } else {
-                        // إذا لم يكن مسجلاً، نعرض شاشة تسجيل الدخول
                         document.getElementById('login-screen').style.display = 'flex';
                     }
                 }, 800);
@@ -181,7 +180,6 @@
                 alert('يرجى إدخال الاسم الثلاثي وتحديد السنة الدراسية يا GOAT!');
                 return;
             }
-            // حفظ معلومات تسجيل الدخول للأبد
             localStorage.setItem('albana_user_name', name);
             localStorage.setItem('albana_user_year', year);
 
@@ -234,10 +232,10 @@
                 const container = document.getElementById('sessionsList');
                 container.innerHTML = `<h3 style="color:#a855f7; margin-bottom:15px; text-align:center;">🏛️ هيكل الأوراكل: ${subjectName}</h3>`;
 
-                for(let i = 1; i <= 7; i++) {
+                for(let i = 1; i <= 4; i++) {
                     const div = document.createElement('div');
                     div.className = 'sub-box';
-                    div.innerText = `الجلسة العملية ${getArabicNumber(i)} (40 سؤال اختياري)`;
+                    div.innerText = `الجلسة العملية ${getArabicNumber(i)} (أسئلة اختيارية)`;
                     div.onclick = () => runOracleSession(subjectName, i);
                     container.appendChild(div);
                 }
@@ -245,7 +243,7 @@
                 const finalDiv = document.createElement('div');
                 finalDiv.className = 'sub-box';
                 finalDiv.style.background = '#a855f7';
-                finalDiv.innerText = `🏛️ اختبار الأوراكل الشامل (${subjectName} - 40 سؤال عشوائي)`;
+                finalDiv.innerText = `🏛️ اختبار الأوراكل الشامل (${subjectName})`;
                 finalDiv.onclick = () => runOracleComprehensive(subjectName);
                 container.appendChild(finalDiv);
                 return;
@@ -255,7 +253,10 @@
             const container = document.getElementById('sessionsList');
             container.innerHTML = `<h3 style="color:#60a5fa; margin-bottom:15px; text-align:center;">${subjectName} (القسم العملي)</h3>`;
 
-            for(let i = 1; i <= 7; i++) {
+            // خصوبة التربة تتكون من 4 جلسات عملية، وباقي المواد 7 جلسات
+            let sessionsCount = (subjectName === "خصوبة التربة") ? 4 : 7;
+
+            for(let i = 1; i <= sessionsCount; i++) {
                 const div = document.createElement('div');
                 div.className = 'sub-box';
                 div.innerText = `الجلسة العملية ${getArabicNumber(i)}: ${subjectName}`;
@@ -273,7 +274,7 @@
 
         function getArabicNumber(num) {
             const arr = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة", "السابعة"];
-            return arr[num-1];
+            return arr[num-1] || num;
         }
 
         let activeQuestions = [];
@@ -291,6 +292,9 @@
                 activeQuestions = plantPathologyData.sessions[sessionNum] || [];
             } else if(subject === "علم الحراج" && typeof forestryData !== 'undefined') {
                 activeQuestions = forestryData.sessions[sessionNum] || [];
+            } else if(subject === "خصوبة التربة" && typeof soilFertilityDatabase !== 'undefined') {
+                let sessionKey = `session${sessionNum}`;
+                activeQuestions = soilFertilityDatabase[sessionKey] ? soilFertilityDatabase[sessionKey].questions : [];
             } else if(subject === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
                 let rawData = allOrnamentalPlantsSessions[`session${sessionNum}`] || [];
                 activeQuestions = rawData.map(item => ({ q: item.question, a: item.answer }));
@@ -313,6 +317,13 @@
                 activeQuestions = plantPathologyData.getComprehensiveExam();
             } else if(subject === "علم الحراج" && typeof forestryData !== 'undefined') {
                 activeQuestions = forestryData.getComprehensiveExam();
+            } else if(subject === "خصوبة التربة" && typeof soilFertilityDatabase !== 'undefined') {
+                activeQuestions = [
+                    ...(soilFertilityDatabase.session1 ? soilFertilityDatabase.session1.questions : []),
+                    ...(soilFertilityDatabase.session2 ? soilFertilityDatabase.session2.questions : []),
+                    ...(soilFertilityDatabase.session3 ? soilFertilityDatabase.session3.questions : []),
+                    ...(soilFertilityDatabase.session4 ? soilFertilityDatabase.session4.questions : [])
+                ];
             } else if(subject === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
                 let allRaw = [
                     ...(allOrnamentalPlantsSessions.session1 || []),
@@ -353,17 +364,17 @@
                 sessionQuestions = plantPathologyData.sessions[sessionNum] || [];
             } else if(subjectName === "علم الحراج" && typeof forestryData !== 'undefined') {
                 sessionQuestions = forestryData.sessions[sessionNum] || [];
-            } else if(subjectName === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
-                let rawData = allOrnamentalPlantsSessions[`session${sessionNum}`] || [];
-                sessionQuestions = rawData.map(item => ({ q: item.question, a: item.answer }));
+            } else if(subjectName === "خصوبة التربة" && typeof soilFertilityDatabase !== 'undefined') {
+                let sessionKey = `session${sessionNum}`;
+                sessionQuestions = soilFertilityDatabase[sessionKey] ? soilFertilityDatabase[sessionKey].questions : [];
             }
 
-            setupOracleQuiz(sessionQuestions, `🏛️ هيكل الأوراكل: (${subjectName} - الجلسة ${getArabicNumber(sessionNum)}) - 40 سؤال`);
+            setupOracleQuiz(sessionQuestions, `🏛️ هيكل الأوراكل: (${subjectName} - الجلسة ${getArabicNumber(sessionNum)})`);
         }
 
         function runOracleComprehensive(subjectName) {
             let allSubQuestions = getAllSubjectQuestions(subjectName);
-            setupOracleQuiz(allSubQuestions, `🏛️ اختبار الأوراكل الشامل: (${subjectName}) - 40 سؤال`);
+            setupOracleQuiz(allSubQuestions, `🏛️ اختبار الأوراكل الشامل: (${subjectName})`);
         }
 
         function setupOracleQuiz(sourceArray, titleText) {
@@ -372,10 +383,11 @@
                 return;
             }
 
-            let selected40 = [...sourceArray].sort(() => 0.5 - Math.random()).slice(0, 40);
+            let limitCount = Math.min(40, sourceArray.length);
+            let selectedItems = [...sourceArray].sort(() => 0.5 - Math.random()).slice(0, limitCount);
             let allAnswersPool = sourceArray.map(item => item.a);
 
-            activeQuestions = selected40.map(item => {
+            activeQuestions = selectedItems.map(item => {
                 let correctAnswer = item.a;
                 let wrongOptions = allAnswersPool.filter(ans => ans !== correctAnswer).sort(() => 0.5 - Math.random()).slice(0, 3);
                 let options = [...wrongOptions, correctAnswer].sort(() => 0.5 - Math.random());
@@ -480,10 +492,11 @@
                 return;
             }
 
-            activeQuestions = [...allSubQuestions].sort(() => 0.5 - Math.random()).slice(0, 30);
+            let limitCount = Math.min(30, allSubQuestions.length);
+            activeQuestions = [...allSubQuestions].sort(() => 0.5 - Math.random()).slice(0, limitCount);
             
             showScreen('quizScreen');
-            renderExamModeQuestions(activeQuestions, `🎯 محاكي الامتحان: (${subjectName}) - 30 سؤال`);
+            renderExamModeQuestions(activeQuestions, `🎯 محاكي الامتحان: (${subjectName})`);
             startExamTimer(45 * 60);
         }
 
@@ -497,6 +510,13 @@
                 list = plantPathologyData.getComprehensiveExam();
             } else if(subjectName === "علم الحراج" && typeof forestryData !== 'undefined') {
                 list = forestryData.getComprehensiveExam();
+            } else if(subjectName === "خصوبة التربة" && typeof soilFertilityDatabase !== 'undefined') {
+                list = [
+                    ...(soilFertilityDatabase.session1 ? soilFertilityDatabase.session1.questions : []),
+                    ...(soilFertilityDatabase.session2 ? soilFertilityDatabase.session2.questions : []),
+                    ...(soilFertilityDatabase.session3 ? soilFertilityDatabase.session3.questions : []),
+                    ...(soilFertilityDatabase.session4 ? soilFertilityDatabase.session4.questions : [])
+                ];
             } else if(subjectName === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
                 let allRaw = [
                     ...(allOrnamentalPlantsSessions.session1 || []),
@@ -543,8 +563,8 @@
                         <span>🖤 السؤال ${index + 1} 🖤</span>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
-                    <input type="text" class="exam-input" placeholder="✍️ اكتب إجابتك هنا لمقارنتها لاحقاً...">
-                    <div class="answer-box exam-answer-box" style="margin-top: 10px; border-right: 3px solid #10b981;"><strong>✅ الجواب الصحيح والحقيقي:</strong> ${item.a}</div>
+                    <input type="text" class="search-box" placeholder="✍️ اكتب إجابتك هنا لمقارنتها لاحقاً...">
+                    <div class="answer-box exam-answer-box" style="margin-top: 10px; border-right: 3px solid #10b981; display:block;"><strong>✅ الجواب الصحيح والحقيقي:</strong> ${item.a}</div>
                 `;
                 container.appendChild(card);
             });
@@ -554,11 +574,6 @@
             if(examInterval) clearInterval(examInterval);
             document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 انتهى الامتحان! تم كشف الأجوبة الصحيحة للمقارنة 🌹</div>';
             document.getElementById('submitExamBtn').style.display = 'none';
-            
-            let answerBoxes = document.querySelectorAll('.exam-answer-box');
-            answerBoxes.forEach(box => {
-                box.style.display = 'block';
-            });
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -609,9 +624,7 @@
             let allCards = document.querySelectorAll('.question-card');
             
             if(card.classList.contains('focused-active')) {
-                allCards.forEach(c => {
-                    c.style.display = 'block';
-                });
+                allCards.forEach(c => { c.style.display = 'block'; });
                 card.classList.remove('focused-active');
                 card.style.position = 'relative';
                 card.style.top = 'auto';
@@ -623,9 +636,7 @@
                 card.style.background = '#111827';
                 card.style.boxShadow = 'none';
             } else {
-                allCards.forEach(c => {
-                    c.style.display = 'none';
-                });
+                allCards.forEach(c => { c.style.display = 'none'; });
                 card.classList.add('focused-active');
                 card.style.display = 'block';
                 card.style.position = 'fixed';
@@ -643,7 +654,6 @@
         function toggleFavorite(btn, qEncoded, aEncoded) {
             let q = decodeURIComponent(qEncoded);
             let a = decodeURIComponent(aEncoded);
-            
             let existingIndex = favoriteQuestions.findIndex(fav => fav.q === q);
 
             if(existingIndex > -1) {
