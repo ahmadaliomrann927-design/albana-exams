@@ -55,7 +55,7 @@
 
         .timer-badge { background: #ef4444; color: white; padding: 8px 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-align: center; width: 100%; }
         
-        /* تصميم لوحة النقاط والألقاب المتطورة */
+        /* لوحة النقاط والألقاب المتطورة */
         .gamification-panel { background: linear-gradient(135deg, #1f2937, #111827); border: 2px solid #3b82f6; padding: 12px 20px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
         .score-display { font-size: 1.2rem; font-weight: bold; color: #10b981; }
         .rank-badge { font-size: 1.1rem; font-weight: bold; color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid #f59e0b; }
@@ -170,11 +170,9 @@
                     const savedYear = localStorage.getItem('albana_user_year');
 
                     if (savedName && savedYear) {
-                        // إذا كان مسجلاً، نتخطى شاشة إدخال الاسم وننتقل للرئيسية مباشرة
                         document.getElementById('login-screen').style.display = 'none';
                         document.getElementById('mainDashboard').style.display = 'flex';
                     } else {
-                        // إذا لم يكن مسجلاً، نعرض شاشة تسجيل الدخول
                         document.getElementById('login-screen').style.display = 'flex';
                     }
                 }, 800);
@@ -188,7 +186,6 @@
                 alert('يرجى إدخال الاسم الثلاثي وتحديد السنة الدراسية يا GOAT!');
                 return;
             }
-            // حفظ معلومات تسجيل الدخول للأبد
             localStorage.setItem('albana_user_name', name);
             localStorage.setItem('albana_user_year', year);
 
@@ -212,10 +209,10 @@
         let appMode = 'normal';
         let examInterval = null;
         
-        // تحميل المفضلة مسبقاً من ذاكرة المتصفح الدائمة (LocalStorage) لكي تبقى محفوظة للأبد
+        // جلب المفضلة من الذاكرة الدائمة للمتصفح مباشرة
         let favoriteQuestions = JSON.parse(localStorage.getItem('albana_favorites')) || [];
         
-        // متغيرات نظام النقاط والألقاب المخصص للأوراكل ومحاكي الامتحان
+        // نظام النقاط والألقاب
         let userScore = 0;
 
         function updateRankTitle(score) {
@@ -423,7 +420,7 @@
             }
 
             appMode = 'oracle';
-            userScore = 0; // إعادة ضبط النقاط مع بداية كل أوراكل جديد
+            userScore = 0;
             refreshGamificationUI();
 
             let selected40 = [...sourceArray].sort(() => 0.5 - Math.random()).slice(0, 40);
@@ -502,10 +499,10 @@
 
             if(selected === correct) {
                 selectedCard.classList.add('correct');
-                userScore += 10; // منح 10 نقاط لكل إجابة صحيحة في الأوراكل
+                userScore += 10;
             } else {
                 selectedCard.classList.add('wrong');
-                userScore = Math.max(0, userScore - 5); // خصم نقاط خفيف عند الخطأ لزيادة الحماس
+                userScore = Math.max(0, userScore - 5);
                 allOptions.forEach(opt => {
                     if(opt.innerText.trim() === correct.trim()) {
                         opt.classList.add('correct');
@@ -513,7 +510,6 @@
                 });
             }
 
-            // تحديث لوحة النقاط واللقب فوراً بشكل بصري ملفت
             document.getElementById('currentScoreVal').innerText = userScore;
             document.getElementById('currentRankBadge').innerText = `لقبك: ${updateRankTitle(userScore)}`;
         }
@@ -541,7 +537,7 @@
             }
 
             appMode = 'examSimulator';
-            userScore = 0; // إعادة ضبط النقاط في محاكي الامتحان
+            userScore = 0;
             refreshGamificationUI();
 
             activeQuestions = [...allSubQuestions].sort(() => 0.5 - Math.random()).slice(0, 30);
@@ -741,7 +737,7 @@
                 alert('تم حفظ السؤال في المفضلة ليلة الامتحان 🌟⭐');
             }
 
-            // حفظ القائمة بالكامل في ذاكرة المتصفح الدائمة (LocalStorage) لكي لا تختفي أبداً
+            // الحفظ المؤكد في ذاكرة المتصفح
             localStorage.setItem('albana_favorites', JSON.stringify(favoriteQuestions));
         }
 
@@ -777,10 +773,7 @@
         function removeFavorite(btn, qEncoded) {
             let q = decodeURIComponent(qEncoded);
             favoriteQuestions = favoriteQuestions.filter(fav => fav.q !== q);
-            
-            // تحديث الذاكرة الدائمة عند حذف أي سؤال من المفضلة
             localStorage.setItem('albana_favorites', JSON.stringify(favoriteQuestions));
-            
             showFavoritesScreen();
         }
     </script>
