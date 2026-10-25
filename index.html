@@ -34,7 +34,7 @@
 
         .dynamic-screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 600px; margin: auto; padding: 20px; flex: 1; }
         .sub-box { background: #1f2937; border: 1px solid #374151; padding: 18px; margin: 10px 0; border-radius: 10px; width: 100%; text-align: center; font-size: 1.1rem; cursor: pointer; transition: background 0.3s; color: #fff; font-weight: bold; }
-        .sub-box:hover { background: #374151; }
+        .sub-box:hover { background: #3f4656; }
         .back-btn { background: #4b5563; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; align-self: flex-start; font-weight: bold; }
 
         .search-box { width: 100%; padding: 12px; margin-bottom: 15px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; font-size: 1rem; }
@@ -105,7 +105,7 @@
         <div style="width: 100%; display: flex; flex-direction: column; gap: 10px;" id="sessionsList"></div>
     </div>
 
-    <!-- شاشة إعداد مبارزة الأصدقاء -->
+    <!-- شاشة إعداد تحدي الأصدقاء -->
     <div class="dynamic-screen" id="duelSetupScreen">
         <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للرئيسية</button>
         <h3 style="color:#8b5cf6; margin-bottom:15px; text-align:center;">⚔️ إعداد تحدي الأصدقاء ⚔️</h3>
@@ -156,7 +156,7 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('mainDashboard').style.display = 'flex';
             
-            // التحقق المباشر إذا فتح المستخدم رابط إحالة تحدي
+            // الفحص المباشر عند تحميل الصفحة إذا كان الرابط يحتوي على تحدي أصدقاء
             checkDuelUrlParam();
         }
 
@@ -173,6 +173,7 @@
         const subjects = ["رعاية الحيوان", "أمراض النبات", "خصوبة التربة", "علم الحراج", "نباتات الزينة", "أسس الإدارة والمحاسبة"];
         let currentMode = '';
         let currentSubject = '';
+        let isDuelMode = false; // متغير للتمييز بين الوضع العادي ووضع التحدي
 
         function showSubjects(mode) {
             currentMode = mode;
@@ -197,22 +198,30 @@
             }
             showScreen('sessionsScreen');
             const container = document.getElementById('sessionsList');
-            container.innerHTML = `<h3 style="color:#60a5fa; margin-bottom:15px; text-align:center;">${subjectName} (القسم العملي)</h3>`;
+            container.innerHTML = `<h3 style="color:#60a5fa; margin-bottom:15px; text-align:center;">${subjectName} (${isDuelMode ? 'اختيار جلسة للمبارزة' : 'القسم العملي'})</h3>`;
 
             for(let i = 1; i <= 7; i++) {
                 const div = document.createElement('div');
                 div.className = 'sub-box';
                 div.innerText = `الجلسة العملية ${getArabicNumber(i)}: ${subjectName}`;
-                div.onclick = () => loadQuiz(subjectName, i);
+                div.onclick = () => {
+                    if (isDuelMode) {
+                        selectDuelSixQuestions(subjectName, i);
+                    } else {
+                        loadQuiz(subjectName, i);
+                    }
+                };
                 container.appendChild(div);
             }
 
-            const finalDiv = document.createElement('div');
-            finalDiv.className = 'sub-box';
-            finalDiv.style.background = '#3b82f6';
-            finalDiv.innerText = `اختبار لجميع الجلسات السابقة (${subjectName} - امتحان شامل)`;
-            finalDiv.onclick = () => loadComprehensiveExam(subjectName);
-            container.appendChild(finalDiv);
+            if (!isDuelMode) {
+                const finalDiv = document.createElement('div');
+                finalDiv.className = 'sub-box';
+                finalDiv.style.background = '#3b82f6';
+                finalDiv.innerText = `اختبار لجميع الجلسات السابقة (${subjectName} - امتحان شامل)`;
+                finalDiv.onclick = () => loadComprehensiveExam(subjectName);
+                container.appendChild(finalDiv);
+            }
         }
 
         function getArabicNumber(num) {
@@ -273,35 +282,23 @@
             renderQuestions(activeQuestions, `الاختبار الشامل العشوائي (${subject})`);
         }
 
-        /* دوام مبارزة الأصدقاء وتوليد رابط الإحالة للأسئلة الستة */
+        /* دوال تحدي الأصدقاء المحدثة لتعمل بسلاسة تامة */
         function startDuelSetup() {
-            showScreen('duelSetupScreen');
-            const container = document.getElementById('duelStepContainer');
-            container.innerHTML = '<p style="text-align:center; color:#9333ea; font-weight:bold;">الخطوة 1: اختر مادة التحدي</p>';
-
+            isDuelMode = true;
+            showScreen('subjectsScreen');
+            const container = document.getElementById('subjectsList');
+            container.innerHTML = '<h3 style="color:#8b5cf6; margin-bottom:15px; text-align:center;">⚔️ حدد مادة التحدي ⚔️</h3>';
+            
             subjects.forEach(sub => {
                 const div = document.createElement('div');
                 div.className = 'sub-box';
                 div.innerText = sub;
-                div.onclick = () => duelSelectSession(sub);
+                div.onclick = () => showSessions(sub, 'practical');
                 container.appendChild(div);
             });
         }
 
-        function duelSelectSession(subjectName) {
-            const container = document.getElementById('duelStepContainer');
-            container.innerHTML = `<p style="text-align:center; color:#9333ea; font-weight:bold;">الخطوة 2: اختر جلسة عملية (${subjectName})</p>`;
-
-            for(let i = 1; i <= 7; i++) {
-                const div = document.createElement('div');
-                div.className = 'sub-box';
-                div.innerText = `الجلسة العملية ${getArabicNumber(i)}`;
-                div.onclick = () => duelSelectSixQuestions(subjectName, i);
-                container.appendChild(div);
-            }
-        }
-
-        function duelSelectSixQuestions(subjectName, sessionNum) {
+        function selectDuelSixQuestions(subjectName, sessionNum) {
             let sessionQuestions = [];
             if(subjectName === "رعاية الحيوان" && typeof animalCareData !== 'undefined') {
                 sessionQuestions = animalCareData.sessions[sessionNum] || [];
@@ -321,25 +318,27 @@
                 return;
             }
 
-            // اختيار 6 أسئلة عشوائية أو أول 6 أسئلة
-            let selectedSix = sessionQuestions.sort(() => 0.5 - Math.random()).slice(0, 6);
+            // اختيار أول 6 أسئلة أو عشوائياً بدقة
+            let selectedSix = [...sessionQuestions].sort(() => 0.5 - Math.random()).slice(0, 6);
 
+            showScreen('duelSetupScreen');
             const container = document.getElementById('duelStepContainer');
             container.innerHTML = `
-                <p style="text-align:center; color:#10b981; font-weight:bold;">الخطوة 3: تم تجهيز الـ 6 أسئلة للمبارزة بنجاح!</p>
-                <button class="sub-box" style="background:#10b981;" onclick="generateDuelLink('${encodeURIComponent(JSON.stringify(selectedSix))}', '${subjectName}')">قبول المبارزة وتوليد رابط الإحالة 🔗</button>
+                <p style="text-align:center; color:#10b981; font-weight:bold; font-size:1.2rem;">تم تحديد 6 أسئلة من (${subjectName} - ${getArabicNumber(sessionNum)}) بنجاح! 🔥</p>
+                <button class="sub-box" style="background:#10b981; font-size:1.2rem;" onclick="generateRealDuelLink('${encodeURIComponent(JSON.stringify(selectedSix))}', '${subjectName}')">قبول المبارزة وتوليد رابط الإحالة الحقيقي 🔗</button>
             `;
         }
 
-        function generateDuelLink(encodedData, subjectName) {
+        function generateRealDuelLink(encodedData, subjectName) {
+            isDuelMode = false;
             let baseUrl = window.location.href.split('?')[0];
-            let duelLink = `${baseUrl}?duel=${encodedData}&sub=${encodeURIComponent(subjectName)}`;
+            let realDuelLink = `${baseUrl}?duel=${encodedData}&sub=${encodeURIComponent(subjectName)}`;
 
             const container = document.getElementById('duelStepContainer');
             container.innerHTML = `
-                <p style="color:#f59e0b; font-weight:bold; text-align:center;">انسخ رابط الإحالة وأرسله لصديقك لتتحدياه:</p>
-                <input type="text" class="search-box" value="${duelLink}" id="duallinkInput" readonly onclick="this.select()">
-                <button class="sub-box" style="background:#3b82f6;" onclick="navigator.clipboard.writeText(document.getElementById('duallinkInput').value); alert('تم نسخ رابط التحدي بنجاح 📋🔥');">نسخ الرابط 📋</button>
+                <p style="color:#f59e0b; font-weight:bold; text-align:center;">انسخ رابط الإحالة الحقيقي وأرسله لصديقك عبر واتساب:</p>
+                <input type="text" class="search-box" value="${realDuelLink}" id="duallinkInput" readonly onclick="this.select()">
+                <button class="sub-box" style="background:#3b82f6;" onclick="navigator.clipboard.writeText(document.getElementById('duallinkInput').value); alert('تم نسخ رابط التحدي بنجاح 📋🔥');">نسخ الرابط الحقيقي 📋</button>
             `;
         }
 
@@ -351,7 +350,7 @@
                     let subName = decodeURIComponent(urlParams.get('sub') || 'مبارزة الأصدقاء');
                     activeQuestions = decodedQuestions;
                     showScreen('quizScreen');
-                    renderQuestions(activeQuestions, `⚔️ تحدي الأصدقاء: (${subName}) - 6 أسئلة حاسمة ⚔️`);
+                    renderQuestions(activeQuestions, `⚔️ تحدي الأصدقاء الحقيقي: (${subName}) - 6 أسئلة حاسمة ⚔️`);
                 } catch(e) {
                     console.error('خطأ في قراءة رابط التحدي');
                 }
