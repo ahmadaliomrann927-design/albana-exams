@@ -47,6 +47,10 @@
         .answer-box { background: #1f2937; padding: 10px; border-radius: 6px; margin-top: 8px; color: #e5e7eb; display: none; white-space: pre-line; }
         .show-ans-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; font-size: 0.9rem; }
         
+        /* تنسيق خانة الكتابة في محاكي الامتحان لتكون واضحة ومقروءة تماماً */
+        .exam-input { width: 100%; padding: 12px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #ffffff !important; font-size: 1.05rem; margin-top: 8px; outline: none; }
+        .exam-input::placeholder { color: #9ca3af; }
+
         .mcq-options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
         .mcq-option { background: #1f2937; border: 1px solid #4b5563; padding: 12px; border-radius: 8px; cursor: pointer; color: #fff; text-align: right; transition: background 0.2s; font-size: 1rem; }
         .mcq-option:hover { background: #374151; }
@@ -55,7 +59,6 @@
 
         .timer-badge { background: #ef4444; color: white; padding: 8px 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-align: center; width: 100%; }
         
-        /* لوحة النقاط والألقاب المتطورة */
         .gamification-panel { background: linear-gradient(135deg, #1f2937, #111827); border: 2px solid #3b82f6; padding: 12px 20px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
         .score-display { font-size: 1.2rem; font-weight: bold; color: #10b981; }
         .rank-badge { font-size: 1.1rem; font-weight: bold; color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid #f59e0b; }
@@ -155,7 +158,6 @@
         let timeLeft = 7;
         const countdownEl = document.getElementById('countdownNum');
         
-        // عداد شاشة المقدمة وكلمة GOAT يعمل دائماً عند فتح الموقع
         const timer = setInterval(() => {
             timeLeft--;
             countdownEl.innerText = timeLeft;
@@ -165,7 +167,6 @@
                 setTimeout(() => {
                     document.getElementById('intro-screen').style.display = 'none';
                     
-                    // التحقق مما إذا كان المستخدم مسجلاً من قبل في ذاكرة المتصفح
                     const savedName = localStorage.getItem('albana_user_name');
                     const savedYear = localStorage.getItem('albana_user_year');
 
@@ -209,10 +210,7 @@
         let appMode = 'normal';
         let examInterval = null;
         
-        // جلب المفضلة من الذاكرة الدائمة للمتصفح مباشرة
         let favoriteQuestions = JSON.parse(localStorage.getItem('albana_favorites')) || [];
-        
-        // نظام النقاط والألقاب
         let userScore = 0;
 
         function updateRankTitle(score) {
@@ -737,7 +735,6 @@
                 alert('تم حفظ السؤال في المفضلة ليلة الامتحان 🌟⭐');
             }
 
-            // الحفظ المؤكد في ذاكرة المتصفح
             localStorage.setItem('albana_favorites', JSON.stringify(favoriteQuestions));
         }
 
