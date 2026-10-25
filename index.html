@@ -211,7 +211,9 @@
         let currentSubject = '';
         let appMode = 'normal';
         let examInterval = null;
-        let favoriteQuestions = [];
+        
+        // تحميل المفضلة مسبقاً من ذاكرة المتصفح الدائمة (LocalStorage) لكي تبقى محفوظة للأبد
+        let favoriteQuestions = JSON.parse(localStorage.getItem('albana_favorites')) || [];
         
         // متغيرات نظام النقاط والألقاب المخصص للأوراكل ومحاكي الامتحان
         let userScore = 0;
@@ -619,13 +621,12 @@
         }
 
         function checkSimulatorProgress() {
-            // في محاكي الامتحان نعطي نقاطاً تفاعلية عند كتابة الإجابات لرفع الحماس
             let inputs = document.querySelectorAll('.exam-input');
             let filledCount = 0;
             inputs.forEach(inp => {
                 if(inp.value.trim().length > 0) filledCount++;
             });
-            userScore = filledCount * 5; // كل سؤال تم محاولته يعطي 5 نقاط حماسية
+            userScore = filledCount * 5;
             let scoreEl = document.getElementById('currentScoreVal');
             let rankEl = document.getElementById('currentRankBadge');
             if(scoreEl && rankEl) {
@@ -739,6 +740,9 @@
                 btn.style.color = 'gold';
                 alert('تم حفظ السؤال في المفضلة ليلة الامتحان 🌟⭐');
             }
+
+            // حفظ القائمة بالكامل في ذاكرة المتصفح الدائمة (LocalStorage) لكي لا تختفي أبداً
+            localStorage.setItem('albana_favorites', JSON.stringify(favoriteQuestions));
         }
 
         function showFavoritesScreen() {
@@ -773,6 +777,10 @@
         function removeFavorite(btn, qEncoded) {
             let q = decodeURIComponent(qEncoded);
             favoriteQuestions = favoriteQuestions.filter(fav => fav.q !== q);
+            
+            // تحديث الذاكرة الدائمة عند حذف أي سؤال من المفضلة
+            localStorage.setItem('albana_favorites', JSON.stringify(favoriteQuestions));
+            
             showFavoritesScreen();
         }
     </script>
