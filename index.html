@@ -18,6 +18,15 @@
         @keyframes dropLetter { to { opacity: 1; transform: translateY(0); } }
         .blood-countdown { font-size: 4rem; color: #ef4444; font-weight: bold; }
 
+        /* بوابة التفعيل الشهري المرتبطة بـ GitHub */
+        #activation-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0f19; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9995; padding: 20px; }
+        .activation-box { background: rgba(17, 24, 39, 0.98); padding: 35px; border-radius: 16px; border: 2px solid #3b82f6; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .activation-box h2 { color: #60a5fa; margin-bottom: 10px; font-size: 1.6rem; }
+        .activation-box p { color: #9ca3af; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .activation-box input { width: 100%; padding: 12px; margin-bottom: 15px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; text-align: center; font-size: 1rem; text-transform: lowercase; }
+        .activation-box button { background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1.1rem; }
+        .telegram-btn { display: block; background: #2563eb; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-bottom: 20px; }
+
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0b0f19, #1f2937); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9980; padding: 20px; }
         .login-box { background: rgba(17, 24, 39, 0.95); padding: 40px; border-radius: 16px; border: 1px solid #374151; box-shadow: 0 15px 35px rgba(0,0,0,0.6); width: 100%; max-width: 450px; text-align: center; }
         .login-box h2 { color: #60a5fa; margin-bottom: 25px; font-size: 1.8rem; }
@@ -47,7 +56,6 @@
         .answer-box { background: #1f2937; padding: 10px; border-radius: 6px; margin-top: 8px; color: #e5e7eb; display: none; white-space: pre-line; }
         .show-ans-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; font-size: 0.9rem; }
         
-        /* تنسيق خانة الكتابة في محاكي الامتحان لتكون واضحة ومقروءة تماماً */
         .exam-input { width: 100%; padding: 12px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #ffffff !important; font-size: 1.05rem; margin-top: 8px; outline: none; }
         .exam-input::placeholder { color: #9ca3af; }
 
@@ -69,11 +77,25 @@
 </head>
 <body>
 
+    <!-- بوابة تفعيل الاشتراك الشهري المرتبطة بملف GitHub -->
+    <div id="activation-gate" style="display: none;">
+        <div class="activation-box">
+            <h2>🔒 تفعيل اشتراك الشهر (2$)</h2>
+            <p>
+                حول عبر شام كاش، وتواصل معنا عبر بوت التلغرام لترسل الإيصال وتحصل على كودك الفريد (مثل: ab3k9) 🖤🌹
+            </p>
+            <a href="https://t.me/AlBanaStore_Bot" target="_blank" class="telegram-btn">
+                🤖 اطلب الكود من بوت التلغرام
+            </a>
+            <input type="text" id="userActivationCode" placeholder="أدخل كود التفعيل (مثال: ab3k9)...">
+            <button onclick="verifyCodeWithDatabase()">تحقق وتفعيل المنصة 🚀</button>
+        </div>
+    </div>
+
     <div class="marquee-bar">
         <marquee scrollamount="5">🔥⏳ تم تحديث بنك الأسئلة مع الحل 🔥___ الأسئلة الشاملة لكل الجلسات أصبحت متاحة الآن فقط في اختبارات AL BANA 🤩🔥</marquee>
     </div>
 
-    <!-- شاشة المقدمة وكلمة GOAT والعداد ترجع تظهر دائماً بلحظة الدخول -->
     <div id="intro-screen">
         <div class="goat-title">
             <span>G</span>
@@ -155,6 +177,62 @@
     <script src="all-sessions.js"></script>
 
     <script>
+        // 1. التحقق التلقائي عند فتح الموقع: هل الاشتراك مفعّل ولم يمضِ عليه شهر؟
+        window.addEventListener('DOMContentLoaded', () => {
+            const activationTimestamp = localStorage.getItem('albana_activation_time');
+            if (activationTimestamp) {
+                const oneMonthInMillis = 30 * 24 * 60 * 60 * 1000; // شهر كامل بالمللي ثانية
+                const currentTime = new Date().getTime();
+                
+                if (currentTime - parseInt(activationTimestamp) < oneMonthInMillis) {
+                    // إذا لم ينتهِ الشهر بعد، أبقِ شاشة التفعيل مخفية
+                    document.getElementById('activation-gate').style.display = 'none';
+                } else {
+                    // انقضى الشهر، قم بإلغاء التفعيل وإظهار بوابة التفعيل من جديد
+                    localStorage.removeItem('albana_activation_time');
+                    localStorage.removeItem('albana_platform_unlocked');
+                    document.getElementById('activation-gate').style.display = 'flex';
+                }
+            } else {
+                // إذا لم يكن هناك أي تفعيل مسبق، أظهر بوابة التفعيل فوراً
+                document.getElementById('activation-gate').style.display = 'flex';
+            }
+        });
+
+        // 2. دالة التحقق من الكود عبر ملف codes.json في مستودع GitHub
+        async function verifyCodeWithDatabase() {
+            const inputVal = document.getElementById('userActivationCode').value.trim().toLowerCase();
+            if(!inputVal) {
+                alert('الرجاء إدخال كود التفعيل أولاً!');
+                return;
+            }
+
+            try {
+                // ⚠️ ملاحظة هامة: استبدل (اسم_مستخدمك) و (اسم_مستودعك) برابط مستودعك الفعلي على غيت هاب
+                const githubRawUrl = 'https://raw.githubusercontent.com/اسم_مستخدمك/اسم_مستودعك/main/codes.json';
+                
+                const response = await fetch(githubRawUrl);
+                const data = await response.json();
+
+                // التأكد هل الكود موجود في ملف المستودع وحالته لم تستخدم بعد ("unused")
+                if (data.codes && data.codes[inputVal] === "unused") {
+                    
+                    // حفظ وقت التفعيل الحالي وحالة فتح المنصة في ذاكرة المتصفح
+                    localStorage.setItem('albana_activation_time', new Date().getTime().toString());
+                    localStorage.setItem('albana_platform_unlocked', 'true');
+                    
+                    document.getElementById('activation-gate').style.display = 'none';
+                    alert('تم تفعيل اشتراكك الشهري بنجاح يا GOAT! أهلاً بك في منصتك 🖤🔥');
+                    
+                } else {
+                    alert('الكود غير صحيح، أو أنه مستخدم من قبل، أو انتهت صلاحيته! ❌');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('حدث خطأ في الاتصال بقاعدة بيانات الأكواد، تأكد من اتصال الإنترنت وحاول مجدداً.');
+            }
+        }
+
         let timeLeft = 7;
         const countdownEl = document.getElementById('countdownNum');
         
