@@ -54,6 +54,11 @@
         .mcq-option.wrong { background: #dc2626 !important; border-color: #ef4444 !important; color: #fff !important; }
 
         .timer-badge { background: #ef4444; color: white; padding: 8px 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-align: center; width: 100%; }
+        
+        /* تصميم لوحة النقاط والألقاب المتطورة */
+        .gamification-panel { background: linear-gradient(135deg, #1f2937, #111827); border: 2px solid #3b82f6; padding: 12px 20px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+        .score-display { font-size: 1.2rem; font-weight: bold; color: #10b981; }
+        .rank-badge { font-size: 1.1rem; font-weight: bold; color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid #f59e0b; }
 
         .marquee-bar { background: #1f2937; color: #f59e0b; padding: 10px; font-size: 0.95rem; font-weight: bold; border-bottom: 1px solid #374151; white-space: nowrap; overflow: hidden; }
         footer { background: #030712; padding: 20px; text-align: center; border-top: 1px solid #1f2937; font-size: 0.85rem; color: #9ca3af; line-height: 1.6; }
@@ -122,6 +127,7 @@
         <button class="back-btn" onclick="showSessions(currentSubject, currentMode)">الرجوع للخلف</button>
         <h3 id="quizTitle" style="color:#60a5fa; margin-bottom:15px; text-align:center;"></h3>
         <div id="examTimerContainer"></div>
+        <div id="gamificationContainer"></div>
         <input type="text" id="searchBar" class="search-box" placeholder="🔍 بحث سريع عن سؤال أو كلمة مفتاحية..." onkeyup="filterQuestions()">
         <div id="questionsContainer" style="width: 100%;"></div>
         <button id="submitExamBtn" class="sub-box" style="background:#10b981; display:none; margin-top:20px;" onclick="submitExam()">إنهاء الامتحان وإظهار الأجوبة الصحيحة 📝</button>
@@ -206,6 +212,31 @@
         let appMode = 'normal';
         let examInterval = null;
         let favoriteQuestions = [];
+        
+        // متغيرات نظام النقاط والألقاب المخصص للأوراكل ومحاكي الامتحان
+        let userScore = 0;
+
+        function updateRankTitle(score) {
+            if (score < 50) return "🌱 مبتدئ واعد";
+            if (score < 150) return "🥉 طالب مجتهد";
+            if (score < 300) return "🥈 خبير الأوراكل";
+            if (score < 500) return "🥇 أسطورة القاعة";
+            return "🐐 GOAT الأوراكل المطلق";
+        }
+
+        function refreshGamificationUI() {
+            const panel = document.getElementById('gamificationContainer');
+            if (appMode === 'oracle' || appMode === 'examSimulator') {
+                panel.innerHTML = `
+                    <div class="gamification-panel">
+                        <div class="score-display">💎 النقاط: <span id="currentScoreVal">${userScore}</span> XP</div>
+                        <div class="rank-badge" id="currentRankBadge">لقبك: ${updateRankTitle(userScore)}</div>
+                    </div>
+                `;
+            } else {
+                panel.innerHTML = '';
+            }
+        }
 
         function showSubjects(mode) {
             currentMode = mode;
@@ -280,6 +311,8 @@
         let activeQuestions = [];
 
         function loadQuiz(subject, sessionNum) {
+            appMode = 'normal';
+            refreshGamificationUI();
             showScreen('quizScreen');
             document.getElementById('examTimerContainer').innerHTML = '';
             document.getElementById('submitExamBtn').style.display = 'none';
@@ -304,6 +337,8 @@
         }
 
         function loadComprehensiveExam(subject) {
+            appMode = 'normal';
+            refreshGamificationUI();
             showScreen('quizScreen');
             document.getElementById('examTimerContainer').innerHTML = '';
             document.getElementById('submitExamBtn').style.display = 'none';
@@ -385,6 +420,10 @@
                 return;
             }
 
+            appMode = 'oracle';
+            userScore = 0; // إعادة ضبط النقاط مع بداية كل أوراكل جديد
+            refreshGamificationUI();
+
             let selected40 = [...sourceArray].sort(() => 0.5 - Math.random()).slice(0, 40);
             let allAnswersPool = sourceArray.map(item => item.a);
 
@@ -461,14 +500,20 @@
 
             if(selected === correct) {
                 selectedCard.classList.add('correct');
+                userScore += 10; // منح 10 نقاط لكل إجابة صحيحة في الأوراكل
             } else {
                 selectedCard.classList.add('wrong');
+                userScore = Math.max(0, userScore - 5); // خصم نقاط خفيف عند الخطأ لزيادة الحماس
                 allOptions.forEach(opt => {
                     if(opt.innerText.trim() === correct.trim()) {
                         opt.classList.add('correct');
                     }
                 });
             }
+
+            // تحديث لوحة النقاط واللقب فوراً بشكل بصري ملفت
+            document.getElementById('currentScoreVal').innerText = userScore;
+            document.getElementById('currentRankBadge').innerText = `لقبك: ${updateRankTitle(userScore)}`;
         }
 
         function startExamSimulatorMenu() {
@@ -492,6 +537,10 @@
                 alert('لا توجد أسئلة كافية لهذه المادة حالياً!');
                 return;
             }
+
+            appMode = 'examSimulator';
+            userScore = 0; // إعادة ضبط النقاط في محاكي الامتحان
+            refreshGamificationUI();
 
             activeQuestions = [...allSubQuestions].sort(() => 0.5 - Math.random()).slice(0, 30);
             
@@ -562,11 +611,27 @@
                         <span>🖤 السؤال ${index + 1} 🖤</span>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
-                    <input type="text" class="exam-input" placeholder="✍️ اكتب إجابتك هنا لمقارنتها لاحقاً...">
+                    <input type="text" class="exam-input" placeholder="✍️ اكتب إجابتك هنا لمقارنتها لاحقاً..." oninput="checkSimulatorProgress()">
                     <div class="answer-box exam-answer-box" style="margin-top: 10px; border-right: 3px solid #10b981;"><strong>✅ الجواب الصحيح والحقيقي:</strong> ${item.a}</div>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function checkSimulatorProgress() {
+            // في محاكي الامتحان نعطي نقاطاً تفاعلية عند كتابة الإجابات لرفع الحماس
+            let inputs = document.querySelectorAll('.exam-input');
+            let filledCount = 0;
+            inputs.forEach(inp => {
+                if(inp.value.trim().length > 0) filledCount++;
+            });
+            userScore = filledCount * 5; // كل سؤال تم محاولته يعطي 5 نقاط حماسية
+            let scoreEl = document.getElementById('currentScoreVal');
+            let rankEl = document.getElementById('currentRankBadge');
+            if(scoreEl && rankEl) {
+                scoreEl.innerText = userScore;
+                rankEl.innerText = `لقبك: ${updateRankTitle(userScore)}`;
+            }
         }
 
         function submitExam() {
