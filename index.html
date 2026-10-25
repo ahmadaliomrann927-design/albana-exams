@@ -82,7 +82,7 @@
     <div class="main-container" id="mainDashboard">
         <div class="dashboard-container">
             <div class="dashboard-box box-1" onclick="showScreen('sectionsScreen')">اختبارات AL BANA</div>
-            <div class="dashboard-box box-2" onclick="alert('ميزة تحدي الأصدقاء قيد التفعيل...')">تحدى أصدقائك</div>
+            <div class="dashboard-box box-2" onclick="startDuelSetup()">تحدى أصدقائك (المبارزة الثنائية)</div>
             <div class="dashboard-box box-3" onclick="alert('رقم المصمم: 0983957561 🖤🌹')">اترك لنا ملاحظاتك 🖤🌹</div>
         </div>
     </div>
@@ -105,8 +105,15 @@
         <div style="width: 100%; display: flex; flex-direction: column; gap: 10px;" id="sessionsList"></div>
     </div>
 
+    <!-- شاشة إعداد مبارزة الأصدقاء -->
+    <div class="dynamic-screen" id="duelSetupScreen">
+        <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للرئيسية</button>
+        <h3 style="color:#8b5cf6; margin-bottom:15px; text-align:center;">⚔️ إعداد تحدي الأصدقاء ⚔️</h3>
+        <div id="duelStepContainer" style="width: 100%; display: flex; flex-direction: column; gap: 10px;"></div>
+    </div>
+
     <div class="dynamic-screen" id="quizScreen">
-        <button class="back-btn" onclick="showSessions(currentSubject, currentMode)">الرجوع للجلسات</button>
+        <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للرئيسية</button>
         <h3 id="quizTitle" style="color:#60a5fa; margin-bottom:15px; text-align:center;"></h3>
         <input type="text" id="searchBar" class="search-box" placeholder="🔍 بحث سريع عن سؤال أو كلمة مفتاحية..." onkeyup="filterQuestions()">
         <div id="questionsContainer" style="width: 100%;"></div>
@@ -121,7 +128,7 @@
     <script src="management_accounting.js"></script>
     <script src="plant_pathology.js"></script>
     <script src="forestry.js"></script>
-    <script src="all-sessions.js"></script> <!-- ✨ أداة الربط المضافة لملف نباتات الزينة -->
+    <script src="all-sessions.js"></script>
 
     <script>
         let timeLeft = 7;
@@ -148,6 +155,9 @@
             }
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('mainDashboard').style.display = 'flex';
+            
+            // التحقق المباشر إذا فتح المستخدم رابط إحالة تحدي
+            checkDuelUrlParam();
         }
 
         function showScreen(screenId) {
@@ -155,6 +165,7 @@
             document.getElementById('sectionsScreen').style.display = 'none';
             document.getElementById('subjectsScreen').style.display = 'none';
             document.getElementById('sessionsScreen').style.display = 'none';
+            document.getElementById('duelSetupScreen').style.display = 'none';
             document.getElementById('quizScreen').style.display = 'none';
             document.getElementById(screenId).style.display = 'flex';
         }
@@ -223,7 +234,6 @@
             } else if(subject === "علم الحراج" && typeof forestryData !== 'undefined') {
                 activeQuestions = forestryData.sessions[sessionNum] || [];
             } else if(subject === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
-                // تكييف مصفوفة الأسئلة لتتوافق مع هيكلة الكود (إعادة تسمية question إلى q و answer إلى a)
                 let rawData = allOrnamentalPlantsSessions[`session${sessionNum}`] || [];
                 activeQuestions = rawData.map(item => ({
                     q: item.question,
@@ -246,7 +256,6 @@
             } else if(subject === "علم الحراج" && typeof forestryData !== 'undefined') {
                 activeQuestions = forestryData.getComprehensiveExam();
             } else if(subject === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
-                // دمج كل أسئلة الجلسات الخمسة لنباتات الزينة وتحويلها للشكل المطلوب
                 let allRaw = [
                     ...(allOrnamentalPlantsSessions.session1 || []),
                     ...(allOrnamentalPlantsSessions.session2 || []),
@@ -262,6 +271,91 @@
                 activeQuestions = [];
             }
             renderQuestions(activeQuestions, `الاختبار الشامل العشوائي (${subject})`);
+        }
+
+        /* دوام مبارزة الأصدقاء وتوليد رابط الإحالة للأسئلة الستة */
+        function startDuelSetup() {
+            showScreen('duelSetupScreen');
+            const container = document.getElementById('duelStepContainer');
+            container.innerHTML = '<p style="text-align:center; color:#9333ea; font-weight:bold;">الخطوة 1: اختر مادة التحدي</p>';
+
+            subjects.forEach(sub => {
+                const div = document.createElement('div');
+                div.className = 'sub-box';
+                div.innerText = sub;
+                div.onclick = () => duelSelectSession(sub);
+                container.appendChild(div);
+            });
+        }
+
+        function duelSelectSession(subjectName) {
+            const container = document.getElementById('duelStepContainer');
+            container.innerHTML = `<p style="text-align:center; color:#9333ea; font-weight:bold;">الخطوة 2: اختر جلسة عملية (${subjectName})</p>`;
+
+            for(let i = 1; i <= 7; i++) {
+                const div = document.createElement('div');
+                div.className = 'sub-box';
+                div.innerText = `الجلسة العملية ${getArabicNumber(i)}`;
+                div.onclick = () => duelSelectSixQuestions(subjectName, i);
+                container.appendChild(div);
+            }
+        }
+
+        function duelSelectSixQuestions(subjectName, sessionNum) {
+            let sessionQuestions = [];
+            if(subjectName === "رعاية الحيوان" && typeof animalCareData !== 'undefined') {
+                sessionQuestions = animalCareData.sessions[sessionNum] || [];
+            } else if(subjectName === "أسس الإدارة والمحاسبة" && typeof managementAccountingData !== 'undefined') {
+                sessionQuestions = managementAccountingData.sessions[sessionNum] || [];
+            } else if(subjectName === "أمراض النبات" && typeof plantPathologyData !== 'undefined') {
+                sessionQuestions = plantPathologyData.sessions[sessionNum] || [];
+            } else if(subjectName === "علم الحراج" && typeof forestryData !== 'undefined') {
+                sessionQuestions = forestryData.sessions[sessionNum] || [];
+            } else if(subjectName === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
+                let rawData = allOrnamentalPlantsSessions[`session${sessionNum}`] || [];
+                sessionQuestions = rawData.map(item => ({ q: item.question, a: item.answer }));
+            }
+
+            if(sessionQuestions.length === 0) {
+                alert('لا توجد أسئلة كافية في هذه الجلسة حالياً!');
+                return;
+            }
+
+            // اختيار 6 أسئلة عشوائية أو أول 6 أسئلة
+            let selectedSix = sessionQuestions.sort(() => 0.5 - Math.random()).slice(0, 6);
+
+            const container = document.getElementById('duelStepContainer');
+            container.innerHTML = `
+                <p style="text-align:center; color:#10b981; font-weight:bold;">الخطوة 3: تم تجهيز الـ 6 أسئلة للمبارزة بنجاح!</p>
+                <button class="sub-box" style="background:#10b981;" onclick="generateDuelLink('${encodeURIComponent(JSON.stringify(selectedSix))}', '${subjectName}')">قبول المبارزة وتوليد رابط الإحالة 🔗</button>
+            `;
+        }
+
+        function generateDuelLink(encodedData, subjectName) {
+            let baseUrl = window.location.href.split('?')[0];
+            let duelLink = `${baseUrl}?duel=${encodedData}&sub=${encodeURIComponent(subjectName)}`;
+
+            const container = document.getElementById('duelStepContainer');
+            container.innerHTML = `
+                <p style="color:#f59e0b; font-weight:bold; text-align:center;">انسخ رابط الإحالة وأرسله لصديقك لتتحدياه:</p>
+                <input type="text" class="search-box" value="${duelLink}" id="duallinkInput" readonly onclick="this.select()">
+                <button class="sub-box" style="background:#3b82f6;" onclick="navigator.clipboard.writeText(document.getElementById('duallinkInput').value); alert('تم نسخ رابط التحدي بنجاح 📋🔥');">نسخ الرابط 📋</button>
+            `;
+        }
+
+        function checkDuelUrlParam() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.has('duel')) {
+                try {
+                    let decodedQuestions = JSON.parse(decodeURIComponent(urlParams.get('duel')));
+                    let subName = decodeURIComponent(urlParams.get('sub') || 'مبارزة الأصدقاء');
+                    activeQuestions = decodedQuestions;
+                    showScreen('quizScreen');
+                    renderQuestions(activeQuestions, `⚔️ تحدي الأصدقاء: (${subName}) - 6 أسئلة حاسمة ⚔️`);
+                } catch(e) {
+                    console.error('خطأ في قراءة رابط التحدي');
+                }
+            }
         }
 
         function renderQuestions(questions, titleText) {
