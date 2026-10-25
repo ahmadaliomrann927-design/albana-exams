@@ -65,6 +65,7 @@
         <marquee scrollamount="5">🔥⏳ تم تحديث بنك الأسئلة مع الحل 🔥___ الأسئلة الشاملة لكل الجلسات أصبحت متاحة الآن فقط في اختبارات AL BANA 🤩🔥</marquee>
     </div>
 
+    <!-- شاشة المقدمة وكلمة GOAT والعداد ترجع تظهر دائماً بلحظة الدخول -->
     <div id="intro-screen">
         <div class="goat-title">
             <span>G</span>
@@ -147,34 +148,31 @@
         let timeLeft = 7;
         const countdownEl = document.getElementById('countdownNum');
         
-        // التحقق من تسجيل الدخول المسبق وحفظ البيانات
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('albana_user_name');
-            const savedYear = localStorage.getItem('albana_user_year');
+        // عداد شاشة المقدمة وكلمة GOAT يعمل دائماً عند فتح الموقع
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdownEl.innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById('intro-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('intro-screen').style.display = 'none';
+                    
+                    // التحقق مما إذا كان المستخدم مسجلاً من قبل في ذاكرة المتصفح
+                    const savedName = localStorage.getItem('albana_user_name');
+                    const savedYear = localStorage.getItem('albana_user_year');
 
-            if (savedName && savedYear) {
-                document.getElementById('intro-screen').style.display = 'none';
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('mainDashboard').style.display = 'flex';
-            } else {
-                startIntroCountdown();
-            }
-        });
-
-        function startIntroCountdown() {
-            const timer = setInterval(() => {
-                timeLeft--;
-                countdownEl.innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    document.getElementById('intro-screen').style.opacity = '0';
-                    setTimeout(() => {
-                        document.getElementById('intro-screen').style.display = 'none';
+                    if (savedName && savedYear) {
+                        // إذا كان مسجلاً، نتخطى شاشة إدخال الاسم وننتقل للرئيسية مباشرة
+                        document.getElementById('login-screen').style.display = 'none';
+                        document.getElementById('mainDashboard').style.display = 'flex';
+                    } else {
+                        // إذا لم يكن مسجلاً، نعرض شاشة تسجيل الدخول
                         document.getElementById('login-screen').style.display = 'flex';
-                    }, 800);
-                }
-            }, 1000);
-        }
+                    }
+                }, 800);
+            }
+        }, 1000);
 
         function startPlatform() {
             const name = document.getElementById('fullName').value.trim();
@@ -183,6 +181,7 @@
                 alert('يرجى إدخال الاسم الثلاثي وتحديد السنة الدراسية يا GOAT!');
                 return;
             }
+            // حفظ معلومات تسجيل الدخول للأبد
             localStorage.setItem('albana_user_name', name);
             localStorage.setItem('albana_user_year', year);
 
@@ -670,7 +669,7 @@
 
             favoriteQuestions.forEach((item, index) => {
                 const card = document.createElement('div');
-                card.className, card.className = 'question-card';
+                card.className = 'question-card';
                 card.innerHTML = `
                     <div class="question-header">
                         <span>🌟 المفضلة ${index + 1} 🌟</span>
