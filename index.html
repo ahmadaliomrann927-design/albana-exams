@@ -18,7 +18,7 @@
         @keyframes dropLetter { to { opacity: 1; transform: translateY(0); } }
         .blood-countdown { font-size: 4rem; color: #ef4444; font-weight: bold; }
 
-        /* بوابة التفعيل الشهري */
+        /* بوابة تفعيل الاشتراك الشهري */
         #activation-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0f19; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9995; padding: 20px; }
         .activation-box { background: rgba(17, 24, 39, 0.98); padding: 35px; border-radius: 16px; border: 2px solid #3b82f6; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .activation-box h2 { color: #60a5fa; margin-bottom: 10px; font-size: 1.6rem; }
@@ -139,17 +139,17 @@
     </div>
 
     <div class="dynamic-screen" id="subjectsScreen">
-        <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للخلف</button>
+        <button class="back-btn" onclick="handleSubjectsBack()">الرجوع للخلف</button>
         <div style="width: 100%; display: flex; flex-direction: column; gap: 12px;" id="subjectsList"></div>
     </div>
 
     <div class="dynamic-screen" id="sessionsScreen">
-        <button class="back-btn" onclick="showSubjects(currentMode)">الرجوع للمواد</button>
+        <button class="back-btn" onclick="handleSessionsBack()">الرجوع للمواد</button>
         <div style="width: 100%; display: flex; flex-direction: column; gap: 10px;" id="sessionsList"></div>
     </div>
 
     <div class="dynamic-screen" id="quizScreen">
-        <button class="back-btn" onclick="showSessions(currentSubject, currentMode)">الرجوع للخلف</button>
+        <button class="back-btn" onclick="handleQuizBack()">الرجوع للخلف</button>
         <h3 id="quizTitle" style="color:#60a5fa; margin-bottom:15px; text-align:center;"></h3>
         <div id="examTimerContainer"></div>
         <div id="gamificationContainer"></div>
@@ -181,7 +181,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             const activationTimestamp = localStorage.getItem('albana_activation_time');
             if (activationTimestamp) {
-                const oneMonthInMillis = 30 * 24 * 60 * 60 * 1000; // شهر كامل بالمللي ثانية
+                const oneMonthInMillis = 30 * 24 * 60 * 60 * 1000;
                 const currentTime = new Date().getTime();
                 
                 if (currentTime - parseInt(activationTimestamp) < oneMonthInMillis) {
@@ -196,7 +196,7 @@
             }
         });
 
-        // 2. دالة التحقق المباشر من الأكواد الـ 50 لضمان السرعة والعمل الفوري
+        // 2. دالة التحقق المباشر من الأكواد الـ 50
         function verifyCodeWithDatabase() {
             const inputVal = document.getElementById('userActivationCode').value.trim().toLowerCase();
             if(!inputVal) {
@@ -204,7 +204,6 @@
                 return;
             }
 
-            // قائمة الأكواد الـ 50 كاملة وجاهزة للعمل الفوري
             const validCodesList = [
                 "ab3k9", "m7n2x", "k9p4z", "r2w8v", "x5j1q",
                 "t8l3m", "f4h6n", "b2c9p", "d7s5w", "g1y8k",
@@ -219,7 +218,6 @@
             ];
 
             if (validCodesList.includes(inputVal)) {
-                // حفظ وقت التفعيل الحالي وحالة فتح المنصة لمدة شهر كامل
                 localStorage.setItem('albana_activation_time', new Date().getTime().toString());
                 localStorage.setItem('albana_platform_unlocked', 'true');
                 
@@ -326,9 +324,37 @@
             });
         }
 
+        // دالة تحكم ذكية للرجوع من شاشة المواد حسب وضع التطبيق الحالي
+        function handleSubjectsBack() {
+            if (appMode === 'oracle') {
+                startOracleMenu();
+            } else if (appMode === 'examSimulator') {
+                startExamSimulatorMenu();
+            } else {
+                showScreen('sectionsScreen');
+            }
+        }
+
+        // دالة تحكم ذكية للرجوع من شاشة الجلسات حسب وضع التطبيق الحالي
+        function handleSessionsBack() {
+            if (appMode === 'oracle') {
+                startOracleMenu();
+            } else if (appMode === 'examSimulator') {
+                startExamSimulatorMenu();
+            } else {
+                showSubjects(currentMode);
+            }
+        }
+
+        // دالة تحكم ذكية للرجوع من شاشة الاختبارات
+        function handleQuizBack() {
+            if (examInterval) clearInterval(examInterval);
+            showSessions(currentSubject, currentMode);
+        }
+
         function showSessions(subjectName, mode) {
             currentSubject = subjectName;
-            if(mode === 'theoretical') {
+            if(mode === 'theoretical' && appMode === 'normal') {
                 alert('لم يحن الوقت للبدء بالمواد النظرية 🖤🌹');
                 return;
             }
@@ -338,7 +364,7 @@
                 const container = document.getElementById('sessionsList');
                 container.innerHTML = `<h3 style="color:#a855f7; margin-bottom:15px; text-align:center;">🏛️ هيكل الأوراكل: ${subjectName}</h3>`;
 
-                for(let i = 1; i <= 7; i++) {
+                for(let i = 1; i <= 5; i++) {
                     const div = document.createElement('div');
                     div.className = 'sub-box';
                     div.innerText = `الجلسة العملية ${getArabicNumber(i)} (40 سؤال اختياري)`;
@@ -359,7 +385,7 @@
             const container = document.getElementById('sessionsList');
             container.innerHTML = `<h3 style="color:#60a5fa; margin-bottom:15px; text-align:center;">${subjectName} (القسم العملي)</h3>`;
 
-            for(let i = 1; i <= 7; i++) {
+            for(let i = 1; i <= 5; i++) {
                 const div = document.createElement('div');
                 div.className = 'sub-box';
                 div.innerText = `الجلسة العملية ${getArabicNumber(i)}: ${subjectName}`;
