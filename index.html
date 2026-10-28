@@ -8,6 +8,14 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0b0f19; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
         
+        /* بوابة الرمز السري الأولية */
+        #secret-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0f19; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
+        .secret-box { background: rgba(17, 24, 39, 0.98); padding: 35px; border-radius: 16px; border: 2px solid #ef4444; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .secret-box h2 { color: #ef4444; margin-bottom: 10px; font-size: 1.6rem; }
+        .secret-box p { color: #9ca3af; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .secret-box input { width: 100%; padding: 12px; margin-bottom: 15px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; text-align: center; font-size: 1.1rem; }
+        .secret-box button { background: #ef4444; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1.1rem; }
+
         #intro-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; color: #ffffff; transition: opacity 0.8s ease; }
         .goat-title { font-size: 5rem; font-weight: bold; letter-spacing: 12px; display: flex; gap: 15px; direction: ltr; margin-bottom: 20px; }
         .goat-title span { opacity: 0; transform: translateY(-80px); animation: dropLetter 0.5s forwards; }
@@ -76,6 +84,16 @@
     </style>
 </head>
 <body>
+
+    <!-- بوابة الرمز السري المطلوبة -->
+    <div id="secret-gate">
+        <div class="secret-box">
+            <h2>🔐 حماية تطبيق AL BANA</h2>
+            <p>أدخل الرمز السري الخاص لفتح التطبيق والوصول إلى بنك الأسئلة 🖤🔥</p>
+            <input type="password" id="userSecretInput" placeholder="أدخل الرمز السري هنا...">
+            <button onclick="verifySecretCode()">دخول آمن 🚀</button>
+        </div>
+    </div>
 
     <!-- بوابة تفعيل الاشتراك الشهري -->
     <div id="activation-gate" style="display: none;">
@@ -177,11 +195,26 @@
     <script src="all-sessions.js"></script>
 
     <script>
-        // 1. التحقق التلقائي عند فتح الموقع: هل الاشتراك مفعّل ولم يمضِ عليه شهر؟
+        // دالة التحقق من الرمز السري المطلوبة
+        function verifySecretCode() {
+            const secretVal = document.getElementById('userSecretInput').value.trim();
+            if (secretVal === "hj55y5s") {
+                document.getElementById('secret-gate').style.display = 'none';
+                localStorage.setItem('albana_secret_unlocked', 'true');
+            } else {
+                alert('الرمز السري غير صحيح! ❌');
+            }
+        }
+
+        // التحقق التلقائي إذا تم إدخال الرمز مسبقاً
         window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('albana_secret_unlocked') === 'true') {
+                document.getElementById('secret-gate').style.display = 'none';
+            }
+
             const activationTimestamp = localStorage.getItem('albana_activation_time');
             if (activationTimestamp) {
-                const oneMonthInMillis = 30 * 24 * 60 * 60 * 1000; // شهر كامل بالمللي ثانية
+                const oneMonthInMillis = 30 * 24 * 60 * 60 * 1000;
                 const currentTime = new Date().getTime();
                 
                 if (currentTime - parseInt(activationTimestamp) < oneMonthInMillis) {
