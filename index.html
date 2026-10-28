@@ -26,14 +26,20 @@
         @keyframes dropLetter { to { opacity: 1; transform: translateY(0); } }
         .blood-countdown { font-size: 4rem; color: #ef4444; font-weight: bold; }
 
-        /* بوابة التفعيل الشهري */
-        #activation-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0f19; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9995; padding: 20px; }
-        .activation-box { background: rgba(17, 24, 39, 0.98); padding: 35px; border-radius: 16px; border: 2px solid #3b82f6; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .activation-box h2 { color: #60a5fa; margin-bottom: 10px; font-size: 1.6rem; }
-        .activation-box p { color: #9ca3af; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
-        .activation-box input { width: 100%; padding: 12px; margin-bottom: 15px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; text-align: center; font-size: 1rem; text-transform: lowercase; }
-        .activation-box button { background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1.1rem; }
-        .telegram-btn { display: block; background: #2563eb; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-bottom: 20px; }
+        /* بوابة تفعيل الاشتراك الشهري المحدثة بالكامل */
+        #activation-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0f19; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9995; padding: 20px; overflow-y: auto; }
+        .activation-box { background: rgba(17, 24, 39, 0.98); padding: 30px; border-radius: 16px; border: 2px solid #3b82f6; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); margin: auto; }
+        .activation-box h2 { color: #60a5fa; margin-bottom: 8px; font-size: 1.5rem; }
+        .activation-box .sub-welcome { color: #9ca3af; font-size: 0.9rem; margin-bottom: 15px; font-style: italic; }
+        .price-badge { background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #10b981; padding: 8px; border-radius: 8px; font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .activation-box p { color: #d1d5db; font-size: 0.9rem; margin-bottom: 15px; line-height: 1.5; }
+        
+        .sham-cash-box { background: #1f2937; border: 1px dashed #4b5563; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; color: #f59e0b; }
+        .sham-img-preview { width: 100%; max-height: 150px; object-fit: contain; border-radius: 8px; margin-top: 8px; display: none; background: #fff; padding: 5px; }
+
+        .activation-box input { width: 100%; padding: 12px; margin-bottom: 15px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; text-align: center; font-size: 1rem; }
+        .activation-box button { background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1.1rem; margin-bottom: 10px; }
+        .telegram-btn { display: block; background: #2563eb; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-bottom: 15px; font-size: 0.95rem; }
 
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0b0f19, #1f2937); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9980; padding: 20px; }
         .login-box { background: rgba(17, 24, 39, 0.95); padding: 40px; border-radius: 16px; border: 1px solid #374151; box-shadow: 0 15px 35px rgba(0,0,0,0.6); width: 100%; max-width: 450px; text-align: center; }
@@ -95,18 +101,29 @@
         </div>
     </div>
 
-    <!-- بوابة تفعيل الاشتراك الشهري -->
+    <!-- بوابة تفعيل الاشتراك الشهري الجديدة -->
     <div id="activation-gate" style="display: none;">
         <div class="activation-box">
-            <h2>🔒 تفعيل اشتراك الشهر (2$)</h2>
-            <p>
-                حول عبر شام كاش، وتواصل معنا عبر بوت التلغرام لترسل الإيصال وتحصل على كودك الفريد (مثل: ab3k9) 🖤🌹
-            </p>
-            <a href="https://t.me/AlBanaStore_Bot" target="_blank" class="telegram-btn">
-                🤖 اطلب الكود من بوت التلغرام
+            <h2>أهلاً وسهلاً بك في منصة AL BANA التعليمية ❤️🌹</h2>
+            <div class="sub-welcome">Welcome to AL BANA Educational Platform ❤️🌹</div>
+            
+            <div class="price-badge">💳 رسم الاشتراك: 300 ليرة سورية (لمدة شهر كامل)</div>
+            
+            <div class="sham-cash-box">
+                <div>حساب شام كاش للتحويل:</div>
+                <strong style="color: #fff; font-size: 1.1rem;">أحمد علي عمران</strong>
+                <div style="margin-top: 5px; font-size: 0.85rem; color: #9ca3af;">رقم الحساب: اضغط زر الواتساب لإرسال الإيصال</div>
+                <!-- مكان صورة شام كاش، ضع رابطها أو اسم ملفها هنا -->
+                <img id="shamCashImg" src="" alt="حساب شام كاش" class="sham-img-preview">
+            </div>
+
+            <a href="https://wa.me/963983957561?text=مرحباً مهندس، هذا إيصال تحويل شام كاش لاشتراك منصة AL BANA 🖤🌹" target="_blank" class="telegram-btn" style="background: #25d366;">
+                💬 إرسال الإيصال عبر الواتساب وطلب الكود
             </a>
+
+            <p>ارجو إدخال كود التفعيل الخاص بك أدناه ❤️🌹</p>
             <input type="text" id="userActivationCode" placeholder="أدخل كود التفعيل (مثال: ab3k9)...">
-            <button onclick="verifyCodeWithDatabase()">تحقق وتفعيل المنصة 🚀</button>
+            <button onclick="verifyCodeWithDatabase()">تفعيل المنصة والدخول 🚀</button>
         </div>
     </div>
 
@@ -206,7 +223,7 @@
             }
         }
 
-        // التحقق التلقائي إذا تم إدخال الرمز مسبقاً
+        // التحقق التلقائي إذا تم إدخال الرمز مسبقاً وفحص صلاحية الشهر
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('albana_secret_unlocked') === 'true') {
                 document.getElementById('secret-gate').style.display = 'none';
@@ -229,7 +246,7 @@
             }
         });
 
-        // 2. دالة التحقق المباشر من الأكواد الـ 50 لضمان السرعة والعمل الفوري
+        // التحقق من كود التفعيل والمدة (30 يوماً وصلاحية لمرة واحدة على الجهاز)
         function verifyCodeWithDatabase() {
             const inputVal = document.getElementById('userActivationCode').value.trim().toLowerCase();
             if(!inputVal) {
@@ -237,7 +254,7 @@
                 return;
             }
 
-            // قائمة الأكواد الـ 50 كاملة وجاهزة للعمل الفوري
+            // قائمة الأكواد الـ 50 (جاهزة للتوسيع لـ 2000 كود مستقبلاً بملف منفصل)
             const validCodesList = [
                 "ab3k9", "m7n2x", "k9p4z", "r2w8v", "x5j1q",
                 "t8l3m", "f4h6n", "b2c9p", "d7s5w", "g1y8k",
@@ -252,14 +269,15 @@
             ];
 
             if (validCodesList.includes(inputVal)) {
-                // حفظ وقت التفعيل الحالي وحالة فتح المنصة لمدة شهر كامل
+                // حفظ وقت التفعيل الحالي وحالة فتح المنصة لمدة شهر كامل على الجهاز
                 localStorage.setItem('albana_activation_time', new Date().getTime().toString());
                 localStorage.setItem('albana_platform_unlocked', 'true');
+                localStorage.setItem('albana_used_code', inputVal);
                 
                 document.getElementById('activation-gate').style.display = 'none';
-                alert('تم تفعيل اشتراكك الشهري بنجاح يا GOAT! أهلاً بك في منصتك 🖤🔥');
+                alert('تم تفعيل اشتراكك الشهري بنجاح يا GOAT لمدة 30 يوماً! أهلاً بك في منصتك 🖤🔥');
             } else {
-                alert('الكود غير صحيح، تأكد من نسخه بدقة! ❌');
+                alert('الكود غير صحيح، تأكد من نسخه بدقة من الواتساب! ❌');
             }
         }
 
