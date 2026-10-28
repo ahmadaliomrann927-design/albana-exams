@@ -1,0 +1,124 @@
+// منصة AL BANA التعليمية - قاعدة البيانات المركزية للأكواد المعقدة (الدفعة الأولى الكاملة: 1000 كود)
+// صمم من قبل المهندس أحمد علي عمران 🖤🌹
+
+const validCodesBatch1 = [
+    // 1 إلى 100
+    "y2ls8b3", "k4xp9m1", "r7qw2v5", "m3nj8k6", "h9bf4xz", "t5dc1l8", "p6w2n4q", "s8kp7j3", "d1vx9m2", "f4rt5ch",
+    "g7ny3k1", "z2bm8p4", "x5ql9w6", "c8jh2fd", "v3tx7s1", "b4mp6rn", "n9kz1hq", "m2wf5db", "l7rc3pt", "k1xs8vg",
+    "j5hd2nl", "h8qp6kc", "q3wf9zt", "w4dc7rm", "e2bn5px", "r6vx1jh", "t9kl8sc", "y1mt4fd", "u7nw2gb", "i3pz6hq",
+    "o8rc5v1", "p2dx9km", "a4sf7jt", "s5gh1wr", "d9jk3bl", "f2lz8nx", "g6xc4pv", "h3vb7qm", "j1nm2ws", "k7cf9dr",
+    "l4vx3tp", "z8bq6mk", "x2hn5fc", "c1jp7wr", "v9dt4ls", "b6gw2kz", "n3fc8xh", "m5jv1pq", "r4ls7nd", "t7kp2wb",
+    "y8qw3m5", "u2nj6k1", "i4bf9xz", "o1dc5l7", "p7w3n2q", "a3kp8j4", "s9vx1m6", "d2rt4ch", "f5ny7k3", "g8bm2p1",
+    "h1ql6w9", "j4jh8fd", "k7tx2s5", "l2mp9rn", "z5kz3hq", "x3wf4db", "c9rc1pt", "v6xs7vg", "b1hd5nl", "n8qp2kc",
+    "m4wf8zt", "r3dc6rm", "t1bn9px", "y7vx2jh", "u9kl3sc", "i2mt5fd", "o4nw7gb", "p5pz1hq", "a8rc3v2", "s1dx6km",
+    "d4sf9jt", "f7gh2wr", "g3jk5bl", "h2lz4nx", "j6xc8pv", "k9vb1qm", "l1nm7ws", "z4cf2dr", "x7vx6tp", "c2bq3mk",
+    "v5hn8fc", "b3jp1wr", "n7dt9ls", "m1gw4kz", "r8fc2xh", "t4jv6pq", "y2ls9nd", "u6kp5wb", "i9qw4m1", "o3nj7k2",
+
+    // 101 إلى 200
+    "p1bf5xz", "a6dc8l3", "s2w7n9q", "d5kp4j1", "f8vx2m6", "g1rt3ch", "h4ny6k7", "j9bm5p2", "k3ql1w4", "l7jh9fd",
+    "z2tx8s6", "x4mp1rn", "c6kz5hq", "v8wf3db", "b2rc7pt", "n5xs4vg", "m1hd9nl", "r7qp6kc", "t3wf2zt", "y6dc1rm",
+    "u4bn8px", "i8vx7jh", "o2kl9sc", "p9mt3fd", "a5nw1gb", "s7pz4hq", "d3rc8v2", "f1dx5km", "g6sf2jt", "h4gh7wr",
+    "j8jk1bl", "k2lz9nx", "l5xc6pv", "z1vb3qm", "x9nm4ws", "c3cf8dr", "v7vx2tp", "b4bq1mk", "n6hn7fc", "m2jp9wr",
+    "r5dt3ls", "t1gw8kz", "y9fc4xh", "u3jv7pq", "i7ls2nd", "o6kp1wb", "p4qw8m1", "a2nj5k7", "s8bf3xz", "d1dc9l6",
+    "f3w7n2q", "g5kp8j4", "h7vx1m6", "j2rt4ch", "k6ny3k7", "l9bm2p5", "z1ql4w8", "x3jh7fd", "c5tx6s2", "v8mp9rn",
+    "b4kz1hq", "n7wf5db", "m3rc2pt", "r1xs6vg", "t9hd4nl", "y5qp8kc", "u2wf3zt", "i6dc7rm", "o1bn4px", "p8vx2jh",
+    "a3kl5sc", "s7mt9fd", "d4nw2gb", "f2pz6hq", "g9rc3v1", "h5dx8km", "j3sf4jt", "k1gh7wr", "l6jk2bl", "z8lz5nx",
+    "x2xc4pv", "c4vb9qm", "v7nm1ws", "b9cf3dr", "n1vx6tp", "m6bq8mk", "r2hn5fc", "t7jp1wr", "y4dt9ls", "u1gw6kz",
+    "i5fc2xh", "o9jv4pq", "p3ls7nd", "a7kp2wb", "s2qw4m1", "d6nj8k2", "f9bf5xz", "g4dc1l3", "h1w7n9q", "j5kp4j1",
+
+    // 201 إلى 300
+    "k8vx2m6", "l3rt3ch", "z7ny6k7", "x1bm5p2", "c9ql1w4", "v4jh9fd", "b2tx8s6", "n6mp1rn", "m8kz5hq", "r3wf3db",
+    "t5rc7pt", "y1xs4vg", "u7hd9nl", "i4qp6kc", "o2wf2zt", "p6dc1rm", "a8bn8px", "s3vx7jh", "d9kl9sc", "f1mt3fd",
+    "g5nw1gb", "h7pz4hq", "j2rc8v2", "k4dx5km", "l8sf2jt", "z3gh7wr", "x6jk1bl", "c1lz9nx", "v5xc6pv", "b8vb3qm",
+    "n4nm4ws", "m7cf8dr", "r2vx2tp", "t9bq1mk", "y3hn7fc", "u6jp9wr", "i1dt3ls", "o8gw8kz", "p2fc4xh", "a9jv7pq",
+    "s4ls2nd", "d5kp1wb", "f7qw4m1", "g3nj5k7", "h8bf3xz", "j1dc9l6", "k6w7n2q", "l2kp8j4", "z5vx1m6", "x7rt4ch",
+    "c3ny3k7", "v9bm2p5", "b1ql4w8", "n4jh7fd", "m6tx6s2", "r8mp9rn", "t2kz1hq", "y7wf5db", "u3rc2pt", "i1xs6vg",
+    "o5hd4nl", "p9qp8kc", "a6wf3zt", "s4dc7rm", "d2bn4px", "f8vx2jh", "g3kl5sc", "h9mt9fd", "j7nw2gb", "k5pz6hq",
+    "l1rc3v1", "z4dx8km", "x2sf4jt", "c8gh7wr", "v6jk2bl", "b3lz5nx", "n1xc4pv", "m5vb9qm", "r7nm1ws", "t4cf3dr",
+    "y2vx6tp", "u8bq8mk", "i6hn5fc", "o3jp1wr", "p7dt9ls", "a1gw6kz", "s5fc2xh", "d8jv4pq", "f4ls7nd", "g2kp2wb",
+    "h6qw4m1", "j9nj8k2", "k3bf5xz", "l7dc1l3", "z1w7n9q", "x5kp4j1", "c2vx2m6", "v4rt3ch", "b8ny6k7", "n3bm5p2",
+
+    // 301 إلى 400
+    "m7ql1w4", "r1jh9fd", "t6tx8s6", "y4mp1rn", "u2kz5hq", "i9wf3db", "o5rc7pt", "p3xs4vg", "a7hd9nl", "s1qp6kc",
+    "d6wf2zt", "f4dc1rm", "g8bn8px", "h2vx7jh", "j5kl9sc", "k9mt3fd", "l3nw1gb", "z7pz4hq", "x1rc8v2", "c6dx5km",
+    "v2sf2jt", "b4gh7wr", "n8jk1bl", "m3lz9nx", "r5xc6pv", "t1vb3qm", "y9nm4ws", "u7cf8dr", "i4vx2tp", "o6bq1mk",
+    "p2hn7fc", "a8jp9wr", "s3dt3ls", "d1gw8kz", "f5fc4xh", "g9jv7pq", "h4ls2nd", "j6kp1wb", "k2qw4m1", "l8nj5k7",
+    "z3bf3xz", "x4dc9l6", "c7w7n2q", "v1kp8j4", "b5vx1m6", "n9rt4ch", "m2ny3k7", "r6bm2p5", "t3ql4w8", "y8jh7fd",
+    "u1tx6s2", "i4mp9rn", "o7kz1hq", "p5wf5db", "a2rc2pt", "s9xs6vg", "d3hd4nl", "f6qp8kc", "g1wf3zt", "h8dc7rm",
+    "j4bn4px", "k2vx2jh", "l3kl5sc", "z6mt9fd", "x7nw2gb", "c1pz6hq", "v5rc3v1", "b9dx8km", "n2sf4jt", "m4gh7wr",
+    "r8jk2bl", "t1lz5nx", "y6xc4pv", "u3vb9qm", "i7nm1ws", "o2cf3dr", "p4vx6tp", "a6bq8mk", "s1hn5fc", "d7jp1wr",
+    "f9dt9ls", "g3gw6kz", "h5fc2xh", "j8jv4pq", "k1ls7nd", "l4kp2wb", "z2qw4m1", "x9nj8k2", "c5bf5xz", "v3dc1l3",
+    "b7w7n2q", "n1kp4j1", "m6vx2m6", "r4rt3ch", "t8ny6k7", "y2bm5p2", "u9ql1w4", "i5jh9fd", "o3tx8s6", "p1mp1rn",
+
+    // 401 إلى 500
+    "q1xk4m7", "w8zp2j9", "e3fl6nc", "r5hd1vx", "t9bt4kp", "y2sw8gz", "u4lr7jc", "i6fn3mx", "o1dk9vp", "p7qc5bh",
+    "a3gx2ln", "s9jv8fk", "d4mc1wr", "f6ht7pz", "g2bx5qs", "h8nk3dm", "j1fl9xc", "k5zp4yw", "l7rt2vb", "z3qj6mh",
+    "x1fd8kp", "c9sw4nz", "v2lr5gx", "b6fn1jc", "n4dk7vm", "m8qc3bh", "r3gx9ln", "t7jv2fk", "y5mc6wr", "u1ht4pz",
+    "i9bx8qs", "o4nk2dm", "p2fl7xc", "a6zp1yw", "s3rt9vb", "d8qj5mh", "f1fd4kp", "g7sw6nz", "h2lr3gx", "j9fn8jc",
+    "k4dk1vm", "l5qc9bh", "z6gx2ln", "x3jv4fk", "c1mc7wr", "v8ht9pz", "b5bx3qs", "n2nk6dm", "m7fl2xc", "r4zp8yw",
+    "t1rt5vb", "y9qj3mh", "u6fd1kp", "i3sw7nz", "o2lr9gx", "p8fn4jc", "a5dk6vm", "s1qc2bh", "d9gx8ln", "f3jv7fk",
+    "g4mc5wr", "h6ht1pz", "j2bx9qs", "k7nk4dm", "l1fl8xc", "z5zp2yw", "x8rt6vb", "c4qj9mh", "v3fd5kp", "b1sw1nz",
+    "n6lr4gx", "m9fn7jc", "r2dk8vm", "t4qc1bh", "y1gx3ln", "u8jv6fk", "i5mc9wr", "o7ht2pz", "p3bx4qs", "a2nk5dm",
+    "s6fl9xc", "d4zp3yw", "f8rt1vb", "g1qj7mh", "h9fd6kp", "j3sw2nz", "k5lr8gx", "l2fn4jc", "z7dk9vm", "x6qc3bh",
+    "c2gx1ln", "v4jv5fk", "b8mc7wr", "n1ht2pz", "m3bx9qs", "r7nk6dm", "t5fl8xc", "y2zp4yw", "u1rt7vb", "i8qj3mh",
+
+    // 501 إلى 600
+    "o6fd5kp", "p4sw1nz", "a9lr6gx", "s2fn9jc", "d3dk8vm", "f7qc4bh", "g5gx3ln", "h1jv8fk", "j6mc5wr", "k8ht2pz",
+    "l3bx4qs", "z4nk5dm", "x2fl9xc", "c7zp3yw", "v1rt1vb", "b9qj7mh", "n4fd6kp", "m5sw2nz", "r1lr8gx", "t6fn4jc",
+    "y3dk9vm", "u2qc3bh", "i7gx1ln", "o8jv5fk", "p1mc7wr", "a4ht2pz", "s8bx9qs", "d6nk6dm", "f2fl8xc", "g9zp4yw",
+    "h3rt7vb", "j4qj3mh", "k1fd5kp", "l6sw1nz", "z2lr6gx", "x5fn9jc", "c8dk8vm", "v7qc4bh", "b3gx3ln", "n9jv8fk",
+    "m1mc5wr", "r4ht2pz", "t2bx4qs", "y7nk5dm", "u5fl9xc", "i3zp3yw", "o9rt1vb", "p6qj7mh", "a1fd6kp", "s4sw2nz",
+    "d8lr8gx", "f5fn4jc", "g2dk9vm", "h7qc3bh", "j9gx1ln", "k3jv5fk", "l4mc7wr", "z1ht2pz", "x8bx9qs", "c6nk6dm",
+    "v5fl8xc", "b2zp4yw", "n3rt7vb", "m8qj3mh", "r1fd5kp", "t9sw1nz", "y4lr6gx", "u7fn9jc", "i2dk8vm", "o3qc4bh",
+    "p5gx3ln", "a6jv8fk", "s9mc5wr", "d1ht2pz", "f4bx4qs", "g8nk5dm", "h2fl9xc", "j7zp3yw", "k9rt1vb", "l5qj7mh",
+    "z3fd6kp", "x1sw2nz", "c4lr8gx", "v6fn4jc", "b2dk9vm", "n8qc3bh", "m4gx1ln", "r9jv5fk", "t3mc7wr", "y1ht2pz",
+    "u6bx9qs", "i4nk6dm", "o7fl8xc", "p2zp4yw", "a3rt7vb", "s5qj3mh", "d7fd5kp", "f9sw1nz", "g1lr6gx", "h6fn9jc",
+
+    // 601 إلى 700
+    "j2dk8vm", "k4qc4bh", "l9gx3ln", "z8jv8fk", "x3mc5wr", "c2ht2pz", "v1bx4qs", "b7nk5dm", "n5fl9xc", "m6zp3yw",
+    "r3rt1vb", "t8qj7mh", "y9fd6kp", "u4sw2nz", "i1lr8gx", "o5fn4jc", "p8dk9vm", "a7qc3bh", "s2gx1ln", "d3jv5fk",
+    "f6mc7wr", "g9ht2pz", "h1bx4qs", "j4nk5dm", "k7fl9xc", "l2zp3yw", "z5rt1vb", "x9qj7mh", "c3fd6kp", "v8sw2nz",
+    "b1lr8gx", "n6fn4jc", "m2dk9vm", "r4qc3bh", "t7gx1ln", "y5jv5fk", "u3mc7wr", "i9ht2pz", "o1bx4qs", "p6nk5dm",
+    "a4fl9xc", "s8zp3yw", "d5rt1vb", "f2qj7mh", "g3fd6kp", "h7sw2nz", "j9lr8gx", "k1fn4jc", "l8dk9vm", "z4qc3bh",
+    "x6gx1ln", "c5jv5fk", "v2mc7wr", "b9ht2pz", "n3bx4qs", "m7nk5dm", "r1fl9xc", "t2zp3yw", "y8rt1vb", "u6qj7mh",
+    "i4fd6kp", "o3sw2nz", "p9lr8gx", "a7fn4jc", "s1dk9vm", "d8qc3bh", "f5gx1ln", "g2jv5fk", "h4mc7wr", "j6ht2pz",
+    "k3bx4qs", "l9nk5dm", "z1fl9xc", "x7zp3yw", "c8rt1vb", "v4qj7mh", "b5fd6kp", "n2sw2nz", "m6lr8gx", "r3fn4jc",
+    "t9dk9vm", "y1qc3bh", "u7gx1ln", "i8jv5fk", "o2mc7wr", "p4ht2pz", "a5bx4qs", "s6nk5dm", "d1fl9xc", "f3zp3yw",
+    "g8rt1vb", "h9qj7mh", "j5fd6kp", "k2sw2nz", "l7lr8gx", "z6fn4jc", "x4dk9vm", "c1qc3bh", "v9gx1ln", "b3jv5fk",
+
+    // 701 إلى 800
+    "n8mc7wr", "m2ht2pz", "r7bx4qs", "t1nk5dm", "y4fl9xc", "u8zp3yw", "i6rt1vb", "o3qj7mh", "p1fd6kp", "a9sw2nz",
+    "s5lr8gx", "d4fn4jc", "f2dk9vm", "g7qc3bh", "h3gx1ln", "j8jv5fk", "k6mc7wr", "l1ht2pz", "z2bx4qs", "x5nk5dm",
+    "c9fl9xc", "v7zp3yw", "b4rt1vb", "n6qj7mh", "m3fd6kp", "r2sw2nz", "t8lr8gx", "y1fn4jc", "u5dk9vm", "i7qc3bh",
+    "o4gx1ln", "p3jv5fk", "a8mc7wr", "s2ht2pz", "d9bx4qs", "f1nk5dm", "g6fl9xc", "h5zp3yw", "j7rt1vb", "k4qj7mh",
+    "l2fd6kp", "z9sw2nz", "x1lr8gx", "c3fn4jc", "v8dk9vm", "b6qc3bh", "n7gx1ln", "m4jv5fk", "r5mc7wr", "t2ht2pz",
+    "y3bx4qs", "u1nk5dm", "i9fl9xc", "o8zp3yw", "p7rt1vb", "a6qj7mh", "s3fd6kp", "d2sw2nz", "f1lr8gx", "g4fn4jc",
+    "h8dk9vm", "j5qc3bh", "k2gx1ln", "l6jv5fk", "z3mc7wr", "x2ht2pz", "c7bx4qs", "v1nk5dm", "b9fl9xc", "n4zp3yw",
+    "m5rt1vb", "r8qj7mh", "t6fd6kp", "y7sw2nz", "u2lr8gx", "i3fn4jc", "o1dk9vm", "p9qc3bh", "a4gx1ln", "s7jv5fk",
+    "d6mc7wr", "f8ht2pz", "g5bx4qs", "h2nk5dm", "j1fl9xc", "k9zp3yw", "l3rt1vb", "z6qj7mh", "x4fd6kp", "c5sw2nz",
+    "v7lr8gx", "b3fn4jc", "n1dk9vm", "m9qc3bh", "r8gx1ln", "t4jv5fk", "y2mc7wr", "u6ht2pz", "i1bx4qs", "o2nk5dm",
+
+    // 801 إلى 900
+    "q2xk4m7", "w9zp2j9", "e4fl6nc", "r6hd1vx", "t1bt4kp", "y3sw8gz", "u5lr7jc", "i7fn3mx", "o2dk9vp", "p8qc5bh",
+    "a4gx2ln", "s1jv8fk", "d5mc1wr", "f7ht7pz", "g3bx5qs", "h9nk3dm", "j2fl9xc", "k6zp4yw", "l8rt2vb", "z4qj6mh",
+    "x2fd8kp", "c1sw4nz", "v3lr5gx", "b7fn1jc", "n5dk7vm", "m9qc3bh", "r4gx9ln", "t8jv2fk", "y6mc6wr", "u2ht4pz",
+    "i1bx8qs", "o5nk2dm", "p3fl7xc", "a7zp1yw", "s4rt9vb", "d9qj5mh", "f2fd4kp", "g8sw6nz", "h3lr3gx", "j1fn8jc",
+    "k5dk1vm", "l6qc9bh", "z7gx2ln", "x4jv4fk", "c2mc7wr", "v9ht9pz", "b6bx3qs", "n3nk6dm", "m8fl2xc", "r5zp8yw",
+    "t2rt5vb", "y1qj3mh", "u7fd1kp", "i4sw7nz", "o3lr9gx", "p9fn4jc", "a6dk6vm", "s2qc2bh", "d1gx8ln", "f4jv7fk",
+    "g5mc5wr", "h7ht1pz", "j3bx9qs", "k8nk4dm", "l2fl8xc", "z6zp2yw", "x9rt6vb", "c5qj9mh", "v4fd5kp", "b2sw1nz",
+    "n7lr4gx", "m1fn7jc", "r3dk8vm", "t5qc1bh", "y2gx3ln", "u9jv6fk", "i6mc9wr", "o8ht2pz", "p4bx4qs", "a3nk5dm",
+    "s7fl9xc", "d5zp3yw", "f9rt1vb", "g2qj7mh", "h1fd6kp", "j4sw2nz", "k6lr8gx", "l3fn4jc", "z8dk9vm", "x7qc3bh",
+    "c3gx1ln", "v5jv5fk", "b9mc7wr", "n2ht2pz", "m4bx9qs", "r8nk6dm", "t6fl8xc", "y3zp4yw", "u2rt7vb", "i9qj3mh",
+
+    // 901 إلى 1000
+    "o7fd5kp", "p5sw1nz", "a1lr6gx", "s3fn9jc", "d4dk8vm", "f8qc4bh", "g6gx3ln", "h2jv8fk", "j7mc5wr", "k9ht2pz",
+    "l4bx4qs", "z5nk5dm", "x3fl9xc", "c8zp3yw", "v2rt1vb", "b1qj7mh", "n5fd6kp", "m6sw2nz", "r2lr8gx", "t7fn4jc",
+    "y4dk9vm", "u3qc3bh", "i8gx1ln", "o9jv5fk", "p2mc7wr", "a5ht2pz", "s9bx9qs", "d7nk6dm", "f3fl8xc", "g1zp4yw",
+    "h4rt7vb", "j5qj3mh", "k2fd5kp", "l7sw1nz", "z3lr6gx", "x6fn9jc", "c9dk8vm", "v8qc4bh", "b4gx3ln", "n1jv8fk",
+    "m2mc5wr", "r5ht2pz", "t3bx4qs", "y8nk5dm", "u6fl9xc", "i4zp3yw", "o1rt1vb", "p7qj7mh", "a2fd6kp", "s5sw2nz",
+    "d9lr8gx", "f6fn4jc", "g3dk9vm", "h8qc3bh", "j1gx1ln", "k4jv5fk", "l5mc7wr", "z2ht2pz", "x9bx9qs", "c7nk6dm",
+    "v6fl8xc", "b3zp4yw", "n4rt7vb", "m9qj3mh", "r2fd5kp", "t1sw1nz", "y5lr6gx", "u8fn9jc", "i3dk8vm", "o4qc4bh",
+    "p6gx3ln", "a7jv8fk", "s1mc5wr", "d2ht2pz", "f5bx4qs", "g9nk5dm", "h3fl9xc", "j8zp3yw", "k1rt1vb", "l6qj7mh",
+    "z4fd6kp", "x2sw2nz", "c5lr8gx", "v7fn4jc", "b3dk9vm", "n9qc3bh", "m5gx1ln", "r1jv5fk", "t4mc7wr", "y2ht2pz",
+    "u7bx9qs", "i5nk6dm", "o8fl8xc", "p3zp4yw", "a4rt7vb", "s6qj3mh", "d8fd5kp", "f1sw1nz", "g2lr6gx", "h7fn9jc"
+];
