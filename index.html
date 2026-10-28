@@ -223,17 +223,17 @@
             }
         }
 
-        // التحقق التلقائي إذا تم إدخال الرمز مسبقاً وفحص صلاحية الشهر
+        // التحقق التلقائي للرمز السري والاشتراك (مع دعم المستخدمين القدامى تلقائياً)
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('albana_secret_unlocked') === 'true') {
                 document.getElementById('secret-gate').style.display = 'none';
             }
 
             const activationTimestamp = localStorage.getItem('albana_activation_time');
+            const oneMonthInMillis = 30 * 24 * 60 * 60 * 1000;
+            const currentTime = new Date().getTime();
+
             if (activationTimestamp) {
-                const oneMonthInMillis = 30 * 24 * 60 * 60 * 1000;
-                const currentTime = new Date().getTime();
-                
                 if (currentTime - parseInt(activationTimestamp) < oneMonthInMillis) {
                     document.getElementById('activation-gate').style.display = 'none';
                 } else {
@@ -242,6 +242,7 @@
                     document.getElementById('activation-gate').style.display = 'flex';
                 }
             } else {
+                // إذا لم يوجد وقت تفعيل أصلاً (سواء مستخدم جديد أو مستخدم قديم نسخته لم تكن تحتوي حقل التفعيل) -> إظهار بوابة الاشتراك فوراً وبشكل حتمي!
                 document.getElementById('activation-gate').style.display = 'flex';
             }
         });
