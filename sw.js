@@ -1,12 +1,12 @@
 const CACHE_NAME = 'albana-cache-v2';
 const urlsToCache = [
-  './index.html',
-  './animal_care.js',
-  './management_accounting.js',
-  './plant_pathology.js',
-  './forestry.js',
-  './soil_fertility.js',
-  './all-sessions.js'
+  'index.html',
+  'animal_care.js',
+  'management_accounting.js',
+  'plant_pathology.js',
+  'forestry.js',
+  'soil_fertility.js',
+  'all-sessions.js'
 ];
 
 // تثبيت الخدمة وتخزين الملفات
