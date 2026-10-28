@@ -122,7 +122,7 @@
             </a>
 
             <p>ارجو إدخال كود التفعيل الخاص بك أدناه ❤️🌹</p>
-            <input type="text" id="userActivationCode" placeholder="أدخل كود التفعيل (مثال: ab3k9)...">
+            <input type="text" id="userActivationCode" placeholder="أدخل كود التفعيل (مثال: y2ls8b3)...">
             <button onclick="verifyCodeWithDatabase()">تفعيل المنصة والدخول 🚀</button>
         </div>
     </div>
@@ -211,6 +211,10 @@
     <script src="soil_fertility.js"></script>
     <script src="all-sessions.js"></script>
 
+    <!-- ربط ملفات قواعد بيانات الأكواد المركزية -->
+    <script src="codes_part1.js"></script>
+    <script src="codes_part2.js"></script>
+
     <script>
         // دالة التحقق من الرمز السري المطلوبة
         function verifySecretCode() {
@@ -247,7 +251,7 @@
             }
         });
 
-        // التحقق من كود التفعيل والمدة (30 يوماً وصلاحية لمرة واحدة على الجهاز)
+        // التحقق من كود التفعيل والمدة (30 يوماً وصلاحية لمرة واحدة على الجهاز) بالاعتماد على الملفين الخارجيين
         function verifyCodeWithDatabase() {
             const inputVal = document.getElementById('userActivationCode').value.trim().toLowerCase();
             if(!inputVal) {
@@ -255,21 +259,10 @@
                 return;
             }
 
-            // قائمة الأكواد الـ 50 (جاهزة للتوسيع لـ 2000 كود مستقبلاً بملف منفصل)
-            const validCodesList = [
-                "ab3k9", "m7n2x", "k9p4z", "r2w8v", "x5j1q",
-                "t8l3m", "f4h6n", "b2c9p", "d7s5w", "g1y8k",
-                "z6v3x", "q9m2j", "c4r7l", "h5n1t", "p8k6f",
-                "v3w9b", "l2j4d", "j7q8g", "n1m5z", "s9v2c",
-                "w6x3h", "y4p7r", "e8k1l", "u5m9t", "a2j6f",
-                "o7n4w", "i3q8v", "g9s1b", "k4d6z", "r1y5m",
-                "x8c3p", "t2h7l", "f6v9j", "b5w1q", "d3k4n",
-                "m9m8s", "p7j2w", "v1r6x", "l4t9y", "j8h3f",
-                "n2c5v", "s6q1d", "w9m4b", "y3k8z", "e1p7r",
-                "u8j2l", "a5v6t", "o2s9h", "i7w3q", "g4n1m"
-            ];
+            // دمج الدفعتين في مصفوفة شاملة واحدة لفحص الأكواد بدقة
+            const masterCodesDatabase = [...new Set([...validCodesBatch1, ...validCodesBatch2])];
 
-            if (validCodesList.includes(inputVal)) {
+            if (masterCodesDatabase.includes(inputVal)) {
                 // حفظ وقت التفعيل الحالي وحالة فتح المنصة لمدة شهر كامل على الجهاز
                 localStorage.setItem('albana_activation_time', new Date().getTime().toString());
                 localStorage.setItem('albana_platform_unlocked', 'true');
