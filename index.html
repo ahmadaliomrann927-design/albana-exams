@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <!-- بوابة تفعيل الاشتراك الشهري الجديدة (مرتبطة بصفحة activate.html المستقلة وسحابياً عبر ملفات الأكواد) -->
+    <!-- بوابة تفعيل الاشتراك الشهري الجديدة -->
     <div id="activation-gate" style="display: none;">
         <div class="activation-box">
             <h2>أهلاً وسهلاً بك في منصة AL BANA التعليمية ❤️🌹</h2>
@@ -116,12 +116,10 @@
                 <img id="shamCashImg" src="" alt="حساب شام كاش" class="sham-img-preview">
             </div>
 
-            <!-- أداة الربط والوصول لصفحة التفعيل المستقلة أو إرسال الإيصال عبر الواتساب بالحفاظ التام على إعداداتك -->
             <a href="https://wa.me/963983957561?text=مرحباً مهندس، هذا إيصال تحويل شام كاش لاشتراك منصة AL BANA 🖤🌹" target="_blank" class="telegram-btn" style="background: #25d366;">
                 💬 إرسال الإيصال عبر الواتساب وطلب الكود
             </a>
 
-            <!-- رابط سريع للوصول لملف تفعيل الحساب المستقل activate.html -->
             <a href="activate.html" style="display: block; color: #60a5fa; margin-bottom: 15px; font-size: 0.9rem; text-decoration: underline;">
                 🔗 الانتقال لواجهة تفعيل الحساب المستقلة (activate.html)
             </a>
@@ -216,10 +214,6 @@
     <script src="soil_fertility.js"></script>
     <script src="all-sessions.js"></script>
 
-    <!-- ربط ملفات قواعد بيانات الأكواد المركزية -->
-    <script src="codes_part1.js"></script>
-    <script src="codes_part2.js"></script>
-
     <script>
         // دالة التحقق من الرمز السري المطلوبة
         function verifySecretCode() {
@@ -255,26 +249,15 @@
             }
         });
 
-        // التحقق من كود التفعيل والمدة (30 يوماً) بالاعتماد على الملفين الخارجيين
+        // تم فصل التحقق واعتماده بالكامل على واجهة تفعيل الحساب المستقلة وسحابياً
         function verifyCodeWithDatabase() {
             const inputVal = document.getElementById('userActivationCode').value.trim().toLowerCase();
             if(!inputVal) {
                 alert('الرجاء إدخال كود التفعيل أولاً!');
                 return;
             }
-
-            const masterCodesDatabase = [...new Set([...validCodesBatch1, ...validCodesBatch2])];
-
-            if (masterCodesDatabase.includes(inputVal)) {
-                localStorage.setItem('albana_activation_time', new Date().getTime().toString());
-                localStorage.setItem('albana_platform_unlocked', 'true');
-                localStorage.setItem('albana_used_code', inputVal);
-                
-                document.getElementById('activation-gate').style.display = 'none';
-                alert('تم تفعيل اشتراكك الشهري بنجاح يا GOAT لمدة 30 يوماً! أهلاً بك في منصتك 🖤🔥');
-            } else {
-                alert('الكود غير صحيح، تأكد من نسخه بدقة من الواتساب! ❌');
-            }
+            // التوجيه التلقائي للملف المستقل للتحقق السحابي الفعلي
+            window.location.href = "activate.html";
         }
 
         let timeLeft = 7;
