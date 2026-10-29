@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <!-- بوابة تفعيل الاشتراك الشهري الجديدة -->
+    <!-- بوابة تفعيل الاشتراك الشهري الجديدة (مرتبطة بصفحة activate.html المستقلة وسحابياً عبر ملفات الأكواد) -->
     <div id="activation-gate" style="display: none;">
         <div class="activation-box">
             <h2>أهلاً وسهلاً بك في منصة AL BANA التعليمية ❤️🌹</h2>
@@ -113,12 +113,17 @@
                 <div>حساب شام كاش للتحويل:</div>
                 <strong style="color: #fff; font-size: 1.1rem;">أحمد علي عمران</strong>
                 <div style="margin-top: 5px; font-size: 0.85rem; color: #9ca3af;">رقم الحساب: اضغط زر الواتساب لإرسال الإيصال</div>
-                <!-- مكان صورة شام كاش، ضع رابطها أو اسم ملفها هنا -->
                 <img id="shamCashImg" src="" alt="حساب شام كاش" class="sham-img-preview">
             </div>
 
+            <!-- أداة الربط والوصول لصفحة التفعيل المستقلة أو إرسال الإيصال عبر الواتساب بالحفاظ التام على إعداداتك -->
             <a href="https://wa.me/963983957561?text=مرحباً مهندس، هذا إيصال تحويل شام كاش لاشتراك منصة AL BANA 🖤🌹" target="_blank" class="telegram-btn" style="background: #25d366;">
                 💬 إرسال الإيصال عبر الواتساب وطلب الكود
+            </a>
+
+            <!-- رابط سريع للوصول لملف تفعيل الحساب المستقل activate.html -->
+            <a href="activate.html" style="display: block; color: #60a5fa; margin-bottom: 15px; font-size: 0.9rem; text-decoration: underline;">
+                🔗 الانتقال لواجهة تفعيل الحساب المستقلة (activate.html)
             </a>
 
             <p>ارجو إدخال كود التفعيل الخاص بك أدناه ❤️🌹</p>
@@ -227,7 +232,7 @@
             }
         }
 
-        // التحقق التلقائي للرمز السري والاشتراك (مع دعم المستخدمين القدامى تلقائياً)
+        // التحقق التلقائي للرمز السري والاشتراك
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('albana_secret_unlocked') === 'true') {
                 document.getElementById('secret-gate').style.display = 'none';
@@ -246,12 +251,11 @@
                     document.getElementById('activation-gate').style.display = 'flex';
                 }
             } else {
-                // إذا لم يوجد وقت تفعيل أصلاً (سواء مستخدم جديد أو مستخدم قديم نسخته لم تكن تحتوي حقل التفعيل) -> إظهار بوابة الاشتراك فوراً وبشكل حتمي!
                 document.getElementById('activation-gate').style.display = 'flex';
             }
         });
 
-        // التحقق من كود التفعيل والمدة (30 يوماً وصلاحية لمرة واحدة على الجهاز) بالاعتماد على الملفين الخارجيين
+        // التحقق من كود التفعيل والمدة (30 يوماً) بالاعتماد على الملفين الخارجيين
         function verifyCodeWithDatabase() {
             const inputVal = document.getElementById('userActivationCode').value.trim().toLowerCase();
             if(!inputVal) {
@@ -259,11 +263,9 @@
                 return;
             }
 
-            // دمج الدفعتين في مصفوفة شاملة واحدة لفحص الأكواد بدقة
             const masterCodesDatabase = [...new Set([...validCodesBatch1, ...validCodesBatch2])];
 
             if (masterCodesDatabase.includes(inputVal)) {
-                // حفظ وقت التفعيل الحالي وحالة فتح المنصة لمدة شهر كامل على الجهاز
                 localStorage.setItem('albana_activation_time', new Date().getTime().toString());
                 localStorage.setItem('albana_platform_unlocked', 'true');
                 localStorage.setItem('albana_used_code', inputVal);
