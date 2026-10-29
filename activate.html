@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة العمران - تفعيل الحساب</title>
+    <title>منصة AL BANA - تفعيل الحساب</title>
     <!-- استدعاء مكتبة فايربيس للنسخ الويب -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         body {
             font-family: Tahoma, sans-serif;
-            background-color: #f4f6f9;
+            background-color: #0b0f19;
+            color: #f3f4f6;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,30 +19,35 @@
             margin: 0;
         }
         .card {
-            background: white;
+            background: rgba(17, 24, 39, 0.98);
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            border: 2px solid #3b82f6;
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
-        h2 { color: #333; margin-bottom: 20px; }
+        h2 { color: #60a5fa; margin-bottom: 10px; font-size: 1.5rem; }
+        p { color: #9ca3af; font-size: 0.95rem; margin-bottom: 20px; }
         input {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
-            border: 1px solid #ddd;
+            background: #1f2937;
+            border: 1px solid #4b5563;
             border-radius: 8px;
+            color: #fff;
             font-size: 16px;
             box-sizing: border-box;
             text-align: center;
             text-transform: uppercase;
+            outline: none;
         }
         button {
             width: 100%;
             padding: 12px;
-            background-color: #2563eb;
+            background-color: #10b981;
             color: white;
             border: none;
             border-radius: 8px;
@@ -49,24 +55,33 @@
             cursor: pointer;
             font-weight: bold;
         }
-        button:hover { background-color: #1d4ed8; }
+        button:hover { background-color: #059669; }
         #message {
             margin-top: 15px;
             font-size: 14px;
             font-weight: bold;
+        }
+        .back-link {
+            display: block;
+            margin-top: 15px;
+            color: #60a5fa;
+            font-size: 0.9rem;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>منصة العمران التعليمية</h2>
-        <p>أدخل كود التفعيل الخاص بك للمتابعة</p>
+        <h2>منصة AL BANA التعليمية 🖤🔥</h2>
+        <p>أدخل كود التفعيل الخاص بك لتفعيل اشتراكك الشهري</p>
         
         <input type="text" id="activationCode" placeholder="BANA-XXXXXXXX">
-        <button onclick="activateAccount()">تفعيل الحساب</button>
+        <button onclick="activateAccount()">تفعيل الحساب والدخول 🚀</button>
         
         <div id="message"></div>
+
+        <a href="index.html" class="back-link">الرجوع إلى التطبيق الرئيسي ↩️</a>
     </div>
 
     <script>
@@ -91,8 +106,8 @@
                 return;
             }
 
-            messageDiv.style.color = "#555";
-            messageDiv.innerText = "⏳ جاري التحقق من الكود...";
+            messageDiv.style.color = "#9ca3af";
+            messageDiv.innerText = "⏳ جاري التحقق من الكود سحابياً...";
 
             try {
                 const docRef = db.collection('activation_codes').doc(codeInput);
@@ -118,8 +133,18 @@
                     used_at: new Date().toISOString()
                 });
 
+                // حفظ وقت التفعيل وحالة فتح المنصة على المتصفح لمدة شهر كامل
+                localStorage.setItem('albana_activation_time', new Date().getTime().toString());
+                localStorage.setItem('albana_platform_unlocked', 'true');
+                localStorage.setItem('albana_used_code', codeInput);
+
                 messageDiv.style.color = "green";
-                messageDiv.innerText = "🎉 تم تفعيل الحساب بنجاح! أهلاً بك.";
+                messageDiv.innerText = "🎉 تم تفعيل اشتراكك بنجاح يا GOAT! جاري توجيهك للمنصة...";
+
+                // الانتقال التلقائي بعد ثانية ونصف لتطبيق AL BANA الرئيسي
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1500);
 
             } catch (error) {
                 messageDiv.style.color = "red";
