@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>اختبارات AL BANA</title>
+    <!-- استدعاء مكتبة فايربيس للنسخ الويب للتحقق السحابي المباشر -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0b0f19; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
@@ -101,7 +104,7 @@
         </div>
     </div>
 
-    <!-- بوابة تفعيل الاشتراك الشهري الجديدة -->
+    <!-- بوابة تفعيل الاشتراك الشهري المحدثة بالاسم والألوان والتنسيق الأصلي تماماً -->
     <div id="activation-gate" style="display: none;">
         <div class="activation-box">
             <h2>أهلاً وسهلاً بك في منصة AL BANA التعليمية ❤️🌹</h2>
@@ -120,13 +123,10 @@
                 💬 إرسال الإيصال عبر الواتساب وطلب الكود
             </a>
 
-            <a href="activate.html" style="display: block; color: #60a5fa; margin-bottom: 15px; font-size: 0.9rem; text-decoration: underline;">
-                🔗 الانتقال لواجهة تفعيل الحساب المستقلة (activate.html)
-            </a>
-
             <p>ارجو إدخال كود التفعيل الخاص بك أدناه ❤️🌹</p>
-            <input type="text" id="userActivationCode" placeholder="أدخل كود التفعيل (مثال: y2ls8b3)...">
+            <input type="text" id="userActivationCode" placeholder="أدخل كود التفعيل (مثال: BANA-XXXXXXXX)...">
             <button onclick="verifyCodeWithDatabase()">تفعيل المنصة والدخول 🚀</button>
+            <div id="activationMessage" style="margin-top: 10px; font-weight: bold; font-size: 0.95rem;"></div>
         </div>
     </div>
 
@@ -215,6 +215,16 @@
     <script src="all-sessions.js"></script>
 
     <script>
+        // إعدادات ربط مشروعك في فايربيس
+        const firebaseConfig = {
+            projectId: "al-bana"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
         // دالة التحقق من الرمز السري المطلوبة
         function verifySecretCode() {
             const secretVal = document.getElementById('userSecretInput').value.trim();
@@ -249,15 +259,69 @@
             }
         });
 
-        // تم فصل التحقق واعتماده بالكامل على واجهة تفعيل الحساب المستقلة وسحابياً
-        function verifyCodeWithDatabase() {
-            const inputVal = document.getElementById('userActivationCode').value.trim().toLowerCase();
+        // التحقق السحابي المباشر من نفس الصفحة (بدون الانتقال لأي واجهة جديدة)
+        async function verifyCodeWithDatabase() {
+            const inputVal = document.getElementById('userActivationCode').value.trim();
+            const msgDiv = document.getElementById('activationMessage');
+
             if(!inputVal) {
-                alert('الرجاء إدخال كود التفعيل أولاً!');
+                msgDiv.style.color = "red";
+                msgDiv.innerText = "⚠️ الرجاء إدخال كود التفعيل أولاً!";
                 return;
             }
-            // التوجيه التلقائي للملف المستقل للتحقق السحابي الفعلي
-            window.location.href = "activate.html";
+
+            msgDiv.style.color = "#9ca3af";
+            msgDiv.innerText = "⏳ جاري التحقق من الكود سحابياً...";
+
+            try {
+                const docRef = db.collection('activation_codes').doc(inputVal);
+                const doc = await docRef.get();
+
+                if (!doc.exists) {
+                    msgDiv.style.color = "red";
+                    msgDiv.innerText = "❌ الكود غير صحيح أو غير موجود!";
+                    return;
+                }
+
+                const data = doc.data();
+
+                if (data.is_used) {
+                    msgDiv.style.color = "orange";
+                    msgDiv.innerText = "⚠️ هذا الكود مستخدم مسبقاً!";
+                    return;
+                }
+
+                // تحديث حالة الكود في قاعدة البيانات لكي لا يُستخدم مرة أخرى
+                await docRef.update({
+                    is_used: true,
+                    used_at: new Date().toISOString()
+                });
+
+                // حفظ التفعيل لمدة شهر كامل
+                localStorage.setItem('albana_activation_time', new Date().getTime().toString());
+                localStorage.setItem('albana_platform_unlocked', 'true');
+                localStorage.setItem('albana_used_code', inputVal);
+
+                msgDiv.style.color = "green";
+                msgDiv.innerText = "🎉 تم تفعيل اشتراكك بنجاح يا GOAT!";
+
+                // إخفاء بوابة الاشتراك والدخول للمنصة فوراً
+                setTimeout(() => {
+                    document.getElementById('activation-gate').style.display = 'none';
+                    const savedName = localStorage.getItem('albana_user_name');
+                    const savedYear = localStorage.getItem('albana_user_year');
+                    if (savedName && savedYear) {
+                        document.getElementById('mainDashboard').style.display = 'flex';
+                    } else {
+                        document.getElementById('login-screen').style.display = 'flex';
+                    }
+                }, 1000);
+
+            } catch (error) {
+                msgDiv.style.color = "red";
+                msgDiv.innerText = "❌ حدث خطأ في الاتصال، حاول مرة أخرى.";
+                console.error(error);
+            }
         }
 
         let timeLeft = 7;
@@ -272,14 +336,16 @@
                 setTimeout(() => {
                     document.getElementById('intro-screen').style.display = 'none';
                     
-                    const savedName = localStorage.getItem('albana_user_name');
-                    const savedYear = localStorage.getItem('albana_user_year');
+                    // إذا لم تكن المنصة مفعلة، تبقى بوابة الاشتراك ظاهرة
+                    if (localStorage.getItem('albana_platform_unlocked') === 'true') {
+                        const savedName = localStorage.getItem('albana_user_name');
+                        const savedYear = localStorage.getItem('albana_user_year');
 
-                    if (savedName && savedYear) {
-                        document.getElementById('login-screen').style.display = 'none';
-                        document.getElementById('mainDashboard').style.display = 'flex';
-                    } else {
-                        document.getElementById('login-screen').style.display = 'flex';
+                        if (savedName && savedYear) {
+                            document.getElementById('mainDashboard').style.display = 'flex';
+                        } else {
+                            document.getElementById('login-screen').style.display = 'flex';
+                        }
                     }
                 }, 800);
             }
