@@ -215,6 +215,17 @@
     <script src="all-sessions.js"></script>
 
     <script>
+        // أداة حماية المحتوى والمنصة (منع النقر بالزر الأيمن، تحديد النص، واختصارات المطورين)
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 'c' || e.key === 's' || e.key === 'i'))) {
+                e.preventDefault();
+            }
+        });
+
         // إعدادات ربط مشروعك في فايربيس
         const firebaseConfig = {
             projectId: "al-bana"
