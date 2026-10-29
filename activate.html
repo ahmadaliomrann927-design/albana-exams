@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة العمران - تفعيل الحساب</title>
+    <!-- استدعاء مكتبة فايربيس للنسخ الويب -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background-color: #1d4ed8; }
+        #message {
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>منصة العمران التعليمية</h2>
+        <p>أدخل كود التفعيل الخاص بك للمتابعة</p>
+        
+        <input type="text" id="activationCode" placeholder="BANA-XXXXXXXX">
+        <button onclick="activateAccount()">تفعيل الحساب</button>
+        
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // إعدادات ربط مشروعك في فايربيس (al-bana)
+        const firebaseConfig = {
+            projectId: "al-bana"
+        };
+
+        // تهيئة فايربيس
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        async function activateAccount() {
+            const codeInput = document.getElementById('activationCode').value.trim();
+            const messageDiv = document.getElementById('message');
+
+            if (!codeInput) {
+                messageDiv.style.color = "red";
+                messageDiv.innerText = "⚠️ الرجاء إدخال كود التفعيل أولاً!";
+                return;
+            }
+
+            messageDiv.style.color = "#555";
+            messageDiv.innerText = "⏳ جاري التحقق من الكود...";
+
+            try {
+                const docRef = db.collection('activation_codes').doc(codeInput);
+                const doc = await docRef.get();
+
+                if (!doc.exists) {
+                    messageDiv.style.color = "red";
+                    messageDiv.innerText = "❌ الكود غير صحيح أو غير موجود!";
+                    return;
+                }
+
+                const data = doc.data();
+
+                if (data.is_used) {
+                    messageDiv.style.color = "orange";
+                    messageDiv.innerText = "⚠️ هذا الكود مستخدم مسبقاً!";
+                    return;
+                }
+
+                // تحديث حالة الكود في قاعدة البيانات لكي لا يُستخدم مرة أخرى
+                await docRef.update({
+                    is_used: true,
+                    used_at: new Date().toISOString()
+                });
+
+                messageDiv.style.color = "green";
+                messageDiv.innerText = "🎉 تم تفعيل الحساب بنجاح! أهلاً بك.";
+
+            } catch (error) {
+                messageDiv.style.color = "red";
+                messageDiv.innerText = "❌ حدث خطأ في الاتصال، حاول مرة أخرى.";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
