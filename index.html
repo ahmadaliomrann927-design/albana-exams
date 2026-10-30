@@ -213,6 +213,8 @@
     <script src="forestry.js"></script>
     <script src="soil_fertility.js"></script>
     <script src="all-sessions.js"></script>
+    <!-- ربط ملف بيانات عينات الصور للعينات النباتية والزينة -->
+    <script src="samples_data.js"></script>
 
     <script>
         // أداة حماية المحتوى والمنصة (منع النقر بالزر الأيمن، تحديد النص، واختصارات المطورين)
@@ -502,32 +504,34 @@
             container.appendChild(finalDiv);
         }
 
-        // دالة عرض شاشة العينات الخاصة بالصور
+        // دالة عرض شاشة العينات الخاصة بالصور من ملف البيانات المستقل
         function showCustomSamples(type) {
             showScreen('favoritesScreen');
             const container = document.getElementById('favoritesContainer');
             
-            if (type === 'forestry') {
-                container.innerHTML = `
-                    <button class="back-btn" onclick="showSessions('علم الحراج', 'practical')">الرجوع للجلسات</button>
-                    <h3 style="color:#10b981; margin-bottom:15px; text-align:center;">🌿 عينات الحراج النباتية</h3>
-                    <div class="question-card" style="text-align: center;">
-                        <img src="samples_images/forestry_sample_1.jpg" alt="عينة حراجية" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; margin-bottom: 10px;">
-                        <p style="color: #60a5fa; font-weight: bold; font-size: 1.1rem;">عينة الحراج رقم 1</p>
-                        <p style="color: #d1d5db; font-size: 0.95rem; margin-top: 5px;">الوصف أو الاسم العلمي للعينة الحراجية 🌹</p>
-                    </div>
-                `;
-            } else if (type === 'ornamental') {
-                container.innerHTML = `
-                    <button class="back-btn" onclick="showSessions('نباتات الزينة', 'practical')">الرجوع للجلسات</button>
-                    <h3 style="color:#eab308; margin-bottom:15px; text-align:center;">🌸 عينات نباتات الزينة</h3>
-                    <div class="question-card" style="text-align: center;">
-                        <img src="samples_images/ornamental_sample_1.jpg" alt="عينة زينة" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; margin-bottom: 10px;">
-                        <p style="color: #60a5fa; font-weight: bold; font-size: 1.1rem;">عينة نباتات الزينة رقم 1</p>
-                        <p style="color: #d1d5db; font-size: 0.95rem; margin-top: 5px;">الوصف أو الاسم العلمي لنبات الزينة 🌹</p>
-                    </div>
-                `;
+            let samplesList = (typeof plantSamplesData !== 'undefined') ? (type === 'forestry' ? plantSamplesData.forestry : plantSamplesData.ornamental) : [];
+            let titleText = type === 'forestry' ? '🌿 عينات الحراج النباتية' : '🌸 عينات نباتات الزينة';
+            let backSubject = type === 'forestry' ? 'علم الحراج' : 'نباتات الزينة';
+            let titleColor = type === 'forestry' ? '#10b981' : '#eab308';
+
+            let htmlContent = `<button class="back-btn" onclick="showSessions('${backSubject}', 'practical')">الرجوع للجلسات</button>`;
+            htmlContent += `<h3 style="color:${titleColor}; margin-bottom:15px; text-align:center;">${titleText}</h3>`;
+
+            if (!samplesList || samplesList.length === 0) {
+                htmlContent += `<p style="text-align:center; color:#9ca3af; margin-top:30px;">قريباً سيتم إضافة صور العينات والشروح الخاصة بها 🌹</p>`;
+            } else {
+                samplesList.forEach((item) => {
+                    htmlContent += `
+                        <div class="question-card" style="text-align: center; margin-bottom: 20px;">
+                            <img src="${item.image}" alt="${item.title}" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; margin-bottom: 10px; background: #1f2937; padding: 5px;">
+                            <p style="color: #60a5fa; font-weight: bold; font-size: 1.1rem; margin-bottom: 8px;">${item.title}</p>
+                            <p style="color: #d1d5db; font-size: 0.95rem; line-height: 1.6; white-space: pre-line; text-align: right; padding: 0 10px;">${item.description}</p>
+                        </div>
+                    `;
+                });
             }
+
+            container.innerHTML = htmlContent;
         }
 
         function getArabicNumber(num) {
