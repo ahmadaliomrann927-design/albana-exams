@@ -51,14 +51,15 @@
         .login-box button { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 1.2rem; cursor: pointer; width: 100%; margin-top: 15px; font-weight: bold; }
 
         .main-container { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; }
-        .dashboard-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; }
-        .dashboard-box { padding: 20px; border-radius: 14px; text-align: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .dashboard-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 14px; }
+        .dashboard-box { padding: 18px; border-radius: 14px; text-align: center; font-size: 1.15rem; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: transform 0.2s; }
         .box-1 { background: linear-gradient(135deg, #10b981, #059669); color: white; }
         .box-2 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; }
         .box-3 { background: linear-gradient(135deg, #ec4899, #be185d); color: white; }
         .box-4 { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
         .box-5 { background: linear-gradient(135deg, #eab308, #ca8a04); color: white; }
         .box-6 { background: linear-gradient(135deg, #ef4444, #991b1b); color: white; }
+        .box-7 { background: linear-gradient(135deg, #06b6d4, #0891b2); color: white; }
         .dashboard-box:hover { transform: scale(1.02); }
 
         .dynamic-screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 600px; margin: auto; padding: 20px; flex: 1; }
@@ -80,12 +81,6 @@
         
         .exam-input { width: 100%; padding: 12px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #ffffff !important; font-size: 1.05rem; margin-top: 8px; outline: none; }
         .exam-input::placeholder { color: #9ca3af; }
-
-        .mcq-options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
-        .mcq-option { background: #1f2937; border: 1px solid #4b5563; padding: 12px; border-radius: 8px; cursor: pointer; color: #fff; text-align: right; transition: background 0.2s; font-size: 1rem; }
-        .mcq-option:hover { background: #374151; }
-        .mcq-option.correct { background: #059669 !important; border-color: #10b981 !important; color: #fff !important; }
-        .mcq-option.wrong { background: #dc2626 !important; border-color: #ef4444 !important; color: #fff !important; }
 
         .timer-badge { background: #ef4444; color: white; padding: 8px 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; text-align: center; width: 100%; display: flex; justify-content: space-between; align-items: center; }
         .stop-timer-btn { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: bold; transition: background 0.2s; }
@@ -177,6 +172,7 @@
             <div class="dashboard-box" style="background: linear-gradient(135deg, #06b6d4, #0e7490); color: white;" onclick="startQuantumSimulationMenu()">🌌 غرفة المحاكاة الكمية (التحليل الذكي للجلسات)</div>
             <div class="dashboard-box box-5" onclick="showFavoritesScreen()">🌟 الأسئلة المفضلة والمحظوظة</div>
             <div class="dashboard-box box-6" onclick="showWeaknessesScreen()">🎯 صيد الثغرات والأخطاء (مراجعة الأخطاء تلقائياً)</div>
+            <div class="dashboard-box box-7" onclick="showNotesScreen()">📝 مذكرة ملاحظات المهندس (تدوين أفكارك وقوانينك)</div>
             <div class="dashboard-box box-4" onclick="alert('رقم المصمم: 0983957561 🖤🌹')">اترك لنا ملاحظاتك 🖤🌹</div>
         </div>
     </div>
@@ -234,16 +230,16 @@
         صمم من قبل المهندس أحمد علي عمران / المهندس محمد كامل محمد جميع الحقوق محفوظه© 2026
     </footer>
 
-    <!-- ربط ملفات بنك الأسئلة للمواد مع إصدار قسري v=9.0 لمنع التخزين المؤقت القديم -->
-    <script src="animal_care.js?v=9.0"></script>
-    <script src="management_accounting.js?v=9.0"></script>
-    <script src="plant_pathology.js?v=9.0"></script>
-    <script src="forestry.js?v=9.0"></script>
-    <script src="soil_fertility.js?v=9.0"></script>
-    <script src="all-sessions.js?v=9.0"></script>
+    <!-- ربط ملفات بنك الأسئلة للمواد مع إصدار قسري v=11.0 لمنع التخزين المؤقت القديم -->
+    <script src="animal_care.js?v=11.0"></script>
+    <script src="management_accounting.js?v=11.0"></script>
+    <script src="plant_pathology.js?v=11.0"></script>
+    <script src="forestry.js?v=11.0"></script>
+    <script src="soil_fertility.js?v=11.0"></script>
+    <script src="all-sessions.js?v=11.0"></script>
     
     <!-- ربط ملف بيانات عينات الصور للعينات النباتية والزينة مع رقم إصدار قسري لمنع الكاش -->
-    <script src="samples_data.js?v=9.0"></script>
+    <script src="samples_data.js?v=11.0"></script>
 
     <script>
         // أداة حماية المحتوى والمنصة (منع النقر بالزر الأيمن، تحديد النص، واختصارات المطورين)
@@ -421,6 +417,7 @@
         
         let favoriteQuestions = JSON.parse(localStorage.getItem('albana_favorites')) || [];
         let weaknessQuestions = JSON.parse(localStorage.getItem('albana_weaknesses')) || [];
+        let engineerNotes = localStorage.getItem('albana_engineer_notes') || '';
 
         function addWeakness(q, a) {
             let exists = weaknessQuestions.some(item => item.q === q);
@@ -430,36 +427,8 @@
             }
         }
 
-        // ميزة القراءة الصوتية الذكية (Text-to-Speech)
         function speakText(text, btnElement) {
-            if (!('speechSynthesis' in window)) {
-                alert('متصفحك لا يدعم ميزة القراءة الصوتية ❌');
-                return;
-            }
-
-            if (window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-                if (btnElement && btnElement.classList.contains('speaking')) {
-                    btnElement.classList.remove('speaking');
-                    btnElement.style.color = '#fff';
-                    return;
-                }
-            }
-
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ar-SA'; // اللغة العربية
-            utterance.rate = 0.95; // سرعة القراءة متوازنة ومريحة
-
-            if (btnElement) {
-                btnElement.classList.add('speaking');
-                btnElement.style.color = '#3b82f6';
-                utterance.onend = () => {
-                    btnElement.classList.remove('speaking');
-                    btnElement.style.color = '#fff';
-                };
-            }
-
-            window.speechSynthesis.speak(utterance);
+            return;
         }
 
         function refreshGamificationUI() {
@@ -813,7 +782,7 @@
                     <div class="question-header">
                         <span>🏛️ السؤال ${index + 1} 🏛️</span>
                         <div class="action-btns">
-                            <button class="icon-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}', this)" title="قراءة السؤال صوتياً">🔊</button>
+                            <button class="icon-btn" onclick="speakText('', this)" title="قراءة السؤال صوتياً">🔊</button>
                         </div>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
@@ -995,7 +964,8 @@
             } else {
                 let cards = document.querySelectorAll('.question-card');
                 cards.forEach((card, idx) => {
-                    let inputVal = card.querySelector('.exam-input').value.trim();
+                    let inputEl = card.querySelector('.exam-input');
+                    let inputVal = inputEl ? inputEl.value.trim() : "";
                     let trueAns = activeQuestions[idx].a.trim();
                     if(inputVal !== "") {
                         answeredCount++;
@@ -1005,6 +975,9 @@
                             wrongCount++;
                             addWeakness(activeQuestions[idx].q, trueAns);
                         }
+                    } else {
+                        wrongCount++; // الأسئلة التي لم تُجاب تعتبر خطأ/فارغة في المحاكي الصارم
+                        addWeakness(activeQuestions[idx].q, trueAns);
                     }
                 });
             }
@@ -1039,21 +1012,12 @@
 
             document.getElementById('examTimerContainer').innerHTML = reportHtml;
 
-            if(type === 'simulator') {
-                document.getElementById('submitExamBtn').style.display = 'none';
-                let answerBoxes = document.querySelectorAll('.exam-answer-box');
-                answerBoxes.forEach(box => { box.style.display = 'block'; });
-            } else {
-                let cards = document.querySelectorAll('.question-card');
-                cards.forEach(card => {
-                    let opts = card.querySelectorAll('.mcq-option');
-                    opts.forEach(opt => {
-                        if(opt.classList.contains('correct')) {
-                            opt.style.border = "2px solid #f59e0b";
-                        }
-                    });
-                });
-            }
+            // إظهار صندوق الإجابات الصحيحة في المحاكي مباشرة
+            let answerBoxes = document.querySelectorAll('.exam-answer-box');
+            answerBoxes.forEach(box => { box.style.display = 'block'; });
+
+            document.getElementById('submitExamBtn').style.display = 'none';
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1070,7 +1034,7 @@
                     <div class="question-header">
                         <span>🖤 السؤال ${index + 1} 🖤</span>
                         <div class="action-btns">
-                            <button class="icon-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}', this)" title="قراءة السؤال صوتياً">🔊</button>
+                            <button class="icon-btn" onclick="speakText('', this)" title="قراءة السؤال صوتياً">🔊</button>
                         </div>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
@@ -1106,7 +1070,7 @@
                     <div class="question-header">
                         <span>🖤 ${index + 1} 🖤</span>
                         <div class="action-btns">
-                            <button class="icon-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}', this)" title="قراءة السؤال صوتياً">🔊</button>
+                            <button class="icon-btn" onclick="speakText('', this)" title="قراءة السؤال صوتياً">🔊</button>
                             <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
                             <button class="icon-btn" style="color: ${starColor};" onclick="toggleFavorite(this, '${encodeURIComponent(item.q)}', '${encodeURIComponent(item.a)}')" title="المفضلة">🌟</button>
                         </div>
@@ -1201,7 +1165,7 @@
                     <div class="question-header">
                         <span>🌟 المفضلة ${index + 1}</span>
                         <div class="action-btns">
-                            <button class="icon-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}', this)" title="قراءة السؤال صوتياً">🔊</button>
+                            <button class="icon-btn" onclick="speakText('', this)" title="قراءة السؤال صوتياً">🔊</button>
                             <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
                             <button class="icon-btn" style="color: gold;" onclick="removeFavorite(this, '${encodeURIComponent(item.q)}')" title="إزالة من المفضلة">❌</button>
                         </div>
@@ -1251,7 +1215,7 @@
                     <div class="question-header">
                         <span>🎯 ثغرة مرصودة ${index + 1}</span>
                         <div class="action-btns">
-                            <button class="icon-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}', this)" title="قراءة السؤال صوتياً">🔊</button>
+                            <button class="icon-btn" onclick="speakText('', this)" title="قراءة السؤال صوتياً">🔊</button>
                             <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
                             <button class="icon-btn" style="color: #ef4444;" onclick="removeWeakness(this, '${encodeURIComponent(item.q)}')" title="حذف هذه الثغرة بعد إتقانها">❌</button>
                         </div>
@@ -1275,17 +1239,43 @@
             if(confirm('هل أنت متأكد من مسح جميع الثغرات المرصودة؟')) {
                 weaknessQuestions = [];
                 localStorage.removeItem('albana_weaknesses');
-                showWeakNamesScreen = showWeaknessesScreen;
                 showWeaknessesScreen();
             }
         }
+
+        function showNotesScreen() {
+            showScreen('favoritesScreen');
+            const container = document.getElementById('favoritesContainer');
+            document.getElementById('favoritesTitle').innerText = '📝 مذكرة ملاحظات المهندس';
+            
+            let savedNotes = localStorage.getItem('albana_engineer_notes') || '';
+
+            let htmlContent = `
+                <div class="nav-buttons-bar">
+                    <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للرئيسية</button>
+                    <button class="home-btn" onclick="saveEngineerNotes()">💾 حفظ الملاحظات</button>
+                </div>
+                <div class="question-card" style="padding: 20px;">
+                    <p style="color: #60a5fa; font-weight: bold; margin-bottom: 10px;">✍️ دون أفكارك، قوانينك، وملاحظاتك ليلة الامتحان هنا:</p>
+                    <textarea id="engineerNotesArea" style="width: 100%; height: 300px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; padding: 15px; font-size: 1.05rem; line-height: 1.6; resize: vertical; outline: none;" placeholder="اكتب ملاحظاتك هنا... سيتم حفظها محلياً على جهازك تلقائياً 🖤🌹">${savedNotes}</textarea>
+                    <button onclick="saveEngineerNotes()" class="sub-box" style="background: #10b981; margin-top: 15px;">حفظ الملاحظات بنجاح 💾</button>
+                </div>
+            `;
+            container.innerHTML = htmlContent;
+        }
+
+        function saveEngineerNotes() {
+            let notesText = document.getElementById('engineerNotesArea').value;
+            localStorage.setItem('albana_engineer_notes', notesText);
+            alert('تم حفظ ملاحظاتك بنجاح يا GOAT 🖤🌹');
+        }
     </script>
 
-    <!-- كود تفعيل الـ Service Worker المحدث (v=9.0) للتخزين المحلي وتحديث الكاش تلقائياً -->
+    <!-- كود تفعيل الـ Service Worker المحدث (v=11.0) للتخزين المحلي وتحديث الكاش تلقائياً -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=9.0')
+          navigator.serviceWorker.register('./sw.js?v=11.0')
             .then(reg => {
               console.log('Service Worker registered!');
               reg.update();
