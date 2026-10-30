@@ -82,7 +82,9 @@
         .mcq-option.correct { background: #059669 !important; border-color: #10b981 !important; color: #fff !important; }
         .mcq-option.wrong { background: #dc2626 !important; border-color: #ef4444 !important; color: #fff !important; }
 
-        .timer-badge { background: #ef4444; color: white; padding: 8px 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; text-align: center; width: 100%; }
+        .timer-badge { background: #ef4444; color: white; padding: 8px 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; text-align: center; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .stop-timer-btn { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: bold; transition: background 0.2s; }
+        .stop-timer-btn:hover { background: #b91c1c; }
         
         .gamification-panel { background: linear-gradient(135deg, #1f2937, #111827); border: 2px solid #3b82f6; padding: 12px 20px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
         .score-display { font-size: 1.2rem; font-weight: bold; color: #10b981; }
@@ -692,7 +694,12 @@
             examInterval = setInterval(() => {
                 let minutes = Math.floor(timeLeftSec / 60);
                 let seconds = timeLeftSec % 60;
-                timerContainer.innerHTML = `<div class="timer-badge" style="background:#a855f7;">🏛️ الوقت المتبقي لهيكل الأوراكل: ${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}</div>`;
+                timerContainer.innerHTML = `
+                    <div class="timer-badge" style="background:#a855f7;">
+                        <span>🏛️ الوقت المتبقي لهيكل الأوراكل: ${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}</span>
+                        <button class="stop-timer-btn" onclick="stopExamTimer('oracle')">إنهاء الوقت ⏹️</button>
+                    </div>
+                `;
                 
                 if(timeLeftSec <= 0) {
                     clearInterval(examInterval);
@@ -872,7 +879,12 @@
             examInterval = setInterval(() => {
                 let minutes = Math.floor(timeLeftSec / 60);
                 let seconds = timeLeftSec % 60;
-                timerContainer.innerHTML = `<div class="timer-badge">⏳ الوقت المتبقي للامتحان: ${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}</div>`;
+                timerContainer.innerHTML = `
+                    <div class="timer-badge">
+                        <span>⏳ الوقت المتبقي للامتحان: ${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}</span>
+                        <button class="stop-timer-btn" onclick="stopExamTimer('simulator')">إنهاء الوقت ⏹️</button>
+                    </div>
+                `;
                 
                 if(timeLeftSec <= 0) {
                     clearInterval(examInterval);
@@ -881,6 +893,28 @@
                 }
                 timeLeftSec--;
             }, 1000);
+        }
+
+        // دالة إنهاء الوقت يدوياً عبر الزر الجديد
+        function stopExamTimer(type) {
+            if(examInterval) clearInterval(examInterval);
+            if(type === 'simulator') {
+                submitExam();
+                document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 تم إنهاء وقت الامتحان يدوياً بنجاح! تم كشف الأجوبة 🌹</div>';
+            } else {
+                document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 تم إنهاء وقت الأوراكل/المحاكاة يدوياً بنجاح 🌹</div>';
+                // إظهار الأجوبة الصحيحة إذا كان في وضع الأوراكل أو المحاكاة
+                let cards = document.querySelectorAll('.question-card');
+                cards.forEach(card => {
+                    let opts = card.querySelectorAll('.mcq-option');
+                    opts.forEach(opt => {
+                        if(opt.classList.contains('correct')) {
+                            opt.style.border = "2px solid #f59e0b";
+                        }
+                    });
+                });
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function renderExamModeQuestions(questions, titleText) {
