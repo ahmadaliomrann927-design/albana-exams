@@ -163,6 +163,7 @@
             <div class="dashboard-box box-1" onclick="showScreen('sectionsScreen')">اختبارات AL BANA</div>
             <div class="dashboard-box box-2" onclick="startOracleMenu()">🏛️ هيكل الأوراكل (40 سؤالاً خارقاً)</div>
             <div class="dashboard-box box-3" onclick="startExamSimulatorMenu()">🎯 محاكي الامتحان (اختبر جاهزيتك)</div>
+            <div class="dashboard-box" style="background: linear-gradient(135deg, #06b6d4, #0e7490); color: white;" onclick="startQuantumSimulationMenu()">🌌 غرفة المحاكاة الكمية (التحليل الذكي للجلسات)</div>
             <div class="dashboard-box box-5" onclick="showFavoritesScreen()">🌟 الأسئلة المفضلة والمحظوظة</div>
             <div class="dashboard-box box-4" onclick="alert('رقم المصمم: 0983957561 🖤🌹')">اترك لنا ملاحظاتك 🖤🌹</div>
         </div>
@@ -408,7 +409,7 @@
 
         function refreshGamificationUI() {
             const panel = document.getElementById('gamificationContainer');
-            if (appMode === 'oracle' || appMode === 'examSimulator') {
+            if (appMode === 'oracle' || appMode === 'examSimulator' || appMode === 'quantum') {
                 panel.innerHTML = `
                     <div class="gamification-panel">
                         <div class="score-display">💎 النقاط: <span id="currentScoreVal">${userScore}</span> XP</div>
@@ -786,6 +787,52 @@
             showScreen('quizScreen');
             renderExamModeQuestions(activeQuestions, `🎯 محاكي الامتحان: (${subjectName}) - 30 سؤال`);
             startExamTimer(45 * 60);
+        }
+
+        // دوال غرفة المحاكاة الكمية الجديدة كلياً المستمدة من الجلسات
+        function startQuantumSimulationMenu() {
+            appMode = 'quantum';
+            showScreen('subjectsScreen');
+            const container = document.getElementById('subjectsList');
+            container.innerHTML = '<h3 style="color:#22d3ee; margin-bottom:15px; text-align:center;">🌌 اختر مادة غرفة المحاكاة الكمية</h3>';
+            
+            subjects.forEach(sub => {
+                const div = document.createElement('div');
+                div.className = 'sub-box';
+                div.innerText = sub;
+                div.onclick = () => runQuantumSimulation(sub);
+                container.appendChild(div);
+            });
+        }
+
+        function runQuantumSimulation(subjectName) {
+            let allSubQuestions = getAllSubjectQuestions(subjectName);
+            if(allSubQuestions.length === 0) {
+                alert('لا توجد أسئلة كافية مستمدة من الجلسات لهذه المادة حالياً!');
+                return;
+            }
+
+            appMode = 'quantum';
+            userScore = 0;
+            refreshGamificationUI();
+
+            let selectedQuestions = [...allSubQuestions].sort(() => 0.5 - Math.random()).slice(0, 25);
+            let allAnswersPool = allSubQuestions.map(item => item.a);
+
+            activeQuestions = selectedQuestions.map(item => {
+                let correctAnswer = item.a;
+                let wrongOptions = allAnswersPool.filter(ans => ans !== correctAnswer).sort(() => 0.5 - Math.random()).slice(0, 3);
+                let options = [...wrongOptions, correctAnswer].sort(() => 0.5 - Math.random());
+                return {
+                    q: "🌌 [محاكاة كمية من الجلسات]: " + item.q,
+                    correct: correctAnswer,
+                    options: options
+                };
+            });
+
+            showScreen('quizScreen');
+            renderOracleQuestions(activeQuestions, `🌌 غرفة المحاكاة الكمية: (${subjectName}) - استخلاص ذكي من الجلسات`);
+            startOracleTimer(30 * 60);
         }
 
         function getAllSubjectQuestions(subjectName) {
