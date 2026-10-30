@@ -466,6 +466,26 @@
             const container = document.getElementById('sessionsList');
             container.innerHTML = `<h3 style="color:#60a5fa; margin-bottom:15px; text-align:center;">${subjectName} (القسم العملي)</h3>`;
 
+            // إضافة خانة عينات الحراج بجانب الجلسات العملية
+            if (subjectName === "علم الحراج") {
+                const sampleDiv = document.createElement('div');
+                sampleDiv.className = 'sub-box';
+                sampleDiv.style.background = '#10b981';
+                sampleDiv.innerText = `🌿 عينات الحراج النباتية (صور العينات)`;
+                sampleDiv.onclick = () => showCustomSamples('forestry');
+                container.appendChild(sampleDiv);
+            }
+
+            // إضافة خانة عينات نباتات الزينة بجانب الجلسات العملية
+            if (subjectName === "نباتات الزينة") {
+                const sampleDiv = document.createElement('div');
+                sampleDiv.className = 'sub-box';
+                sampleDiv.style.background = '#eab308';
+                sampleDiv.innerText = `🌸 عينات نباتات الزينة (صور العينات)`;
+                sampleDiv.onclick = () => showCustomSamples('ornamental');
+                container.appendChild(sampleDiv);
+            }
+
             for(let i = 1; i <= 7; i++) {
                 const div = document.createElement('div');
                 div.className = 'sub-box';
@@ -480,6 +500,34 @@
             finalDiv.innerText = `اختبار لجميع الجلسات السابقة (${subjectName} - امتحان شامل)`;
             finalDiv.onclick = () => loadComprehensiveExam(subjectName);
             container.appendChild(finalDiv);
+        }
+
+        // دالة عرض شاشة العينات الخاصة بالصور
+        function showCustomSamples(type) {
+            showScreen('favoritesScreen');
+            const container = document.getElementById('favoritesContainer');
+            
+            if (type === 'forestry') {
+                container.innerHTML = `
+                    <button class="back-btn" onclick="showSessions('علم الحراج', 'practical')">الرجوع للجلسات</button>
+                    <h3 style="color:#10b981; margin-bottom:15px; text-align:center;">🌿 عينات الحراج النباتية</h3>
+                    <div class="question-card" style="text-align: center;">
+                        <img src="samples_images/forestry_sample_1.jpg" alt="عينة حراجية" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; margin-bottom: 10px;">
+                        <p style="color: #60a5fa; font-weight: bold; font-size: 1.1rem;">عينة الحراج رقم 1</p>
+                        <p style="color: #d1d5db; font-size: 0.95rem; margin-top: 5px;">الوصف أو الاسم العلمي للعينة الحراجية 🌹</p>
+                    </div>
+                `;
+            } else if (type === 'ornamental') {
+                container.innerHTML = `
+                    <button class="back-btn" onclick="showSessions('نباتات الزينة', 'practical')">الرجوع للجلسات</button>
+                    <h3 style="color:#eab308; margin-bottom:15px; text-align:center;">🌸 عينات نباتات الزينة</h3>
+                    <div class="question-card" style="text-align: center;">
+                        <img src="samples_images/ornamental_sample_1.jpg" alt="عينة زينة" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; margin-bottom: 10px;">
+                        <p style="color: #60a5fa; font-weight: bold; font-size: 1.1rem;">عينة نباتات الزينة رقم 1</p>
+                        <p style="color: #d1d5db; font-size: 0.95rem; margin-top: 5px;">الوصف أو الاسم العلمي لنبات الزينة 🌹</p>
+                    </div>
+                `;
+            }
         }
 
         function getArabicNumber(num) {
