@@ -58,7 +58,7 @@
         .box-3 { background: linear-gradient(135deg, #ec4899, #be185d); color: white; }
         .box-4 { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
         .box-5 { background: linear-gradient(135deg, #eab308, #ca8a04); color: white; }
-        .box-6 { background: linear-gradient(135deg, #ef4444, #991b1b); color: white; } /* زر صيد الثغرات الجديد */
+        .box-6 { background: linear-gradient(135deg, #ef4444, #991b1b); color: white; }
         .dashboard-box:hover { transform: scale(1.02); }
 
         .dynamic-screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 600px; margin: auto; padding: 20px; flex: 1; }
@@ -73,7 +73,7 @@
         .search-box { width: 100%; padding: 12px; margin-bottom: 15px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; font-size: 1rem; }
         .question-card { background: #111827; border: 1px solid #374151; padding: 15px; border-radius: 10px; margin-bottom: 15px; width: 100%; position: relative; }
         .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; color: #60a5fa; }
-        .action-btns { display: flex; gap: 10px; }
+        .action-btns { display: flex; gap: 8px; align-items: center; }
         .icon-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
         .answer-box { background: #1f2937; padding: 10px; border-radius: 6px; margin-top: 8px; color: #e5e7eb; display: none; white-space: pre-line; }
         .show-ans-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-top: 8px; font-size: 0.9rem; }
@@ -234,16 +234,16 @@
         صمم من قبل المهندس أحمد علي عمران / المهندس محمد كامل محمد جميع الحقوق محفوظه© 2026
     </footer>
 
-    <!-- ربط ملفات بنك الأسئلة للمواد مع إصدار قسري v=8.0 لمنع التخزين المؤقت القديم -->
-    <script src="animal_care.js?v=8.0"></script>
-    <script src="management_accounting.js?v=8.0"></script>
-    <script src="plant_pathology.js?v=8.0"></script>
-    <script src="forestry.js?v=8.0"></script>
-    <script src="soil_fertility.js?v=8.0"></script>
-    <script src="all-sessions.js?v=8.0"></script>
+    <!-- ربط ملفات بنك الأسئلة للمواد مع إصدار قسري v=9.0 لمنع التخزين المؤقت القديم -->
+    <script src="animal_care.js?v=9.0"></script>
+    <script src="management_accounting.js?v=9.0"></script>
+    <script src="plant_pathology.js?v=9.0"></script>
+    <script src="forestry.js?v=9.0"></script>
+    <script src="soil_fertility.js?v=9.0"></script>
+    <script src="all-sessions.js?v=9.0"></script>
     
     <!-- ربط ملف بيانات عينات الصور للعينات النباتية والزينة مع رقم إصدار قسري لمنع الكاش -->
-    <script src="samples_data.js?v=8.0"></script>
+    <script src="samples_data.js?v=9.0"></script>
 
     <script>
         // أداة حماية المحتوى والمنصة (منع النقر بالزر الأيمن، تحديد النص، واختصارات المطورين)
@@ -420,7 +420,7 @@
         let examInterval = null;
         
         let favoriteQuestions = JSON.parse(localStorage.getItem('albana_favorites')) || [];
-        let weaknessQuestions = JSON.parse(localStorage.getItem('albana_weaknesses')) || []; // تخزين الأخطاء المستقل
+        let weaknessQuestions = JSON.parse(localStorage.getItem('albana_weaknesses')) || [];
 
         function addWeakness(q, a) {
             let exists = weaknessQuestions.some(item => item.q === q);
@@ -428,6 +428,38 @@
                 weaknessQuestions.push({ q: q, a: a });
                 localStorage.setItem('albana_weaknesses', JSON.stringify(weaknessQuestions));
             }
+        }
+
+        // ميزة القراءة الصوتية الذكية (Text-to-Speech)
+        function speakText(text, btnElement) {
+            if (!('speechSynthesis' in window)) {
+                alert('متصفحك لا يدعم ميزة القراءة الصوتية ❌');
+                return;
+            }
+
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                if (btnElement && btnElement.classList.contains('speaking')) {
+                    btnElement.classList.remove('speaking');
+                    btnElement.style.color = '#fff';
+                    return;
+                }
+            }
+
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ar-SA'; // اللغة العربية
+            utterance.rate = 0.95; // سرعة القراءة متوازنة ومريحة
+
+            if (btnElement) {
+                btnElement.classList.add('speaking');
+                btnElement.style.color = '#3b82f6';
+                utterance.onend = () => {
+                    btnElement.classList.remove('speaking');
+                    btnElement.style.color = '#fff';
+                };
+            }
+
+            window.speechSynthesis.speak(utterance);
         }
 
         function refreshGamificationUI() {
@@ -579,7 +611,6 @@
             }
 
             let backSubject = type === 'forestry' ? 'علم الحراج' : 'نباتات الزينة';
-            let titleColor = type === 'forestry' ? '#10b981' : '#eab308';
 
             let htmlContent = `<div class="nav-buttons-bar"><button class="back-btn" onclick="showSessions('${backSubject}', 'practical')">الرجوع للجلسات</button><button class="home-btn" onclick="showScreen('mainDashboard')">🏠 القائمة الرئيسية</button></div>`;
 
@@ -781,6 +812,9 @@
                 card.innerHTML = `
                     <div class="question-header">
                         <span>🏛️ السؤال ${index + 1} 🏛️</span>
+                        <div class="action-btns">
+                            <button class="icon-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}', this)" title="قراءة السؤال صوتياً">🔊</button>
+                        </div>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
                     <div class="mcq-options">${optionsHtml}</div>
@@ -806,7 +840,6 @@
             } else {
                 selectedCard.classList.add('wrong');
                 selectedCard.setAttribute('data-status', 'wrong');
-                // تسجيل الثغرة والأخطاء تلقائياً
                 let qText = parentContainer.getAttribute('data-q');
                 addWeakness(qText, correct);
 
@@ -970,7 +1003,7 @@
                             correctCount++;
                         } else {
                             wrongCount++;
-                            addWeakness(activeQuestions[idx].q, trueAns); // رصد الثغرة
+                            addWeakness(activeQuestions[idx].q, trueAns);
                         }
                     }
                 });
@@ -1036,6 +1069,9 @@
                 card.innerHTML = `
                     <div class="question-header">
                         <span>🖤 السؤال ${index + 1} 🖤</span>
+                        <div class="action-btns">
+                            <button class="icon-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}', this)" title="قراءة السؤال صوتياً">🔊</button>
+                        </div>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
                     <input type="text" class="exam-input" placeholder="✍️ اكتب إجابتك هنا...">
@@ -1070,6 +1106,7 @@
                     <div class="question-header">
                         <span>🖤 ${index + 1} 🖤</span>
                         <div class="action-btns">
+                            <button class="icon-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}', this)" title="قراءة السؤال صوتياً">🔊</button>
                             <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
                             <button class="icon-btn" style="color: ${starColor};" onclick="toggleFavorite(this, '${encodeURIComponent(item.q)}', '${encodeURIComponent(item.a)}')" title="المفضلة">🌟</button>
                         </div>
@@ -1164,6 +1201,7 @@
                     <div class="question-header">
                         <span>🌟 المفضلة ${index + 1}</span>
                         <div class="action-btns">
+                            <button class="icon-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}', this)" title="قراءة السؤال صوتياً">🔊</button>
                             <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
                             <button class="icon-btn" style="color: gold;" onclick="removeFavorite(this, '${encodeURIComponent(item.q)}')" title="إزالة من المفضلة">❌</button>
                         </div>
@@ -1183,7 +1221,6 @@
             showFavoritesScreen();
         }
 
-        // دوال إدارة واجهة صيد الثغرات والأخطاء المستقلة
         function showWeaknessesScreen() {
             showScreen('favoritesScreen');
             const container = document.getElementById('favoritesContainer');
@@ -1214,6 +1251,7 @@
                     <div class="question-header">
                         <span>🎯 ثغرة مرصودة ${index + 1}</span>
                         <div class="action-btns">
+                            <button class="icon-btn" onclick="speakText('${item.q.replace(/'/g, "\\'")}', this)" title="قراءة السؤال صوتياً">🔊</button>
                             <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
                             <button class="icon-btn" style="color: #ef4444;" onclick="removeWeakness(this, '${encodeURIComponent(item.q)}')" title="حذف هذه الثغرة بعد إتقانها">❌</button>
                         </div>
@@ -1237,16 +1275,17 @@
             if(confirm('هل أنت متأكد من مسح جميع الثغرات المرصودة؟')) {
                 weaknessQuestions = [];
                 localStorage.removeItem('albana_weaknesses');
+                showWeakNamesScreen = showWeaknessesScreen;
                 showWeaknessesScreen();
             }
         }
     </script>
 
-    <!-- كود تفعيل الـ Service Worker المحدث (v=8.0) للتخزين المحلي وتحديث الكاش تلقائياً -->
+    <!-- كود تفعيل الـ Service Worker المحدث (v=9.0) للتخزين المحلي وتحديث الكاش تلقائياً -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=8.0')
+          navigator.serviceWorker.register('./sw.js?v=9.0')
             .then(reg => {
               console.log('Service Worker registered!');
               reg.update();
