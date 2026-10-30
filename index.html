@@ -90,6 +90,14 @@
         .stop-timer-btn { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: bold; transition: background 0.2s; }
         .stop-timer-btn:hover { background: #b91c1c; }
         
+        /* تصميم لوحة التقرير النظامي الصارم */
+        .report-card { background: #1f2937; border: 2px solid #374151; padding: 25px; border-radius: 12px; margin-bottom: 25px; width: 100%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .report-card h3 { color: #f59e0b; font-size: 1.5rem; margin-bottom: 15px; }
+        .report-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .stat-box { background: #111827; padding: 12px; border-radius: 8px; border: 1px solid #374151; }
+        .stat-box span { display: block; font-size: 0.85rem; color: #9ca3af; margin-bottom: 5px; }
+        .stat-box strong { font-size: 1.3rem; color: #fff; }
+
         .marquee-bar { background: #1f2937; color: #f59e0b; padding: 10px; font-size: 0.95rem; font-weight: bold; border-bottom: 1px solid #374151; white-space: nowrap; overflow: hidden; }
         footer { background: #030712; padding: 20px; text-align: center; border-top: 1px solid #1f2937; font-size: 0.85rem; color: #9ca3af; line-height: 1.6; }
     </style>
@@ -224,16 +232,16 @@
         صمم من قبل المهندس أحمد علي عمران / المهندس محمد كامل محمد جميع الحقوق محفوظه© 2026
     </footer>
 
-    <!-- ربط ملفات بنك الأسئلة للمواد مع إصدار قسري v=6.0 لمنع التخزين المؤقت القديم -->
-    <script src="animal_care.js?v=6.0"></script>
-    <script src="management_accounting.js?v=6.0"></script>
-    <script src="plant_pathology.js?v=6.0"></script>
-    <script src="forestry.js?v=6.0"></script>
-    <script src="soil_fertility.js?v=6.0"></script>
-    <script src="all-sessions.js?v=6.0"></script>
+    <!-- ربط ملفات بنك الأسئلة للمواد مع إصدار قسري v=7.0 لمنع التخزين المؤقت القديم -->
+    <script src="animal_care.js?v=7.0"></script>
+    <script src="management_accounting.js?v=7.0"></script>
+    <script src="plant_pathology.js?v=7.0"></script>
+    <script src="forestry.js?v=7.0"></script>
+    <script src="soil_fertility.js?v=7.0"></script>
+    <script src="all-sessions.js?v=7.0"></script>
     
     <!-- ربط ملف بيانات عينات الصور للعينات النباتية والزينة مع رقم إصدار قسري لمنع الكاش -->
-    <script src="samples_data.js?v=6.0"></script>
+    <script src="samples_data.js?v=7.0"></script>
 
     <script>
         // أداة حماية المحتوى والمنصة (منع النقر بالزر الأيمن، تحديد النص، واختصارات المطورين)
@@ -737,7 +745,7 @@
                 
                 if(timeLeftSec <= 0) {
                     clearInterval(examInterval);
-                    alert('انقضى وقت الاختبار! انتهى الوقت ⏱️🔥');
+                    stopExamTimer('oracle');
                 }
                 timeLeftSec--;
             }, 1000);
@@ -782,8 +790,10 @@
 
             if(selected === correct) {
                 selectedCard.classList.add('correct');
+                selectedCard.setAttribute('data-status', 'correct');
             } else {
                 selectedCard.classList.add('wrong');
+                selectedCard.setAttribute('data-status', 'wrong');
                 allOptions.forEach(opt => {
                     if(opt.innerText.trim() === correct.trim()) {
                         opt.classList.add('correct');
@@ -914,8 +924,7 @@
                 
                 if(timeLeftSec <= 0) {
                     clearInterval(examInterval);
-                    submitExam();
-                    alert('انقضى وقت الامتحان (45 دقيقة)! تم إظهار الأجوبة الصحيحة تلقائياً للمقارنة ⏱️🔥');
+                    stopExamTimer('simulator');
                 }
                 timeLeftSec--;
             }, 1000);
@@ -923,11 +932,72 @@
 
         function stopExamTimer(type) {
             if(examInterval) clearInterval(examInterval);
-            if(type === 'simulator') {
-                submitExam();
-                document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 تم إنهاء وقت الامتحان يدوياً بنجاح! تم كشف الأجوبة 🌹</div>';
+            
+            // حساب النتائج بدقة وإظهار التقرير الصارم بدون مجاملة
+            let totalQ = activeQuestions.length;
+            let correctCount = 0;
+            let wrongCount = 0;
+            let answeredCount = 0;
+
+            if (appMode === 'oracle' || appMode === 'quantum') {
+                let answeredOptions = document.querySelectorAll('.mcq-option.correct[data-status="correct"], .mcq-option.wrong[data-status="wrong"]');
+                let correctOptionsList = document.querySelectorAll('.mcq-option.correct[data-status="correct"]');
+                correctCount = correctOptionsList.length;
+                answeredCount = document.querySelectorAll('.question-card.answered').length;
+                wrongCount = answeredCount - correctCount;
             } else {
-                document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 تم إنهاء الوقت يدوياً بنجاح 🌹</div>';
+                // محاكي الامتحان أو الاختبارات الشاملة
+                let cards = document.querySelectorAll('.question-card');
+                cards.forEach((card, idx) => {
+                    let inputVal = card.querySelector('.exam-input').value.trim();
+                    let trueAns = activeQuestions[idx].a.trim();
+                    if(inputVal !== "") {
+                        answeredCount++;
+                        if(inputVal.toLowerCase() === trueAns.toLowerCase()) {
+                            correctCount++;
+                        } else {
+                            wrongCount++;
+                        }
+                    }
+                });
+            }
+
+            let unattempted = totalQ - answeredCount;
+            let percentage = totalQ > 0 ? Math.round((correctCount / totalQ) * 100) : 0;
+
+            let reportHtml = `
+                <div class="report-card">
+                    <h3>📊 التقرير التقيمي النهائي (بدون مجاملة)</h3>
+                    <div class="report-stats">
+                        <div class="stat-box">
+                            <span>إجمالي الأسئلة</span>
+                            <strong>${totalQ}</strong>
+                        </div>
+                        <div class="stat-box">
+                            <span>الإجابات الصحيحة</span>
+                            <strong style="color: #10b981;">${correctCount}</strong>
+                        </div>
+                        <div class="stat-box">
+                            <span>الإجابات الخاطئة</span>
+                            <strong style="color: #ef4444;">${wrongCount}</strong>
+                        </div>
+                    </div>
+                    <div style="font-size: 1.1rem; margin-bottom: 10px; color: #d1d5db;">
+                        نسبة النجاح الدقيقة: <strong style="color: ${percentage >= 50 ? '#10b981' : '#ef4444'};">${percentage}%</strong>
+                    </div>
+                    <p style="font-size: 0.95rem; color: #9ca3af; line-height: 1.5;">
+                        ${percentage >= 80 ? '🌟 أداء ممتاز ومستقر، حافظ على هذا النسق العالي!' : percentage >= 50 ? '⚠️ أداء مقبول ولكن يحتاج إلى مزيد من التركيز والمراجعة الجدية للجلسات.' : '❌ النتيجة ضعيفة للغاية! أنت بحاجة ماسة لإعادة مراجعة المادة من الصفر وبتركيز تام.'}
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('examTimerContainer').innerHTML = reportHtml;
+
+            if(type === 'simulator') {
+                document.getElementById('submitExamBtn').style.display = 'none';
+                let answerBoxes = document.querySelectorAll('.exam-answer-box');
+                answerBoxes.forEach(box => { box.style.display = 'block'; });
+            } else {
                 let cards = document.querySelectorAll('.question-card');
                 cards.forEach(card => {
                     let opts = card.querySelectorAll('.mcq-option');
@@ -955,7 +1025,7 @@
                         <span>🖤 السؤال ${index + 1} 🖤</span>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
-                    <input type="text" class="exam-input" placeholder="✍️ اكتب إجابتك هنا لمقارنتها لاحقاً...">
+                    <input type="text" class="exam-input" placeholder="✍️ اكتب إجابتك هنا...">
                     <div class="answer-box exam-answer-box" style="margin-top: 10px; border-right: 3px solid #10b981;"><strong>✅ الجواب الصحيح والحقيقي:</strong> ${item.a}</div>
                 `;
                 container.appendChild(card);
@@ -963,15 +1033,7 @@
         }
 
         function submitExam() {
-            if(examInterval) clearInterval(examInterval);
-            document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 انتهى الامتحان! تم كشف الأجوبة الصحيحة للمقارنة 🌹</div>';
-            document.getElementById('submitExamBtn').style.display = 'none';
-            
-            let answerBoxes = document.querySelectorAll('.exam-answer-box');
-            answerBoxes.forEach(box => {
-                box.style.display = 'block';
-            });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            stopExamTimer('simulator');
         }
 
         function renderQuestions(questions, titleText, isCompass = false) {
@@ -1086,7 +1148,7 @@
                 card.className = 'question-card';
                 card.innerHTML = `
                     <div class="question-header">
-                        <span>🌟 المفضلة ${index + 1} 🌟</span>
+                        <span>🌟 المفضلة ${index + 1} <span>
                         <div class="action-btns">
                             <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
                             <button class="icon-btn" style="color: gold;" onclick="removeFavorite(this, '${encodeURIComponent(item.q)}')" title="إزالة من المفضلة">❌</button>
@@ -1108,14 +1170,14 @@
         }
     </script>
 
-    <!-- كود تفعيل الـ Service Worker المحدث (v=6.0) للتخزين المحلي وتحديث الكاش تلقائياً -->
+    <!-- كود تفعيل الـ Service Worker المحدث (v=7.0) للتخزين المحلي وتحديث الكاش تلقائياً -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=6.0')
+          navigator.serviceWorker.register('./sw.js?v=7.0')
             .then(reg => {
               console.log('Service Worker registered!');
-              reg.update(); // إجبار فحص التحديثات سحابياً
+              reg.update();
             })
             .catch(err => console.log('Service Worker error: ', err));
         });
