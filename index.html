@@ -86,10 +86,6 @@
         .stop-timer-btn { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: bold; transition: background 0.2s; }
         .stop-timer-btn:hover { background: #b91c1c; }
         
-        .gamification-panel { background: linear-gradient(135deg, #1f2937, #111827); border: 2px solid #3b82f6; padding: 12px 20px; border-radius: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
-        .score-display { font-size: 1.2rem; font-weight: bold; color: #10b981; }
-        .rank-badge { font-size: 1.1rem; font-weight: bold; color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid #f59e0b; }
-
         .marquee-bar { background: #1f2937; color: #f59e0b; padding: 10px; font-size: 0.95rem; font-weight: bold; border-bottom: 1px solid #374151; white-space: nowrap; overflow: hidden; }
         footer { background: #030712; padding: 20px; text-align: center; border-top: 1px solid #1f2937; font-size: 0.85rem; color: #9ca3af; line-height: 1.6; }
     </style>
@@ -180,17 +176,17 @@
     </div>
 
     <div class="dynamic-screen" id="subjectsScreen">
-        <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للخلف</button>
+        <button class="back-btn" onclick="handleSubjectsBack()">الرجوع للخلف</button>
         <div style="width: 100%; display: flex; flex-direction: column; gap: 12px;" id="subjectsList"></div>
     </div>
 
     <div class="dynamic-screen" id="sessionsScreen">
-        <button class="back-btn" onclick="showSubjects(currentMode)">الرجوع للمواد</button>
+        <button class="back-btn" onclick="handleSessionsBack()">الرجوع للمواد</button>
         <div style="width: 100%; display: flex; flex-direction: column; gap: 10px;" id="sessionsList"></div>
     </div>
 
     <div class="dynamic-screen" id="quizScreen">
-        <button class="back-btn" onclick="showSessions(currentSubject, currentMode)">الرجوع للخلف</button>
+        <button class="back-btn" onclick="handleQuizBack()">الرجوع للخلف</button>
         <h3 id="quizTitle" style="color:#60a5fa; margin-bottom:15px; text-align:center;"></h3>
         <div id="examTimerContainer"></div>
         <div id="gamificationContainer"></div>
@@ -353,7 +349,6 @@
                 setTimeout(() => {
                     document.getElementById('intro-screen').style.display = 'none';
                     
-                    // إذا لم تكن المنصة مفعلة، تبقى بوابة الاشتراك ظاهرة
                     if (localStorage.getItem('albana_platform_unlocked') === 'true') {
                         const savedName = localStorage.getItem('albana_user_name');
                         const savedYear = localStorage.getItem('albana_user_year');
@@ -399,28 +394,10 @@
         let examInterval = null;
         
         let favoriteQuestions = JSON.parse(localStorage.getItem('albana_favorites')) || [];
-        let userScore = 0;
-
-        function updateRankTitle(score) {
-            if (score < 50) return "🌱 مبتدئ واعد";
-            if (score < 150) return "🥉 طالب مجتهد";
-            if (score < 300) return "🥈 خبير الأوراكل";
-            if (score < 500) return "🥇 أسطورة القاعة";
-            return "🐐 GOAT الأوراكل المطلق";
-        }
 
         function refreshGamificationUI() {
             const panel = document.getElementById('gamificationContainer');
-            if (appMode === 'oracle' || appMode === 'examSimulator' || appMode === 'quantum') {
-                panel.innerHTML = `
-                    <div class="gamification-panel">
-                        <div class="score-display">💎 النقاط: <span id="currentScoreVal">${userScore}</span> XP</div>
-                        <div class="rank-badge" id="currentRankBadge">لقبك: ${updateRankTitle(userScore)}</div>
-                    </div>
-                `;
-            } else {
-                panel.innerHTML = '';
-            }
+            if (panel) panel.innerHTML = '';
         }
 
         function showSubjects(mode) {
@@ -437,6 +414,38 @@
                 div.onclick = () => showSessions(sub, mode);
                 container.appendChild(div);
             });
+        }
+
+        function handleSubjectsBack() {
+            if (appMode === 'oracle') {
+                startOracleMenu();
+            } else if (appMode === 'examSimulator') {
+                startExamSimulatorMenu();
+            } else if (appMode === 'quantum') {
+                startQuantumSimulationMenu();
+            } else {
+                showScreen('sectionsScreen');
+            }
+        }
+
+        function handleSessionsBack() {
+            if (appMode === 'oracle') {
+                startOracleMenu();
+            } else if (appMode === 'examSimulator') {
+                startExamSimulatorMenu();
+            } else if (appMode === 'quantum') {
+                startQuantumSimulationMenu();
+            } else {
+                showSubjects(currentMode);
+            }
+        }
+
+        function handleQuizBack() {
+            if (appMode === 'oracle' || appMode === 'quantum' || appMode === 'examSimulator') {
+                showSessions(currentSubject, 'practical');
+            } else {
+                showSessions(currentSubject, currentMode);
+            }
         }
 
         function showSessions(subjectName, mode) {
@@ -472,7 +481,6 @@
             const container = document.getElementById('sessionsList');
             container.innerHTML = `<h3 style="color:#60a5fa; margin-bottom:15px; text-align:center;">${subjectName} (القسم العملي)</h3>`;
 
-            // إضافة خانة عينات الحراج بجانب الجلسات العملية
             if (subjectName === "علم الحراج") {
                 const sampleDiv = document.createElement('div');
                 sampleDiv.className = 'sub-box';
@@ -482,7 +490,6 @@
                 container.appendChild(sampleDiv);
             }
 
-            // إضافة خانة عينات نباتات الزينة بجانب الجلسات العملية
             if (subjectName === "نباتات الزينة") {
                 const sampleDiv = document.createElement('div');
                 sampleDiv.className = 'sub-box';
@@ -508,7 +515,6 @@
             container.appendChild(finalDiv);
         }
 
-        // دالة عرض شاشة العينات الخاصة بالصور من ملف البيانات المستقل المحدثة
         function showCustomSamples(type) {
             showScreen('favoritesScreen');
             const container = document.getElementById('favoritesContainer');
@@ -664,7 +670,6 @@
             }
 
             appMode = 'oracle';
-            userScore = 0;
             refreshGamificationUI();
 
             let selected40 = [...sourceArray].sort(() => 0.5 - Math.random()).slice(0, 40);
@@ -748,19 +753,14 @@
 
             if(selected === correct) {
                 selectedCard.classList.add('correct');
-                userScore += 10;
             } else {
                 selectedCard.classList.add('wrong');
-                userScore = Math.max(0, userScore - 5);
                 allOptions.forEach(opt => {
                     if(opt.innerText.trim() === correct.trim()) {
                         opt.classList.add('correct');
                     }
                 });
             }
-
-            document.getElementById('currentScoreVal').innerText = userScore;
-            document.getElementById('currentRankBadge').innerText = `لقبك: ${updateRankTitle(userScore)}`;
         }
 
         function startExamSimulatorMenu() {
@@ -786,7 +786,6 @@
             }
 
             appMode = 'examSimulator';
-            userScore = 0;
             refreshGamificationUI();
 
             activeQuestions = [...allSubQuestions].sort(() => 0.5 - Math.random()).slice(0, 30);
@@ -796,7 +795,6 @@
             startExamTimer(45 * 60);
         }
 
-        // دوال غرفة المحاكاة الكمية الجديدة كلياً المستمدة من الجلسات
         function startQuantumSimulationMenu() {
             appMode = 'quantum';
             showScreen('subjectsScreen');
@@ -820,7 +818,6 @@
             }
 
             appMode = 'quantum';
-            userScore = 0;
             refreshGamificationUI();
 
             let selectedQuestions = [...allSubQuestions].sort(() => 0.5 - Math.random()).slice(0, 25);
@@ -895,7 +892,6 @@
             }, 1000);
         }
 
-        // دالة إنهاء الوقت يدوياً عبر الزر الجديد
         function stopExamTimer(type) {
             if(examInterval) clearInterval(examInterval);
             if(type === 'simulator') {
@@ -903,7 +899,6 @@
                 document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 تم إنهاء وقت الامتحان يدوياً بنجاح! تم كشف الأجوبة 🌹</div>';
             } else {
                 document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 تم إنهاء وقت الأوراكل/المحاكاة يدوياً بنجاح 🌹</div>';
-                // إظهار الأجوبة الصحيحة إذا كان في وضع الأوراكل أو المحاكاة
                 let cards = document.querySelectorAll('.question-card');
                 cards.forEach(card => {
                     let opts = card.querySelectorAll('.mcq-option');
@@ -931,26 +926,11 @@
                         <span>🖤 السؤال ${index + 1} 🖤</span>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
-                    <input type="text" class="exam-input" placeholder="✍️ اكتب إجابتك هنا لمقارنتها لاحقاً..." oninput="checkSimulatorProgress()">
+                    <input type="text" class="exam-input" placeholder="✍️ اكتب إجابتك هنا لمقارنتها لاحقاً...">
                     <div class="answer-box exam-answer-box" style="margin-top: 10px; border-right: 3px solid #10b981;"><strong>✅ الجواب الصحيح والحقيقي:</strong> ${item.a}</div>
                 `;
                 container.appendChild(card);
             });
-        }
-
-        function checkSimulatorProgress() {
-            let inputs = document.querySelectorAll('.exam-input');
-            let filledCount = 0;
-            inputs.forEach(inp => {
-                if(inp.value.trim().length > 0) filledCount++;
-            });
-            userScore = filledCount * 5;
-            let scoreEl = document.getElementById('currentScoreVal');
-            let rankEl = document.getElementById('currentRankBadge');
-            if(scoreEl && rankEl) {
-                scoreEl.innerText = userScore;
-                rankEl.innerText = `لقبك: ${updateRankTitle(userScore)}`;
-            }
         }
 
         function submitExam() {
