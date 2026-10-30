@@ -505,12 +505,20 @@
             container.appendChild(finalDiv);
         }
 
-        // دالة عرض شاشة العينات الخاصة بالصور من ملف البيانات المستقل
+        // دالة عرض شاشة العينات الخاصة بالصور من ملف البيانات المستقل المحدثة
         function showCustomSamples(type) {
             showScreen('favoritesScreen');
             const container = document.getElementById('favoritesContainer');
             
-            let samplesList = (typeof plantSamplesData !== 'undefined') ? (type === 'forestry' ? plantSamplesData.forestry : plantSamplesData.ornamental) : [];
+            let samplesList = [];
+            if (typeof plantSamplesData !== 'undefined') {
+                if (type === 'forestry') {
+                    samplesList = plantSamplesData.forestry || [];
+                } else {
+                    samplesList = plantSamplesData.ornamental || [];
+                }
+            }
+
             let titleText = type === 'forestry' ? '🌿 عينات الحراج النباتية' : '🌸 عينات نباتات الزينة';
             let backSubject = type === 'forestry' ? 'علم الحراج' : 'نباتات الزينة';
             let titleColor = type === 'forestry' ? '#10b981' : '#eab308';
@@ -524,7 +532,7 @@
                 samplesList.forEach((item) => {
                     htmlContent += `
                         <div class="question-card" style="text-align: center; margin-bottom: 20px;">
-                            <img src="${item.image}" alt="${item.title}" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; margin-bottom: 10px; background: #1f2937; padding: 5px;">
+                            <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x250?text=Image+Loading+Error';" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; margin-bottom: 10px; background: #1f2937; padding: 5px;">
                             <p style="color: #60a5fa; font-weight: bold; font-size: 1.1rem; margin-bottom: 8px;">${item.title}</p>
                             <p style="color: #d1d5db; font-size: 0.95rem; line-height: 1.6; white-space: pre-line; text-align: right; padding: 0 10px;">${item.description}</p>
                         </div>
