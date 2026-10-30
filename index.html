@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>اختبارات AL BANA</title>
-    <!-- استدعاء مكتبة فايربيس للنسخ الويب للتحقق السحابي المباشر -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0b0f19; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
         
-        /* بوابة الرمز السري الأولية */
         #secret-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0f19; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
         .secret-box { background: rgba(17, 24, 39, 0.98); padding: 35px; border-radius: 16px; border: 2px solid #ef4444; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .secret-box h2 { color: #ef4444; margin-bottom: 10px; font-size: 1.6rem; }
@@ -19,17 +17,6 @@
         .secret-box input { width: 100%; padding: 12px; margin-bottom: 15px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; text-align: center; font-size: 1.1rem; }
         .secret-box button { background: #ef4444; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1.1rem; }
 
-        #intro-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; color: #ffffff; transition: opacity 0.8s ease; }
-        .goat-title { font-size: 5rem; font-weight: bold; letter-spacing: 12px; display: flex; gap: 15px; direction: ltr; margin-bottom: 20px; }
-        .goat-title span { opacity: 0; transform: translateY(-80px); animation: dropLetter 0.5s forwards; }
-        .goat-title span:nth-child(1) { animation-delay: 0.2s; }
-        .goat-title span:nth-child(2) { animation-delay: 0.4s; }
-        .goat-title span:nth-child(3) { animation-delay: 0.6s; }
-        .goat-title span:nth-child(4) { animation-delay: 0.8s; }
-        @keyframes dropLetter { to { opacity: 1; transform: translateY(0); } }
-        .blood-countdown { font-size: 4rem; color: #ef4444; font-weight: bold; }
-
-        /* بوابة تفعيل الاشتراك الشهري المحدثة بالكامل */
         #activation-gate { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0f19; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9995; padding: 20px; overflow-y: auto; }
         .activation-box { background: rgba(17, 24, 39, 0.98); padding: 30px; border-radius: 16px; border: 2px solid #3b82f6; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); margin: auto; }
         .activation-box h2 { color: #60a5fa; margin-bottom: 8px; font-size: 1.5rem; }
@@ -43,6 +30,16 @@
         .activation-box input { width: 100%; padding: 12px; margin-bottom: 15px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; text-align: center; font-size: 1rem; }
         .activation-box button { background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; font-size: 1.1rem; margin-bottom: 10px; }
         .telegram-btn { display: block; background: #2563eb; color: white; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-bottom: 15px; font-size: 0.95rem; }
+
+        #intro-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; color: #ffffff; transition: opacity 0.8s ease; }
+        .goat-title { font-size: 5rem; font-weight: bold; letter-spacing: 12px; display: flex; gap: 15px; direction: ltr; margin-bottom: 20px; }
+        .goat-title span { opacity: 0; transform: translateY(-80px); animation: dropLetter 0.5s forwards; }
+        .goat-title span:nth-child(1) { animation-delay: 0.2s; }
+        .goat-title span:nth-child(2) { animation-delay: 0.4s; }
+        .goat-title span:nth-child(3) { animation-delay: 0.6s; }
+        .goat-title span:nth-child(4) { animation-delay: 0.8s; }
+        @keyframes dropLetter { to { opacity: 1; transform: translateY(0); } }
+        .blood-countdown { font-size: 4rem; color: #ef4444; font-weight: bold; }
 
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0b0f19, #1f2937); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 9980; padding: 20px; }
         .login-box { background: rgba(17, 24, 39, 0.95); padding: 40px; border-radius: 16px; border: 1px solid #374151; box-shadow: 0 15px 35px rgba(0,0,0,0.6); width: 100%; max-width: 450px; text-align: center; }
@@ -66,7 +63,6 @@
         .sub-box { background: #1f2937; border: 1px solid #374151; padding: 18px; margin: 10px 0; border-radius: 10px; width: 100%; text-align: center; font-size: 1.1rem; cursor: pointer; transition: background 0.3s; color: #fff; font-weight: bold; }
         .sub-box:hover { background: #3f4656; }
         
-        /* تنسيق أزرار التنقل العلوية المزدوجة */
         .nav-buttons-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .back-btn { background: #4b5563; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95rem; }
         .home-btn { background: #2563eb; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95rem; }
@@ -82,11 +78,17 @@
         .exam-input { width: 100%; padding: 12px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #ffffff !important; font-size: 1.05rem; margin-top: 8px; outline: none; }
         .exam-input::placeholder { color: #9ca3af; }
 
+        /* تنسيق خيارات الأتمتة للأوراكل والغرفة الكمية */
+        .mcq-options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
+        .mcq-option { background: #1f2937; border: 1px solid #4b5563; padding: 12px; border-radius: 8px; cursor: pointer; color: #fff; text-align: right; transition: background 0.2s; font-size: 1rem; }
+        .mcq-option:hover { background: #374151; }
+        .mcq-option.correct { background: #059669 !important; border-color: #10b981 !important; color: #fff !important; }
+        .mcq-option.wrong { background: #dc2626 !important; border-color: #ef4444 !important; color: #fff !important; }
+
         .timer-badge { background: #ef4444; color: white; padding: 8px 15px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; text-align: center; width: 100%; display: flex; justify-content: space-between; align-items: center; }
         .stop-timer-btn { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: bold; transition: background 0.2s; }
         .stop-timer-btn:hover { background: #b91c1c; }
         
-        /* تصميم لوحة التقرير النظامي الصارم */
         .report-card { background: #1f2937; border: 2px solid #374151; padding: 25px; border-radius: 12px; margin-bottom: 25px; width: 100%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .report-card h3 { color: #f59e0b; font-size: 1.5rem; margin-bottom: 15px; }
         .report-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
@@ -100,7 +102,6 @@
 </head>
 <body>
 
-    <!-- بوابة الرمز السري المطلوبة -->
     <div id="secret-gate">
         <div class="secret-box">
             <h2>🔐 حماية تطبيق AL BANA</h2>
@@ -110,7 +111,6 @@
         </div>
     </div>
 
-    <!-- بوابة تفعيل الاشتراك الشهري المحدثة بالاسم والألوان والتنسيق الأصلي تماماً -->
     <div id="activation-gate" style="display: none;">
         <div class="activation-box">
             <h2>أهلاً وسهلاً بك في منصة AL BANA التعليمية ❤️🌹</h2>
@@ -167,9 +167,9 @@
     <div class="main-container" id="mainDashboard">
         <div class="dashboard-container">
             <div class="dashboard-box box-1" onclick="showScreen('sectionsScreen')">اختبارات AL BANA</div>
-            <div class="dashboard-box box-2" onclick="startOracleMenu()">🏛️ هيكل الأوراكل (40 سؤالاً خارقاً)</div>
+            <div class="dashboard-box box-2" onclick="startOracleMenu()">🏛️ هيكل الأوراكل (40 سؤالاً أتمتة خارقاً)</div>
             <div class="dashboard-box box-3" onclick="startExamSimulatorMenu()">🎯 محاكي الامتحان (اختبر جاهزيتك)</div>
-            <div class="dashboard-box" style="background: linear-gradient(135deg, #06b6d4, #0e7490); color: white;" onclick="startQuantumSimulationMenu()">🌌 غرفة المحاكاة الكمية (التحليل الذكي للجلسات)</div>
+            <div class="dashboard-box" style="background: linear-gradient(135deg, #06b6d4, #0e7490); color: white;" onclick="startQuantumSimulationMenu()">🌌 غرفة المحاكاة الكمية الأتمتة (التحليل الذكي)</div>
             <div class="dashboard-box box-5" onclick="showFavoritesScreen()">🌟 الأسئلة المفضلة والمحظوظة</div>
             <div class="dashboard-box box-6" onclick="showWeaknessesScreen()">🎯 صيد الثغرات والأخطاء (مراجعة الأخطاء تلقائياً)</div>
             <div class="dashboard-box box-7" onclick="showNotesScreen()">📝 مذكرة ملاحظات المهندس (تدوين أفكارك وقوانينك)</div>
@@ -230,40 +230,26 @@
         صمم من قبل المهندس أحمد علي عمران / المهندس محمد كامل محمد جميع الحقوق محفوظه© 2026
     </footer>
 
-    <!-- ربط ملفات بنك الأسئلة للمواد مع إصدار قسري v=11.0 لمنع التخزين المؤقت القديم -->
-    <script src="animal_care.js?v=11.0"></script>
-    <script src="management_accounting.js?v=11.0"></script>
-    <script src="plant_pathology.js?v=11.0"></script>
-    <script src="forestry.js?v=11.0"></script>
-    <script src="soil_fertility.js?v=11.0"></script>
-    <script src="all-sessions.js?v=11.0"></script>
-    
-    <!-- ربط ملف بيانات عينات الصور للعينات النباتية والزينة مع رقم إصدار قسري لمنع الكاش -->
-    <script src="samples_data.js?v=11.0"></script>
+    <script src="animal_care.js?v=13.0"></script>
+    <script src="management_accounting.js?v=13.0"></script>
+    <script src="plant_pathology.js?v=13.0"></script>
+    <script src="forestry.js?v=13.0"></script>
+    <script src="soil_fertility.js?v=13.0"></script>
+    <script src="all-sessions.js?v=13.0"></script>
+    <script src="samples_data.js?v=13.0"></script>
 
     <script>
-        // أداة حماية المحتوى والمنصة (منع النقر بالزر الأيمن، تحديد النص، واختصارات المطورين)
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
         document.addEventListener('keydown', function(e) {
             if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 'c' || e.key === 's' || e.key === 'i'))) {
                 e.preventDefault();
             }
         });
 
-        // إعدادات ربط مشروعك في فايربيس
-        const firebaseConfig = {
-            projectId: "al-bana"
-        };
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        const firebaseConfig = { projectId: "al-bana" };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.firestore();
 
-        // دالة التحقق من الرمز السري المطلوبة
         function verifySecretCode() {
             const secretVal = document.getElementById('userSecretInput').value.trim();
             if (secretVal === "hj55y5s") {
@@ -274,7 +260,6 @@
             }
         }
 
-        // التحقق التلقائي للرمز السري والاشتراك
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('albana_secret_unlocked') === 'true') {
                 document.getElementById('secret-gate').style.display = 'none';
@@ -297,7 +282,6 @@
             }
         });
 
-        // التحقق السحابي المباشر من نفس الصفحة (بدون الانتقال لأي واجهة جديدة)
         async function verifyCodeWithDatabase() {
             const inputVal = document.getElementById('userActivationCode').value.trim();
             const msgDiv = document.getElementById('activationMessage');
@@ -322,17 +306,13 @@
                 }
 
                 const data = doc.data();
-
                 if (data.is_used) {
                     msgDiv.style.color = "orange";
                     msgDiv.innerText = "⚠️ هذا الكود مستخدم مسبقاً!";
                     return;
                 }
 
-                await docRef.update({
-                    is_used: true,
-                    used_at: new Date().toISOString()
-                });
+                await docRef.update({ is_used: true, used_at: new Date().toISOString() });
 
                 localStorage.setItem('albana_activation_time', new Date().getTime().toString());
                 localStorage.setItem('albana_platform_unlocked', 'true');
@@ -351,7 +331,6 @@
                         document.getElementById('login-screen').style.display = 'flex';
                     }
                 }, 1000);
-
             } catch (error) {
                 msgDiv.style.color = "red";
                 msgDiv.innerText = "❌ حدث خطأ في الاتصال، حاول مرة أخرى.";
@@ -361,7 +340,6 @@
 
         let timeLeft = 7;
         const countdownEl = document.getElementById('countdownNum');
-        
         const timer = setInterval(() => {
             timeLeft--;
             countdownEl.innerText = timeLeft;
@@ -370,11 +348,9 @@
                 document.getElementById('intro-screen').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('intro-screen').style.display = 'none';
-                    
                     if (localStorage.getItem('albana_platform_unlocked') === 'true') {
                         const savedName = localStorage.getItem('albana_user_name');
                         const savedYear = localStorage.getItem('albana_user_year');
-
                         if (savedName && savedYear) {
                             document.getElementById('mainDashboard').style.display = 'flex';
                         } else {
@@ -394,7 +370,6 @@
             }
             localStorage.setItem('albana_user_name', name);
             localStorage.setItem('albana_user_year', year);
-
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('mainDashboard').style.display = 'flex';
         }
@@ -427,10 +402,7 @@
             }
         }
 
-        function speakText(text, btnElement) {
-            return;
-        }
-
+        function speakText(text, btnElement) { return; }
         function refreshGamificationUI() {
             const panel = document.getElementById('gamificationContainer');
             if (panel) panel.innerHTML = '';
@@ -442,7 +414,6 @@
             showScreen('subjectsScreen');
             const container = document.getElementById('subjectsList');
             container.innerHTML = '<h3 style="color:#60a5fa; margin-bottom:15px; text-align:center;">اختر المادة الدراسية</h3>';
-            
             subjects.forEach(sub => {
                 const div = document.createElement('div');
                 div.className = 'sub-box';
@@ -453,27 +424,17 @@
         }
 
         function handleSubjectsBack() {
-            if (appMode === 'oracle') {
-                startOracleMenu();
-            } else if (appMode === 'examSimulator') {
-                startExamSimulatorMenu();
-            } else if (appMode === 'quantum') {
-                startQuantumSimulationMenu();
-            } else {
-                showScreen('sectionsScreen');
-            }
+            if (appMode === 'oracle') { startOracleMenu(); }
+            else if (appMode === 'examSimulator') { startExamSimulatorMenu(); }
+            else if (appMode === 'quantum') { startQuantumSimulationMenu(); }
+            else { showScreen('sectionsScreen'); }
         }
 
         function handleSessionsBack() {
-            if (appMode === 'oracle') {
-                startOracleMenu();
-            } else if (appMode === 'examSimulator') {
-                startExamSimulatorMenu();
-            } else if (appMode === 'quantum') {
-                startQuantumSimulationMenu();
-            } else {
-                showSubjects(currentMode);
-            }
+            if (appMode === 'oracle') { startOracleMenu(); }
+            else if (appMode === 'examSimulator') { startExamSimulatorMenu(); }
+            else if (appMode === 'quantum') { startQuantumSimulationMenu(); }
+            else { showSubjects(currentMode); }
         }
 
         function handleQuizBack() {
@@ -499,7 +460,7 @@
                 for(let i = 1; i <= 7; i++) {
                     const div = document.createElement('div');
                     div.className = 'sub-box';
-                    div.innerText = `الجلسة العملية ${getArabicNumber(i)} (40 سؤال اختياري)`;
+                    div.innerText = `الجلسة العملية ${getArabicNumber(i)} (40 سؤال أتمتة)`;
                     div.onclick = () => runOracleSession(subjectName, i);
                     container.appendChild(div);
                 }
@@ -507,7 +468,7 @@
                 const finalDiv = document.createElement('div');
                 finalDiv.className = 'sub-box';
                 finalDiv.style.background = '#a855f7';
-                finalDiv.innerText = `🏛️ اختبار الأوراكل الشامل (${subjectName} - 40 سؤال عشوائي)`;
+                finalDiv.innerText = `🏛️ اختبار الأوراكل الشامل أتمتة (${subjectName} - 40 سؤال)`;
                 finalDiv.onclick = () => runOracleComprehensive(subjectName);
                 container.appendChild(finalDiv);
                 return;
@@ -521,7 +482,7 @@
                 const simDiv = document.createElement('div');
                 simDiv.className = 'sub-box';
                 simDiv.style.background = '#0891b2';
-                simDiv.innerText = `🌌 بدء المحاكاة الكمية الذكية (${subjectName} - 25 سؤال)`;
+                simDiv.innerText = `🌌 بدء المحاكاة الكمية الذكية أتمتة (${subjectName} - 25 سؤال)`;
                 simDiv.onclick = () => runQuantumSimulation(subjectName);
                 container.appendChild(simDiv);
                 return;
@@ -572,13 +533,8 @@
             
             let samplesList = [];
             if (typeof plantSamplesData !== 'undefined') {
-                if (type === 'forestry') {
-                    samplesList = plantSamplesData.forestry || [];
-                } else {
-                    samplesList = plantSamplesData.ornamental || [];
-                }
+                samplesList = type === 'forestry' ? (plantSamplesData.forestry || []) : (plantSamplesData.ornamental || []);
             }
-
             let backSubject = type === 'forestry' ? 'علم الحراج' : 'نباتات الزينة';
 
             let htmlContent = `<div class="nav-buttons-bar"><button class="back-btn" onclick="showSessions('${backSubject}', 'practical')">الرجوع للجلسات</button><button class="home-btn" onclick="showScreen('mainDashboard')">🏠 القائمة الرئيسية</button></div>`;
@@ -596,7 +552,6 @@
                     `;
                 });
             }
-
             container.innerHTML = htmlContent;
         }
 
@@ -651,9 +606,7 @@
             } else if(subject === "خصوبة التربة" && typeof soilFertilityDatabase !== 'undefined') {
                 let allSoil = [];
                 if(soilFertilityDatabase.sessions) {
-                    Object.values(soilFertilityDatabase.sessions).forEach(sessArr => {
-                        allSoil = allSoil.concat(sessArr);
-                    });
+                    Object.values(soilFertilityDatabase.sessions).forEach(sessArr => { allSoil = allSoil.concat(sessArr); });
                 }
                 activeQuestions = allSoil;
             } else if(subject === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
@@ -675,8 +628,7 @@
             appMode = 'oracle';
             showScreen('subjectsScreen');
             const container = document.getElementById('subjectsList');
-            container.innerHTML = '<h3 style="color:#a855f7; margin-bottom:15px; text-align:center;">🏛️ اختر مادة هيكل الأوراكل</h3>';
-            
+            container.innerHTML = '<h3 style="color:#a855f7; margin-bottom:15px; text-align:center;">🏛️ اختر مادة هيكل الأوراكل الأتمتة</h3>';
             subjects.forEach(sub => {
                 const div = document.createElement('div');
                 div.className = 'sub-box';
@@ -702,13 +654,12 @@
                 let rawData = allOrnamentalPlantsSessions[`session${sessionNum}`] || [];
                 sessionQuestions = rawData.map(item => ({ q: item.question, a: item.answer }));
             }
-
-            setupOracleQuiz(sessionQuestions, `🏛️ هيكل الأوراكل: (${subjectName} - الجلسة ${getArabicNumber(sessionNum)}) - 40 سؤال`);
+            setupOracleQuiz(sessionQuestions, `🏛️ هيكل الأوراكل أتمتة: (${subjectName} - الجلسة ${getArabicNumber(sessionNum)}) - 40 سؤال`);
         }
 
         function runOracleComprehensive(subjectName) {
             let allSubQuestions = getAllSubjectQuestions(subjectName);
-            setupOracleQuiz(allSubQuestions, `🏛️ اختبار الأوراكل الشامل: (${subjectName}) - 40 سؤال`);
+            setupOracleQuiz(allSubQuestions, `🏛️ اختبار الأوراكل الشامل أتمتة: (${subjectName}) - 40 سؤال`);
         }
 
         function setupOracleQuiz(sourceArray, titleText) {
@@ -716,7 +667,6 @@
                 alert('لا توجد أسئلة كافية متاحة حالياً!');
                 return;
             }
-
             refreshGamificationUI();
 
             let selected40 = [...sourceArray].sort(() => 0.5 - Math.random()).slice(0, 40);
@@ -752,7 +702,6 @@
                         <button class="stop-timer-btn" onclick="stopExamTimer('oracle')">إنهاء الوقت ⏹️</button>
                     </div>
                 `;
-                
                 if(timeLeftSec <= 0) {
                     clearInterval(examInterval);
                     stopExamTimer('oracle');
@@ -780,10 +729,8 @@
 
                 card.innerHTML = `
                     <div class="question-header">
-                        <span>🏛️ السؤال ${index + 1} 🏛️</span>
-                        <div class="action-btns">
-                            <button class="icon-btn" onclick="speakText('', this)" title="قراءة السؤال صوتياً">🔊</button>
-                        </div>
+                        <span>🏛️ السؤال ${index + 1} أتمتة 🏛️</span>
+                        <div class="action-btns"><button class="icon-btn" onclick="speakText('', this)">🔊</button></div>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
                     <div class="mcq-options">${optionsHtml}</div>
@@ -825,7 +772,6 @@
             showScreen('subjectsScreen');
             const container = document.getElementById('subjectsList');
             container.innerHTML = '<h3 style="color:#ef4444; margin-bottom:15px; text-align:center;">🎯 اختر مادة محاكي الامتحان</h3>';
-            
             subjects.forEach(sub => {
                 const div = document.createElement('div');
                 div.className = 'sub-box';
@@ -841,14 +787,11 @@
                 alert('لا توجد أسئلة كافية لهذه المادة حالياً!');
                 return;
             }
-
             appMode = 'examSimulator';
             refreshGamificationUI();
-
             activeQuestions = [...allSubQuestions].sort(() => 0.5 - Math.random()).slice(0, 30);
-            
             showScreen('quizScreen');
-            renderExamModeQuestions(activeQuestions, `🎯 محاكي الامتحان: (${subjectName}) - 30 سؤال`);
+            renderExamModeQuestions(activeQuestions, `🎯 محاكي الامتحان الكتابي: (${subjectName}) - 30 سؤال`);
             startExamTimer(45 * 60);
         }
 
@@ -857,7 +800,6 @@
             showScreen('subjectsScreen');
             const container = document.getElementById('subjectsList');
             container.innerHTML = '<h3 style="color:#22d3ee; margin-bottom:15px; text-align:center;">🌌 اختر مادة غرفة المحاكاة الكمية</h3>';
-            
             subjects.forEach(sub => {
                 const div = document.createElement('div');
                 div.className = 'sub-box';
@@ -873,7 +815,6 @@
                 alert('لا توجد أسئلة كافية مستمدة من الجلسات لهذه المادة حالياً!');
                 return;
             }
-
             appMode = 'quantum';
             refreshGamificationUI();
 
@@ -885,14 +826,14 @@
                 let wrongOptions = allAnswersPool.filter(ans => ans !== correctAnswer).sort(() => 0.5 - Math.random()).slice(0, 3);
                 let options = [...wrongOptions, correctAnswer].sort(() => 0.5 - Math.random());
                 return {
-                    q: "🌌 [محاكاة كمية من الجلسات]: " + item.q,
+                    q: "🌌 [محاكاة كمية أتمتة]: " + item.q,
                     correct: correctAnswer,
                     options: options
                 };
             });
 
             showScreen('quizScreen');
-            renderOracleQuestions(activeQuestions, `🌌 غرفة المحاكاة الكمية: (${subjectName}) - استخلاص ذكي من الجلسات`);
+            renderOracleQuestions(activeQuestions, `🌌 غرفة المحاكاة الكمية أتمتة: (${subjectName})`);
             startOracleTimer(30 * 60);
         }
 
@@ -908,9 +849,7 @@
                 list = forestryData.getComprehensiveExam();
             } else if(subjectName === "خصوبة التربة" && typeof soilFertilityDatabase !== 'undefined') {
                 if(soilFertilityDatabase.sessions) {
-                    Object.values(soilFertilityDatabase.sessions).forEach(sessArr => {
-                        list = list.concat(sessArr);
-                    });
+                    Object.values(soilFertilityDatabase.sessions).forEach(sessArr => { list = list.concat(sessArr); });
                 }
             } else if(subjectName === "نباتات الزينة" && typeof allOrnamentalPlantsSessions !== 'undefined') {
                 let allRaw = [
@@ -939,7 +878,6 @@
                         <button class="stop-timer-btn" onclick="stopExamTimer('simulator')">إنهاء الوقت ⏹️</button>
                     </div>
                 `;
-                
                 if(timeLeftSec <= 0) {
                     clearInterval(examInterval);
                     stopExamTimer('simulator');
@@ -976,7 +914,7 @@
                             addWeakness(activeQuestions[idx].q, trueAns);
                         }
                     } else {
-                        wrongCount++; // الأسئلة التي لم تُجاب تعتبر خطأ/فارغة في المحاكي الصارم
+                        wrongCount++;
                         addWeakness(activeQuestions[idx].q, trueAns);
                     }
                 });
@@ -1011,13 +949,9 @@
             `;
 
             document.getElementById('examTimerContainer').innerHTML = reportHtml;
-
-            // إظهار صندوق الإجابات الصحيحة في المحاكي مباشرة
             let answerBoxes = document.querySelectorAll('.exam-answer-box');
             answerBoxes.forEach(box => { box.style.display = 'block'; });
-
             document.getElementById('submitExamBtn').style.display = 'none';
-
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1033,9 +967,7 @@
                 card.innerHTML = `
                     <div class="question-header">
                         <span>🖤 السؤال ${index + 1} 🖤</span>
-                        <div class="action-btns">
-                            <button class="icon-btn" onclick="speakText('', this)" title="قراءة السؤال صوتياً">🔊</button>
-                        </div>
+                        <div class="action-btns"><button class="icon-btn" onclick="speakText('', this)">🔊</button></div>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
                     <input type="text" class="exam-input" placeholder="✍️ اكتب إجابتك هنا...">
@@ -1045,9 +977,7 @@
             });
         }
 
-        function submitExam() {
-            stopExamTimer('simulator');
-        }
+        function submitExam() { stopExamTimer('simulator'); }
 
         function renderQuestions(questions, titleText, isCompass = false) {
             document.getElementById('quizTitle').innerText = titleText;
@@ -1062,7 +992,6 @@
             questions.forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'question-card';
-                
                 let isFav = favoriteQuestions.some(fav => fav.q === item.q);
                 let starColor = isFav ? 'gold' : 'white';
 
@@ -1070,9 +999,9 @@
                     <div class="question-header">
                         <span>🖤 ${index + 1} 🖤</span>
                         <div class="action-btns">
-                            <button class="icon-btn" onclick="speakText('', this)" title="قراءة السؤال صوتياً">🔊</button>
-                            <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
-                            <button class="icon-btn" style="color: ${starColor};" onclick="toggleFavorite(this, '${encodeURIComponent(item.q)}', '${encodeURIComponent(item.a)}')" title="المفضلة">🌟</button>
+                            <button class="icon-btn" onclick="speakText('', this)">🔊</button>
+                            <button class="icon-btn" onclick="toggleFocus(this)">👁️</button>
+                            <button class="icon-btn" style="color: ${starColor};" onclick="toggleFavorite(this, '${encodeURIComponent(item.q)}', '${encodeURIComponent(item.a)}')">🌟</button>
                         </div>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
@@ -1095,43 +1024,20 @@
         function toggleFocus(btn) {
             let card = btn.closest('.question-card');
             let allCards = document.querySelectorAll('.question-card');
-            
             if(card.classList.contains('focused-active')) {
-                allCards.forEach(c => {
-                    c.style.display = 'block';
-                });
+                allCards.forEach(c => { c.style.display = 'block'; });
                 card.classList.remove('focused-active');
-                card.style.position = 'relative';
-                card.style.top = 'auto';
-                card.style.left = 'auto';
-                card.style.transform = 'none';
-                card.style.width = '100%';
-                card.style.maxWidth = 'none';
-                card.style.zIndex = '1';
-                card.style.background = '#111827';
-                card.style.boxShadow = 'none';
+                card.style.position = 'relative'; card.style.top = 'auto'; card.style.left = 'auto'; card.style.transform = 'none'; card.style.width = '100%'; card.style.maxWidth = 'none'; card.style.zIndex = '1'; card.style.background = '#111827'; card.style.boxShadow = 'none';
             } else {
-                allCards.forEach(c => {
-                    c.style.display = 'none';
-                });
+                allCards.forEach(c => { c.style.display = 'none'; });
                 card.classList.add('focused-active');
-                card.style.display = 'block';
-                card.style.position = 'fixed';
-                card.style.top = '50%';
-                card.style.left = '50%';
-                card.style.transform = 'translate(-50%, -50%)';
-                card.style.width = '90%';
-                card.style.maxWidth = '500px';
-                card.style.zIndex = '9999';
-                card.style.background = '#1f2937';
-                card.style.boxShadow = '0 0 25px rgba(0,0,0,0.9)';
+                card.style.display = 'block'; card.style.position = 'fixed'; card.style.top = '50%'; card.style.left = '50%'; card.style.transform = 'translate(-50%, -50%)'; card.style.width = '90%'; card.style.maxWidth = '500px'; card.style.zIndex = '9999'; card.style.background = '#1f2937'; card.style.boxShadow = '0 0 25px rgba(0,0,0,0.9)';
             }
         }
 
         function toggleFavorite(btn, qEncoded, aEncoded) {
             let q = decodeURIComponent(qEncoded);
             let a = decodeURIComponent(aEncoded);
-            
             let existingIndex = favoriteQuestions.findIndex(fav => fav.q === q);
 
             if(existingIndex > -1) {
@@ -1143,7 +1049,6 @@
                 btn.style.color = 'gold';
                 alert('تم حفظ السؤال في المفضلة ليلة الامتحان 🌟⭐');
             }
-
             localStorage.setItem('albana_favorites', JSON.stringify(favoriteQuestions));
         }
 
@@ -1164,11 +1069,7 @@
                 card.innerHTML = `
                     <div class="question-header">
                         <span>🌟 المفضلة ${index + 1}</span>
-                        <div class="action-btns">
-                            <button class="icon-btn" onclick="speakText('', this)" title="قراءة السؤال صوتياً">🔊</button>
-                            <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
-                            <button class="icon-btn" style="color: gold;" onclick="removeFavorite(this, '${encodeURIComponent(item.q)}')" title="إزالة من المفضلة">❌</button>
-                        </div>
+                        <div class="action-btns"><button class="icon-btn" style="color: gold;" onclick="removeFavorite(this, '${encodeURIComponent(item.q)}')">❌</button></div>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
                     <button class="show-ans-btn" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">إظهار الجواب الصحيح 🌹</button>
@@ -1192,20 +1093,11 @@
             container.innerHTML = '';
 
             if(weaknessQuestions.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align:center; margin-top:30px;">
-                        <p style="color:#10b981; font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;">🎉 لا توجد ثغرات مسجلة حتى الآن!</p>
-                        <p style="color:#9ca3af; font-size: 0.95rem;">كل إجابة خاطئة تسجلها أثناء حل الاختبارات ستظهر هنا تلقائياً لمراجعتها.</p>
-                    </div>
-                `;
+                container.innerHTML = `<div style="text-align:center; margin-top:30px;"><p style="color:#10b981; font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;">🎉 لا توجد ثغرات مسجلة حتى الآن!</p></div>`;
                 return;
             }
 
-            let clearAllBtn = `
-                <div style="margin-bottom: 15px; text-align: left;">
-                    <button onclick="clearAllWeaknesses()" style="background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem;">🧹 مسح كل الثغرات المرصودة</button>
-                </div>
-            `;
+            let clearAllBtn = `<div style="margin-bottom: 15px; text-align: left;"><button onclick="clearAllWeaknesses()" style="background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem;">🧹 مسح كل الثغرات المرصودة</button></div>`;
             container.innerHTML += clearAllBtn;
 
             weaknessQuestions.forEach((item, index) => {
@@ -1214,11 +1106,7 @@
                 card.innerHTML = `
                     <div class="question-header">
                         <span>🎯 ثغرة مرصودة ${index + 1}</span>
-                        <div class="action-btns">
-                            <button class="icon-btn" onclick="speakText('', this)" title="قراءة السؤال صوتياً">🔊</button>
-                            <button class="icon-btn" onclick="toggleFocus(this)" title="وضع التركيز">👁️</button>
-                            <button class="icon-btn" style="color: #ef4444;" onclick="removeWeakness(this, '${encodeURIComponent(item.q)}')" title="حذف هذه الثغرة بعد إتقانها">❌</button>
-                        </div>
+                        <div class="action-btns"><button class="icon-btn" style="color: #ef4444;" onclick="removeWeakness(this, '${encodeURIComponent(item.q)}')">❌</button></div>
                     </div>
                     <p style="font-size: 1.1rem; margin-bottom: 10px;">${item.q}</p>
                     <button class="show-ans-btn" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'">إظهار الجواب الصحيح 🌹</button>
@@ -1247,21 +1135,19 @@
             showScreen('favoritesScreen');
             const container = document.getElementById('favoritesContainer');
             document.getElementById('favoritesTitle').innerText = '📝 مذكرة ملاحظات المهندس';
-            
             let savedNotes = localStorage.getItem('albana_engineer_notes') || '';
 
-            let htmlContent = `
+            container.innerHTML = `
                 <div class="nav-buttons-bar">
                     <button class="back-btn" onclick="showScreen('mainDashboard')">الرجوع للرئيسية</button>
                     <button class="home-btn" onclick="saveEngineerNotes()">💾 حفظ الملاحظات</button>
                 </div>
                 <div class="question-card" style="padding: 20px;">
                     <p style="color: #60a5fa; font-weight: bold; margin-bottom: 10px;">✍️ دون أفكارك، قوانينك، وملاحظاتك ليلة الامتحان هنا:</p>
-                    <textarea id="engineerNotesArea" style="width: 100%; height: 300px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; padding: 15px; font-size: 1.05rem; line-height: 1.6; resize: vertical; outline: none;" placeholder="اكتب ملاحظاتك هنا... سيتم حفظها محلياً على جهازك تلقائياً 🖤🌹">${savedNotes}</textarea>
+                    <textarea id="engineerNotesArea" style="width: 100%; height: 300px; background: #1f2937; border: 1px solid #4b5563; border-radius: 8px; color: #fff; padding: 15px; font-size: 1.05rem; line-height: 1.6; resize: vertical; outline: none;">${savedNotes}</textarea>
                     <button onclick="saveEngineerNotes()" class="sub-box" style="background: #10b981; margin-top: 15px;">حفظ الملاحظات بنجاح 💾</button>
                 </div>
             `;
-            container.innerHTML = htmlContent;
         }
 
         function saveEngineerNotes() {
@@ -1269,20 +1155,6 @@
             localStorage.setItem('albana_engineer_notes', notesText);
             alert('تم حفظ ملاحظاتك بنجاح يا GOAT 🖤🌹');
         }
-    </script>
-
-    <!-- كود تفعيل الـ Service Worker المحدث (v=11.0) للتخزين المحلي وتحديث الكاش تلقائياً -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=11.0')
-            .then(reg => {
-              console.log('Service Worker registered!');
-              reg.update();
-            })
-            .catch(err => console.log('Service Worker error: ', err));
-        });
-      }
     </script>
 </body>
 </html>
