@@ -205,16 +205,16 @@
         صمم من قبل المهندس أحمد علي عمران / المهندس محمد كامل محمد جميع الحقوق محفوظه© 2026
     </footer>
 
-    <!-- ربط ملفات بنك الأسئلة للمواد -->
-    <script src="animal_care.js"></script>
-    <script src="management_accounting.js"></script>
-    <script src="plant_pathology.js"></script>
-    <script src="forestry.js"></script>
-    <script src="soil_fertility.js"></script>
-    <script src="all-sessions.js"></script>
+    <!-- ربط ملفات بنك الأسئلة للمواد مع إصدار قسري لمنع التخزين المؤقت القديم -->
+    <script src="animal_care.js?v=4.0"></script>
+    <script src="management_accounting.js?v=4.0"></script>
+    <script src="plant_pathology.js?v=4.0"></script>
+    <script src="forestry.js?v=4.0"></script>
+    <script src="soil_fertility.js?v=4.0"></script>
+    <script src="all-sessions.js?v=4.0"></script>
     
     <!-- ربط ملف بيانات عينات الصور للعينات النباتية والزينة مع رقم إصدار قسري لمنع الكاش -->
-    <script src="samples_data.js?v=3.0"></script>
+    <script src="samples_data.js?v=4.0"></script>
 
     <script>
         // أداة حماية المحتوى والمنصة (منع النقر بالزر الأيمن، تحديد النص، واختصارات المطورين)
@@ -304,13 +304,11 @@
                     return;
                 }
 
-                // تحديث حالة الكود في قاعدة البيانات لكي لا يُستخدم مرة أخرى
                 await docRef.update({
                     is_used: true,
                     used_at: new Date().toISOString()
                 });
 
-                // حفظ التفعيل لمدة شهر كامل
                 localStorage.setItem('albana_activation_time', new Date().getTime().toString());
                 localStorage.setItem('albana_platform_unlocked', 'true');
                 localStorage.setItem('albana_used_code', inputVal);
@@ -318,7 +316,6 @@
                 msgDiv.style.color = "green";
                 msgDiv.innerText = "🎉 تم تفعيل اشتراكك بنجاح يا GOAT!";
 
-                // إخفاء بوابة الاشتراك والدخول للمنصة فوراً
                 setTimeout(() => {
                     document.getElementById('activation-gate').style.display = 'none';
                     const savedName = localStorage.getItem('albana_user_name');
@@ -474,6 +471,20 @@
                 finalDiv.innerText = `🏛️ اختبار الأوراكل الشامل (${subjectName} - 40 سؤال عشوائي)`;
                 finalDiv.onclick = () => runOracleComprehensive(subjectName);
                 container.appendChild(finalDiv);
+                return;
+            }
+
+            if (appMode === 'quantum') {
+                showScreen('sessionsScreen');
+                const container = document.getElementById('sessionsList');
+                container.innerHTML = `<h3 style="color:#22d3ee; margin-bottom:15px; text-align:center;">🌌 غرفة المحاكاة الكمية: ${subjectName}</h3>`;
+
+                const simDiv = document.createElement('div');
+                simDiv.className = 'sub-box';
+                simDiv.style.background = '#0891b2';
+                simDiv.innerText = `🌌 بدء المحاكاة الكمية الذكية (${subjectName} - 25 سؤال)`;
+                simDiv.onclick = () => runQuantumSimulation(subjectName);
+                container.appendChild(simDiv);
                 return;
             }
 
@@ -669,7 +680,6 @@
                 return;
             }
 
-            appMode = 'oracle';
             refreshGamificationUI();
 
             let selected40 = [...sourceArray].sort(() => 0.5 - Math.random()).slice(0, 40);
@@ -701,14 +711,14 @@
                 let seconds = timeLeftSec % 60;
                 timerContainer.innerHTML = `
                     <div class="timer-badge" style="background:#a855f7;">
-                        <span>🏛️ الوقت المتبقي لهيكل الأوراكل: ${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}</span>
+                        <span>🏛️ الوقت المتبقي: ${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}</span>
                         <button class="stop-timer-btn" onclick="stopExamTimer('oracle')">إنهاء الوقت ⏹️</button>
                     </div>
                 `;
                 
                 if(timeLeftSec <= 0) {
                     clearInterval(examInterval);
-                    alert('انقضى وقت الأوراكل (45 دقيقة)! انتهى الاختبار ⏱️🔥');
+                    alert('انقضى وقت الاختبار! انتهى الوقت ⏱️🔥');
                 }
                 timeLeftSec--;
             }, 1000);
@@ -878,7 +888,7 @@
                 let seconds = timeLeftSec % 60;
                 timerContainer.innerHTML = `
                     <div class="timer-badge">
-                        <span>⏳ الوقت المتبقي للامتحان: ${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}</span>
+                        <span>⏳ الوقت المتبقي: ${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}</span>
                         <button class="stop-timer-btn" onclick="stopExamTimer('simulator')">إنهاء الوقت ⏹️</button>
                     </div>
                 `;
@@ -898,7 +908,7 @@
                 submitExam();
                 document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 تم إنهاء وقت الامتحان يدوياً بنجاح! تم كشف الأجوبة 🌹</div>';
             } else {
-                document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 تم إنهاء وقت الأوراكل/المحاكاة يدوياً بنجاح 🌹</div>';
+                document.getElementById('examTimerContainer').innerHTML = '<div class="timer-badge" style="background:#10b981;">🏁 تم إنهاء الوقت يدوياً بنجاح 🌹</div>';
                 let cards = document.querySelectorAll('.question-card');
                 cards.forEach(card => {
                     let opts = card.querySelectorAll('.mcq-option');
