@@ -1015,11 +1015,12 @@
 
             document.getElementById('examTimerContainer').innerHTML = reportHtml;
 
-            if(type === 'simulator') {
-                document.getElementById('submitExamBtn').style.display = 'none';
-                let answerBoxes = document.querySelectorAll('.exam-answer-box');
-                answerBoxes.forEach(box => { box.style.display = 'block'; });
-            } else {
+            // تم التعديل هنا: إظهار خانة الإجابة الصحيحة للجميع فوراً عند انتهاء الوقت أو ضغط إنهاء الامتحان
+            document.getElementById('submitExamBtn').style.display = 'none';
+            let answerBoxes = document.querySelectorAll('.exam-answer-box');
+            answerBoxes.forEach(box => { box.style.display = 'block'; });
+
+            if(type === 'oracle' || type === 'quantum') {
                 let cards = document.querySelectorAll('.question-card');
                 cards.forEach(card => {
                     let opts = card.querySelectorAll('.mcq-option');
